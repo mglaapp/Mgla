@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fl_clash/common/boot_record.dart';
+import 'package:fl_clash/common/crash_report.dart';
 import 'package:fl_clash/common/preferences.dart';
 import 'package:fl_clash/common/print.dart';
 import 'package:fl_clash/common/system.dart';
@@ -27,23 +28,23 @@ class BootGuard {
        _readRecord = readRecord ?? preferences.getBootRecord,
        _writeRecord = writeRecord ?? preferences.saveBootRecord,
        _readExitInfo = readExitInfo ?? system.lastExitInfo,
-       _readCrashReport = readCrashReport ?? system.didCrashOnPreviousExecution,
+       _readCrashReport = readCrashReport ?? _localCrashReport,
        _now = now ?? _currentMilliseconds;
 
   static int _currentMilliseconds() => DateTime.now().millisecondsSinceEpoch;
 
+  static Future<bool> _localCrashReport() async =>
+      crashReports.recordedBeforeThisRun();
+
   BootDecision get decision => _decision;
 
-  Future<BootDecision> evaluate({
-    required int? profileId,
-    required bool crashlyticsEnabled,
-  }) async {
+  Future<BootDecision> evaluate({required int? profileId}) async {
     if (!_supported) {
       return _decision;
     }
     final record = await _readRecord();
     final exitInfo = await _readExitInfo();
-    final crashReported = crashlyticsEnabled && await _readCrashReport();
+    final crashReported = await _readCrashReport();
     final decision = resolveBootDecision(
       record: record,
       exitInfo: exitInfo,

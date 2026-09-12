@@ -38,10 +38,13 @@ class Logs extends _$Logs with AutoDisposeNotifierMixin {
   }
 
   Future<bool> exportLogs() async {
+    final report = crashReports.latest();
     final logString = await encodeLogsTask(value.list);
     final tempFilePath = await appPath.tempFilePath;
     final file = File(tempFilePath);
-    await file.safeWriteAsString(logString);
+    await file.safeWriteAsString(
+      report == null ? logString : '$report\n$logString',
+    );
     bool res = false;
     res = await picker.saveFileWithPath(logFileName, tempFilePath) != null;
     return res;

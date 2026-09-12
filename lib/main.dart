@@ -20,6 +20,7 @@ void main(List<String> args) {
         linkManager.seedInitialLink(args);
       }
       FlutterError.onError = (details) {
+        crashReports.record(details.exception, details.stack, kind: 'flutter');
         Future.microtask(() {
           commonPrint.log(
             'exception: ${details.exception} stack: ${details.stack}',
@@ -30,6 +31,7 @@ void main(List<String> args) {
       try {
         await RustLib.init();
         final version = await system.init();
+        await crashReports.init();
         final container = await bootstrap.init(version);
         HttpOverrides.global = FlClashHttpOverrides(container);
         request.attach(container.read);

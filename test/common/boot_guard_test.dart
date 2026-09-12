@@ -42,10 +42,7 @@ void main() {
       final store = _RecordStore();
       final guard = _guard(store);
 
-      final decision = await guard.evaluate(
-        profileId: 7,
-        crashlyticsEnabled: false,
-      );
+      final decision = await guard.evaluate(profileId: 7);
 
       expect(decision.recovery, BootRecovery.none);
       expect(store.record?.stage, BootStage.starting);
@@ -55,20 +52,17 @@ void main() {
     },
   );
 
-  test(
-    'the Crashlytics probe stays out of the path unless it is enabled',
-    () async {
-      final store = _RecordStore();
-      var probes = 0;
-      final guard = _guard(store, onCrashProbe: () => probes++);
+  test('the crash-report probe is consulted once per evaluation', () async {
+    final store = _RecordStore();
+    var probes = 0;
+    final guard = _guard(store, onCrashProbe: () => probes++);
 
-      await guard.evaluate(profileId: 7, crashlyticsEnabled: false);
-      expect(probes, 0);
+    await guard.evaluate(profileId: 7);
+    expect(probes, 1);
 
-      await guard.evaluate(profileId: 7, crashlyticsEnabled: true);
-      expect(probes, 1);
-    },
-  );
+    await guard.evaluate(profileId: 7);
+    expect(probes, 2);
+  });
 
   test('an interrupted launch is carried into the next boot record', () async {
     final store = _RecordStore()
@@ -79,10 +73,7 @@ void main() {
       );
     final guard = _guard(store);
 
-    final decision = await guard.evaluate(
-      profileId: 7,
-      crashlyticsEnabled: false,
-    );
+    final decision = await guard.evaluate(profileId: 7);
 
     expect(decision.recovery, BootRecovery.skipAutoSetup);
     expect(store.record?.failureCount, 1);
@@ -100,10 +91,7 @@ void main() {
       );
     final guard = _guard(store);
 
-    final decision = await guard.evaluate(
-      profileId: 7,
-      crashlyticsEnabled: false,
-    );
+    final decision = await guard.evaluate(profileId: 7);
 
     expect(decision.recovery, BootRecovery.clearProfile);
     expect(store.record?.profileId, isNull);
@@ -121,7 +109,7 @@ void main() {
       ),
     );
 
-    await guard.evaluate(profileId: 7, crashlyticsEnabled: false);
+    await guard.evaluate(profileId: 7);
 
     expect(store.record?.handledExitAt, 4000);
 
@@ -133,10 +121,7 @@ void main() {
       ),
       now: 6000,
     );
-    final decision = await next.evaluate(
-      profileId: 7,
-      crashlyticsEnabled: false,
-    );
+    final decision = await next.evaluate(profileId: 7);
 
     expect(decision.recovery, BootRecovery.skipAutoSetup);
     expect(store.record?.handledExitAt, 4000);
@@ -145,7 +130,7 @@ void main() {
   test('a completed launch resets the failure count', () async {
     final store = _RecordStore();
     final guard = _guard(store);
-    await guard.evaluate(profileId: 7, crashlyticsEnabled: false);
+    await guard.evaluate(profileId: 7);
 
     await guard.markRunning();
 
@@ -161,7 +146,7 @@ void main() {
         startedAt: 1000,
       );
     final guard = _guard(store);
-    await guard.evaluate(profileId: 7, crashlyticsEnabled: false);
+    await guard.evaluate(profileId: 7);
 
     await guard.markRunning();
 
@@ -216,10 +201,7 @@ void main() {
       onCrashProbe: () => probes++,
     );
 
-    final decision = await guard.evaluate(
-      profileId: 7,
-      crashlyticsEnabled: true,
-    );
+    final decision = await guard.evaluate(profileId: 7);
     await guard.markRunning();
     await guard.markClosed();
 
