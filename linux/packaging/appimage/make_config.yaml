@@ -9,12 +9,12 @@ supported_mime_type:
   - x-scheme-handler/flclash
 
 keywords:
-  - FlClash
+  - Mgla
   - Clash
   - ClashMeta
   - Proxy
 
-generic_name: FlClash
+generic_name: Mgla
 
 categories:
   - Network

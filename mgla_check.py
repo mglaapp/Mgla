@@ -16,6 +16,7 @@
 """
 import io
 import pathlib
+import re
 import sys
 
 _ok = 0
@@ -102,6 +103,62 @@ def main() -> int:
           "Cubic(0.16, 0.84, 0.28, 1.0)" in mo)
     check("длительности дизайн-кода 110/240/420 на месте",
           all(f"milliseconds: {ms}" in mo for ms in (110, 240, 420)))
+
+    print("\n— своё место в системе —")
+    # applicationId — ЕДИНСТВЕННОЕ, чем наша установка отличается от апстримовской. Совпали —
+    # для Android это одна и та же программа: рядом они не встанут, а магазин вторую не примет.
+    g = read("android/app/build.gradle.kts")
+    check("android: свой applicationId", 'applicationId = "app.mgla"' in g)
+    # namespace НЕ меняем НАМЕРЕННО: это пакет Kotlin, он же префикс имени класса. Человек его
+    # не видит, а переименование задело бы каждый файл модуля и все слияния с апстримом.
+    check("android: namespace оставлен апстримовским (имена классов не трогаем)",
+          'namespace = "com.follow.clash"' in g)
+    # Манифест обязан брать id ПОДСТАНОВКОЙ. Вписанный руками, он разъедется с applicationId, и
+    # разрешение, экшен и authority провайдера перестанут совпадать с тем, что зовёт код.
+    mf = read("android/app/src/main/AndroidManifest.xml")
+    check("android: экшены и права берут id подстановкой, а не вписаны руками",
+          "${applicationId}.action.START" in mf and "${applicationId}.permission" in mf)
+    check("android: id нигде не вписан в манифест буквами",
+          "com.follow.clash" not in mf and "app.mgla" not in mf)
+    check("android: имя в списке приложений = Mgla",
+          '<string name="app_name">Mgla</string>' in read(
+              "android/common/src/main/res/values/strings.xml"))
+    check("android: отладочная сборка подписана нашим именем",
+          "Mgla Debug" in read("android/app/src/debug/AndroidManifest.xml"))
+
+    # ИНВАРИАНТ, КОТОРЫЙ РУШИТСЯ МОЛЧА. Одна строка служит ДВУМ вещам сразу: префиксом имени
+    # класса (com.follow.clash.MainActivity) и именем канала между Kotlin и Dart. Сменить её на
+    # одной стороне — приложение соберётся и запустится, но на Android разом отвалятся список
+    # приложений, служба и плитка, и ни одной ошибки в логе: канал с другим именем никто не
+    # слушает. Поэтому проверяется не значение, а РАВЕНСТВО двух концов.
+    dart = re.search(r"const packageName = '([^']+)'", read("lib/common/constant.dart"))
+    kt = re.search(r'const val PACKAGE_NAME = "([^"]+)"',
+                   read("android/common/src/main/java/com/follow/clash/common/Components.kt"))
+    check("канал Kotlin↔Dart назван одинаково с обеих сторон",
+          bool(dart and kt) and dart.group(1) == kt.group(1),
+          (dart.group(1) if dart else None, kt.group(1) if kt else None))
+
+    print("\n— macOS и Linux: как нас видит система —")
+    xc = read("macos/Runner/Configs/AppInfo.xcconfig")
+    check("macos: свой bundle id", "PRODUCT_BUNDLE_IDENTIFIER = app.mgla" in xc)
+    check("macos: имя приложения Mgla.app", "PRODUCT_NAME = Mgla" in xc)
+    check("macos: в правах не осталось 'All rights reserved'", "All rights reserved" not in xc)
+    pbx = read("macos/Runner.xcodeproj/project.pbxproj")
+    check("macos: чужого id не осталось нигде в проекте", "com.follow" not in pbx)
+    check("macos: подпись под значком = Mgla",
+          "INFOPLIST_KEY_CFBundleDisplayName = Mgla;" in pbx)
+    # Текст запроса доступа человек читает в системном окне — чужому имени там не место.
+    check("macos: в запросе доступа к геопозиции наше имя",
+          "Mgla needs location access" in read("macos/Runner/Info.plist"))
+    check("имя файла, который скачивает человек, = Mgla-*",
+          "app_name: 'Mgla'" in read("distribute_options.yaml"))
+    for kind in ("appimage", "deb", "rpm"):
+        lp = read("linux/packaging/%s/make_config.yaml" % kind)
+        check("linux/%s: подпись в меню приложений = Mgla" % kind, "display_name: Mgla" in lp)
+        # Без своей схемы кнопка «Подключить в Mgla» на этой упаковке не откроет ничего —
+        # ссылку некому перехватить. В deb и rpm её и не было: нашлось этой проверкой.
+        check("linux/%s: mgla:// зарегистрирована" % kind, "x-scheme-handler/mgla" in lp)
+        check("linux/%s: чужой адрес сопровождающего убран" % kind, "chen08209" not in lp)
 
     print("\n— КОНТРОЛЬ —")
     # Контроль обязан доказывать, что сравнение РАБОТАЕТ, и потому проверяется в ОБЕ стороны.
