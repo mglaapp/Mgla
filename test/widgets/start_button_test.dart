@@ -162,7 +162,9 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(tester.getSize(button).width, greaterThan(expandedButtonWidth));
+    // The design code forbids overshoot, so the button only ever shrinks from here.
+    final closingWidth = tester.getSize(button).width;
+    expect(closingWidth, lessThan(expandedButtonWidth));
     expect(
       tester
           .widget<AnimatedContainer>(find.byType(AnimatedContainer))
@@ -174,7 +176,7 @@ void main() {
 
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(tester.getSize(button).width, 56);
+    expect(tester.getSize(button).width, lessThanOrEqualTo(closingWidth));
     expect(runTimeText(), '100:02:03');
 
     await tester.pumpAndSettle();

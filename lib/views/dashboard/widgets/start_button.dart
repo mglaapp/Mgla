@@ -88,10 +88,7 @@ class _StartButtonState extends ConsumerState<StartButton>
       value: isStart ? 1 : 0,
       duration: MglaMotion.base,
     );
-    _animation = CurvedAnimation(
-      parent: _controller!,
-      curve: MglaMotion.cut,
-    );
+    _animation = CurvedAnimation(parent: _controller!, curve: MglaMotion.cut);
     ref.listenManual(runTimeProvider, (_, next) {
       _updateDisplayRunTime(next);
     });

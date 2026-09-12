@@ -123,10 +123,7 @@ class RuleItem extends StatelessWidget {
                                   : rule.realTarget!,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: context
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.toMono
+                              style: context.textTheme.bodyMedium?.toMono
                                   .copyWith(color: checkResult.color),
                             ),
                           ),

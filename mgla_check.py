@@ -160,6 +160,40 @@ def main() -> int:
         check("linux/%s: mgla:// зарегистрирована" % kind, "x-scheme-handler/mgla" in lp)
         check("linux/%s: чужой адрес сопровождающего убран" % kind, "chen08209" not in lp)
 
+    print("\n— имя там, где человек его читает каждый день —")
+    # Постоянное уведомление — самая заметная поверхность VPN на телефоне: оно висит всё время,
+    # пока включён туннель. Заголовок берётся из имени профиля, а до его загрузки — из этих
+    # трёх умолчаний. Ветка десктопного бренда их не задела, и человек читал бы чужое имя.
+    check("android: заголовок уведомления по умолчанию = Mgla",
+          'setContentTitle("Mgla")' in read(
+              "android/service/src/main/java/com/follow/clash/service/modules/"
+              "NotificationModule.kt"))
+    check("android: умолчание параметров уведомления = Mgla",
+          'val title: String = "Mgla"' in read(
+              "android/service/src/main/java/com/follow/clash/service/models/"
+              "NotificationParams.kt"))
+    check("android: имя профиля до загрузки = Mgla",
+          'val currentProfileName: String = "Mgla"' in read(
+              "android/app/src/main/kotlin/com/follow/clash/models/State.kt"))
+    # Запись .desktop регистрирует схему ссылок в Linux; её имя видно в окне «Открыть с помощью».
+    check("linux: запись .desktop подписана нашим именем",
+          "'Name=Mgla'" in read("lib/common/protocol.dart"))
+
+    # ДВУСТОРОННЯЯ проверка текстов ошибок. Слева — что чужого имени ПРОГРАММЫ не осталось;
+    # справа — что имена ФАЙЛОВ уцелели. Сплошная замена «FlClash -> Mgla» прошла бы и по
+    # FlClashCore.exe, и текст «Windows отказалась запускать ...» стал бы враньём про файл,
+    # которого нет. Одна половина без другой пропускает ровно ту ошибку, которой боишься.
+    own, files = 0, 0
+    for path in list(pathlib.Path("arb").glob("*.arb")) + [
+        pathlib.Path("lib/l10n/l10n.dart"),
+    ] + sorted(pathlib.Path("lib/l10n/intl").glob("messages_*.dart")):
+        txt = read(str(path))
+        own += len(re.findall(r"FlClash(?!Core|Helper)", txt))
+        files += txt.count("FlClashCore") + txt.count("FlClashHelper")
+    check("в текстах ошибок не осталось чужого имени программы", own == 0, own)
+    check("имена файлов FlClashCore/Helper в текстах целы (они так и называются)",
+          files >= 16, files)
+
     print("\n— КОНТРОЛЬ —")
     # Контроль обязан доказывать, что сравнение РАБОТАЕТ, и потому проверяется в ОБЕ стороны.
     # Один лишь пункт «чепухи в файле нет» проходит сам собой даже на пустой строке и контролем
