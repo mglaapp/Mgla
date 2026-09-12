@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.9.0 (2026-09-13)
+
+**Features**
+
+- **crash** Свой отчёт о падении вместо отправки в Google (06014f5)
+- **identity** Свой applicationId и bundle id (04e7d6e)
+- **ui** Шрифт IBM Plex и движение «рез» из дизайн-кода (62cc8c3)
+- Rebrand FlClash to Mgla (e715145)
+
+**Bug Fixes**
+
+- **tool** Читать вывод git как UTF-8, а не как кодировку машины (cbe9a2a)
+- **packaging** Упаковщики ищут наше имя (5d08e3c)
+- **identity** Наше имя в уведомлении и в текстах ошибок (dfc71b7)
+
 ## v0.8.97 (2026-09-10)
 
 **Features**

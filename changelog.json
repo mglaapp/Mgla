@@ -2,6 +2,58 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "0.9.0",
+      "tag": "v0.9.0",
+      "date": "2026-09-13",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "06014f5",
+              "scope": "crash",
+              "text": "Свой отчёт о падении вместо отправки в Google"
+            },
+            {
+              "id": "04e7d6e",
+              "scope": "identity",
+              "text": "Свой applicationId и bundle id"
+            },
+            {
+              "id": "62cc8c3",
+              "scope": "ui",
+              "text": "Шрифт IBM Plex и движение «рез» из дизайн-кода"
+            },
+            {
+              "id": "e715145",
+              "text": "Rebrand FlClash to Mgla"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "cbe9a2a",
+              "scope": "tool",
+              "text": "Читать вывод git как UTF-8, а не как кодировку машины"
+            },
+            {
+              "id": "5d08e3c",
+              "scope": "packaging",
+              "text": "Упаковщики ищут наше имя"
+            },
+            {
+              "id": "dfc71b7",
+              "scope": "identity",
+              "text": "Наше имя в уведомлении и в текстах ошибок"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.8.97",
       "tag": "v0.8.97",
       "date": "2026-09-10",
