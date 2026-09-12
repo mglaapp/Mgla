@@ -194,6 +194,33 @@ def main() -> int:
     check("имена файлов FlClashCore/Helper в текстах целы (они так и называются)",
           files >= 16, files)
 
+    print("\n— упаковщики: что они ищут и чем подписываются —")
+    # ЭТОТ КЛАСС ДЕФЕКТА СТОИЛ ЦЕЛОГО ПРОГОНА ОБЛАКА (09-13): сборка выдаёт Mgla.app, а
+    # упаковщик dmg искал FlClash.app — «не найдено» пришло с макоси через шесть минут после
+    # того, как всё остальное уже собралось. Имя в сборке и имя в упаковщике — ДВА КОНЦА
+    # одной строки, и проверять надо их равенство, а не каждое по отдельности.
+    dmg = read("macos/packaging/dmg/make_config.yaml")
+    check("macos: dmg ищет Mgla.app, а не чужое имя", "path: Mgla.app" in dmg)
+    check("macos: заголовок окна dmg = Mgla", "title: Mgla" in dmg)
+    wx = read("windows/packaging/exe/make_config.yaml")
+    cmw = read("windows/CMakeLists.txt")
+    binary = None
+    m = re.search(r'set\(BINARY_NAME "([^"]+)"\)', cmw)
+    if m:
+        binary = m.group(1)
+    exe = re.search(r"executable_name: (\S+)", wx)
+    check("windows: установщик ищет ровно тот файл, который собирается",
+          bool(binary and exe) and exe.group(1) == binary + ".exe",
+          (binary, exe.group(1) if exe else None))
+    # AppId = личность программы для Windows. Общий с апстримом означает установку ПОВЕРХ
+    # чужой программы и общий деинсталлятор; человек увидит это уже после установки.
+    check("windows: у установщика СВОЙ AppId, не апстримовский",
+          "728B3532-C74B-4870-9068-BE70FE12A3E6" not in wx)
+    check("windows: издатель в списке программ и в окне UAC — наш",
+          "publisher: mglaapp" in wx and "chen08209" not in wx)
+    check("windows: имя в установщике = Mgla",
+          "app_name: Mgla" in wx and "display_name: Mgla" in wx)
+
     print("\n— КОНТРОЛЬ —")
     # Контроль обязан доказывать, что сравнение РАБОТАЕТ, и потому проверяется в ОБЕ стороны.
     # Один лишь пункт «чепухи в файле нет» проходит сам собой даже на пустой строке и контролем
