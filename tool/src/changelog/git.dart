@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'models.dart';
@@ -144,10 +145,14 @@ class Git {
   }
 
   String _run(List<String> arguments) {
+    // Git writes UTF-8; `systemEncoding` is only UTF-8 where the host happens to agree, so a
+    // non-ASCII subject comes back mangled on a Windows console and lands in the release notes.
     final result = Process.runSync(
       'git',
       arguments,
       workingDirectory: workingDirectory,
+      stdoutEncoding: utf8,
+      stderrEncoding: utf8,
     );
     if (result.exitCode != 0) {
       throw GitException('git ${arguments.join(' ')} failed: ${result.stderr}');
