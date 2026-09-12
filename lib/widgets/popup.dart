@@ -78,7 +78,7 @@ class CommonPopupRoute<T> extends PopupRoute<T> {
   ) {
     const alignment = Alignment.topRight;
     final fade = animation.drive(CurveTween(curve: Curves.easeOut));
-    final scale = animation.drive(CurveTween(curve: Curves.easeOutBack));
+    final scale = animation.drive(CurveTween(curve: MglaMotion.cut));
     return Stack(
       children: [
         Positioned.fill(

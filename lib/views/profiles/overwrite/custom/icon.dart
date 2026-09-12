@@ -23,11 +23,11 @@ class _IconEditStateNotifier<T> extends ChangeNotifier {
     );
     _opacity = CurvedAnimation(
       parent: _controller,
-      curve: const Interval(0.6, 1.0, curve: Curves.easeOutBack),
+      curve: const Interval(0.6, 1.0, curve: MglaMotion.cut),
     );
     _scale = CurvedAnimation(
       parent: _controller,
-      curve: const Interval(0.6, 1.0, curve: Curves.easeOutBack),
+      curve: const Interval(0.6, 1.0, curve: MglaMotion.cut),
     );
     _controller.addListener(notifyListeners);
   }

@@ -234,7 +234,11 @@ enum ProxiesIconStyle { none, standard, icon }
 
 enum FontFamily {
   twEmoji('Twemoji'),
-  jetBrainsMono('JetBrainsMono'),
+  // Шрифты дизайн-кода Mgla. Имя `mono` вместо прежнего `jetBrainsMono` намеренно: имя в коде
+  // не должно называть конкретный шрифт, иначе следующая замена снова потащит за собой правку
+  // всех мест использования.
+  sans('IBMPlexSans'),
+  mono('IBMPlexMono'),
   icon('Icons');
 
   final String value;

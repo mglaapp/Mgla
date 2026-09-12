@@ -83,8 +83,8 @@ class FadeRotationScaleBox extends StatelessWidget {
     final realAlignment = alignment ?? Alignment.center;
     return AnimatedSwitcher(
       duration: commonDuration,
-      switchInCurve: Curves.easeOutBack,
-      switchOutCurve: Curves.easeInBack,
+      switchInCurve: MglaMotion.cut,
+      switchOutCurve: MglaMotion.cutOut,
       transitionBuilder: (child, animation) {
         return RotationTransition(
           turns: animation.drive(Tween(begin: 0.8, end: 1.0)),
@@ -114,8 +114,8 @@ class FadeScaleBox extends StatelessWidget {
     final realAlignment = alignment ?? Alignment.center;
     return AnimatedSwitcher(
       duration: commonDuration,
-      switchOutCurve: Curves.easeOutBack,
-      switchInCurve: Curves.easeInBack,
+      switchOutCurve: MglaMotion.cut,
+      switchInCurve: MglaMotion.cutOut,
       transitionBuilder: (child, animation) {
         return FadeTransition(
           opacity: animation,

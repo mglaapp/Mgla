@@ -257,7 +257,7 @@ class _MatchTargetItem extends ConsumerWidget {
       label: appLocalizations.matchTarget,
       trailing: Text(
         matchTarget ?? appLocalizations.followProfile,
-        style: context.textTheme.bodyMedium?.toJetBrainsMono.copyWith(
+        style: context.textTheme.bodyMedium?.toMono.copyWith(
           color: invalid
               ? context.colorScheme.error
               : context.colorScheme.tertiary,

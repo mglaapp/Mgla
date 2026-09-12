@@ -73,6 +73,36 @@ def main() -> int:
     check("linux знает mgla://", "x-scheme-handler/mgla" in lx)
     check("подпись в меню приложений Linux", "display_name: Mgla" in lx)
 
+    print("\n— шрифт дизайн-кода —")
+    pub = read("pubspec.yaml")
+    check("IBM Plex Sans подключён", "family: IBMPlexSans" in pub)
+    check("IBM Plex Mono подключён", "family: IBMPlexMono" in pub)
+    for f in ("IBMPlexSans.ttf", "IBMPlexMono-Regular.ttf", "IBMPlexMono-SemiBold.ttf"):
+        check(f"файл {f} на месте", pathlib.Path("assets/fonts", f).is_file())
+    app = read("lib/application.dart")
+    # ОБЕИМ темам: разный шрифт в светлой и тёмной читался бы как поломка, а не как выбор.
+    check("шрифт задан обеим темам", app.count("fontFamily: FontFamily.sans.value") == 2,
+          app.count("fontFamily: FontFamily.sans.value"))
+
+    print("\n— движение «рез» —")
+    # Дизайн-код запрещает отскок дословно. Апстрим им пользуется, и слияние вернёт его МОЛЧА:
+    # пружинящую кнопку видно только глазами и только в движении, а этого никто не делает нарочно.
+    bouncy = []
+    for path in pathlib.Path("lib").rglob("*.dart"):
+        if "generated" in str(path) or path.name == "motion.dart":
+            continue
+        t = io.open(path, encoding="utf-8", newline="").read()
+        for bad in ("easeOutBack", "easeInBack", "elasticOut", "elasticIn",
+                    "bounceOut", "bounceIn"):
+            if bad in t:
+                bouncy.append(f"{path}: {bad}")
+    check("пружинящих кривых не осталось ни одной", not bouncy, bouncy[:5])
+    mo = read("lib/common/motion.dart")
+    check("кривая та же, что на сайте: cubic-bezier(.16,.84,.28,1)",
+          "Cubic(0.16, 0.84, 0.28, 1.0)" in mo)
+    check("длительности дизайн-кода 110/240/420 на месте",
+          all(f"milliseconds: {ms}" in mo for ms in (110, 240, 420)))
+
     print("\n— КОНТРОЛЬ —")
     # Контроль обязан доказывать, что сравнение РАБОТАЕТ, и потому проверяется в ОБЕ стороны.
     # Один лишь пункт «чепухи в файле нет» проходит сам собой даже на пустой строке и контролем

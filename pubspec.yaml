@@ -114,9 +114,18 @@ flutter:
     - path: assets/images/tray/windows/
       platforms: [ windows ]
   fonts:
-    - family: JetBrainsMono
+    # IBM Plex — шрифт дизайн-кода Mgla. СВОИМИ файлами, а не подгрузкой со стороны:
+    # приложение обязано выглядеть одинаково там, где половина сети уже недоступна.
+    # Sans идёт ПЕРЕМЕННЫМ начертанием — все веса в одном файле (525 КБ вместо четырёх по 130).
+    # Кириллица в обоих проверена чтением таблицы cmap: mgla_font_check.py.
+    - family: IBMPlexSans
       fonts:
-        - asset: assets/fonts/JetBrainsMono-Regular.ttf
+        - asset: assets/fonts/IBMPlexSans.ttf
+    - family: IBMPlexMono
+      fonts:
+        - asset: assets/fonts/IBMPlexMono-Regular.ttf
+        - asset: assets/fonts/IBMPlexMono-SemiBold.ttf
+          weight: 600
     - family: Twemoji
       fonts:
         - asset: assets/fonts/Twemoji.Mozilla.ttf

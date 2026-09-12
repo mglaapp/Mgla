@@ -36,7 +36,7 @@ class CommonFloatingActionButton extends StatelessWidget {
             label: AnimatedSize(
               alignment: Alignment.centerLeft,
               duration: midDuration,
-              curve: Curves.easeOutBack,
+              curve: MglaMotion.cut,
               child: AnimatedOpacity(
                 duration: midDuration,
                 opacity: isExtended ? 1.0 : 0.4,
@@ -78,7 +78,7 @@ class MoreActionButton extends StatelessWidget {
         child: ListTile(
           minTileHeight: 0,
           minVerticalPadding: 0,
-          titleTextStyle: context.textTheme.bodyMedium?.toJetBrainsMono,
+          titleTextStyle: context.textTheme.bodyMedium?.toMono,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
             vertical: 16,

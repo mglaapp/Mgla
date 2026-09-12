@@ -126,7 +126,7 @@ class RuleItem extends StatelessWidget {
                               style: context
                                   .textTheme
                                   .bodyMedium
-                                  ?.toJetBrainsMono
+                                  ?.toMono
                                   .copyWith(color: checkResult.color),
                             ),
                           ),
@@ -153,7 +153,7 @@ class _RuleItemLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = DefaultTextStyle.of(context).style.toJetBrainsMono;
+    final style = DefaultTextStyle.of(context).style.toMono;
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -203,7 +203,7 @@ class RuleStatusItem extends StatelessWidget {
           rule.rawValue,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: context.textTheme.bodyMedium?.toJetBrainsMono,
+          style: context.textTheme.bodyMedium?.toMono,
         ),
       ),
       trailing: Switch(value: status, onChanged: onChange),

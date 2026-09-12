@@ -423,7 +423,7 @@ class _EditorBody extends ConsumerWidget {
           controller: controller,
           style: CodeEditorStyle(
             fontSize: context.textTheme.bodyLarge?.fontSize?.ap,
-            fontFamily: FontFamily.jetBrainsMono.value,
+            fontFamily: FontFamily.mono.value,
             codeTheme: _highlightTheme,
           ),
         ),
