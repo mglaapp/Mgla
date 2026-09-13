@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.9.2 (2026-09-13)
+
+**Features**
+
+- **update** Обновление изнутри на Android и Windows (ef66d38)
+
 ## v0.9.1 (2026-09-13)
 
 **Features**
