@@ -421,6 +421,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsMode": MessageLookupByLibrary.simpleMessage("Режим DNS"),
     "domain": MessageLookupByLibrary.simpleMessage("Домен"),
     "download": MessageLookupByLibrary.simpleMessage("Загрузка"),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
+      "Загружаем обновление",
+    ),
     "edit": MessageLookupByLibrary.simpleMessage("Редактировать"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage(
       "Редактировать глобальные правила",
@@ -571,6 +574,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
+    ),
+    "installPermissionDesc": MessageLookupByLibrary.simpleMessage(
+      "Android выдаёт право ставить приложения каждому отдельно. Откройте настройки, разрешите установку из этого источника и нажмите «Обновить» ещё раз.",
+    ),
+    "installPermissionRequired": MessageLookupByLibrary.simpleMessage(
+      "Нужно разрешение на установку",
     ),
     "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
       "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
@@ -1223,6 +1232,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("Без названия"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Открепить окно"),
     "update": MessageLookupByLibrary.simpleMessage("Обновить"),
+    "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
+      "Не удалось загрузить обновление. Проверьте соединение и попробуйте снова.",
+    ),
+    "updateInstallFailed": MessageLookupByLibrary.simpleMessage(
+      "Система не приняла файл обновления. Скачайте его с сайта.",
+    ),
+    "updateNow": MessageLookupByLibrary.simpleMessage("Обновить"),
+    "updateVerifyFailed": MessageLookupByLibrary.simpleMessage(
+      "Файл обновления не совпал с контрольной суммой и удалён. Попробуйте позже.",
+    ),
     "upload": MessageLookupByLibrary.simpleMessage("Отдача"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("Получить профиль по URL"),

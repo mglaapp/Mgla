@@ -411,6 +411,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS mode"),
     "domain": MessageLookupByLibrary.simpleMessage("Domain"),
     "download": MessageLookupByLibrary.simpleMessage("Download"),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
+      "Downloading the update",
+    ),
     "edit": MessageLookupByLibrary.simpleMessage("Edit"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage(
       "Edit global rules",
@@ -557,6 +560,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Enter the rule content",
+    ),
+    "installPermissionDesc": MessageLookupByLibrary.simpleMessage(
+      "Android grants the right to install packages to each app separately. Open settings, allow installs from this source, then tap Update again.",
+    ),
+    "installPermissionRequired": MessageLookupByLibrary.simpleMessage(
+      "Installation permission needed",
     ),
     "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
       "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
@@ -1169,6 +1178,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("Unnamed"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("Unpin window"),
     "update": MessageLookupByLibrary.simpleMessage("Update"),
+    "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
+      "The update could not be downloaded. Check the connection and try again.",
+    ),
+    "updateInstallFailed": MessageLookupByLibrary.simpleMessage(
+      "The system refused the update file. Download it from the site instead.",
+    ),
+    "updateNow": MessageLookupByLibrary.simpleMessage("Update"),
+    "updateVerifyFailed": MessageLookupByLibrary.simpleMessage(
+      "The update file did not match its checksum and was deleted. Try again later.",
+    ),
     "upload": MessageLookupByLibrary.simpleMessage("Upload"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage(

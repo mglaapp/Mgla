@@ -25,7 +25,12 @@ var
   i: Integer;
   ResultCode: Integer;
 begin
-  Processes := ['FlClash.exe', 'FlClashCore.exe', 'FlClashHelperService.exe'];
+  // Mgla.exe is OUR window: the app binary was renamed, this list was not, and installing
+  // over a running copy therefore failed on a locked file. It only started to matter with
+  // in-app updates, where installing over the running app is the normal case rather than
+  // something a person does by accident. The upstream names stay: the core and the helper
+  // service still carry them, and FlClash.exe costs nothing next to them.
+  Processes := ['Mgla.exe', 'FlClash.exe', 'FlClashCore.exe', 'FlClashHelperService.exe'];
 
   for i := 0 to GetArrayLength(Processes)-1 do
   begin

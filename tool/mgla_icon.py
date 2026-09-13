@@ -144,12 +144,14 @@ def tray_svg(state: int) -> str:
     return "\n".join(out) + "\n"
 
 
+# newline="\n" ВЕЗДЕ: на Windows write_text переводит \n в \r\n, и каждый прогон
+# «менял» три файла, ничего в них не меняя.
 def write_tray_sources() -> None:
     for state in TRAY_STATES:
         rel = "assets_source/images/icon/status_%d.svg" % state
         path = ROOT / rel
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(tray_svg(state), encoding="utf-8")
+        path.write_text(tray_svg(state), encoding="utf-8", newline="\n")
         print("  %s" % rel)
 
 
@@ -225,12 +227,12 @@ def main() -> int:
     write_tray_sources()
     print("== Android")
     fg = ROOT / "android/app/src/main/res/drawable/ic_launcher_foreground.xml"
-    fg.write_text(android_vector(), encoding="utf-8")
+    fg.write_text(android_vector(), encoding="utf-8", newline="\n")
     print(f"  {fg.relative_to(ROOT)}")
     bg = ROOT / "android/app/src/main/res/values/ic_launcher_background.xml"
     bg.write_text('<?xml version="1.0" encoding="utf-8"?>\n<resources>\n'
                   '    <color name="ic_launcher_background">#12161D</color>\n</resources>\n',
-                  encoding="utf-8")
+                  encoding="utf-8", newline="\n")
     print(f"  {bg.relative_to(ROOT)}")
     return 0
 

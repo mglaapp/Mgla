@@ -330,6 +330,55 @@ def main() -> int:
               head[:4] == b"\x00\x00\x01\x00" and int.from_bytes(head[4:6], "little") >= 5,
               head)
 
+    print("\n— обновление изнутри приложения —")
+    # Установщик закрывает процессы ПО ИМЕНИ, и имя нашего окна он не знал: список достался от
+    # апстрима и перечислял FlClash.exe. Пока обновлялись руками, это почти не мешало; с
+    # обновлением изнутри установка поверх РАБОТАЮЩЕГО приложения стала обычным делом, а файл
+    # запущенной программы заменить нельзя. Имя берётся из CMakeLists, а не вписано сюда:
+    # переименование сборки обязано ронять эту проверку, а не тихо разъезжаться с ней.
+    iss = read("windows/packaging/exe/inno_setup.iss")
+    binary = re.search(r'set\(BINARY_NAME "([^"]+)"\)', cm).group(1)
+    check("установщик закрывает НАШЕ приложение перед заменой файлов",
+          ("'%s.exe'" % binary) in iss, binary)
+    check("установщик по-прежнему закрывает ядро и службу-помощник",
+          "FlClashCore.exe" in iss and "FlClashHelperService.exe" in iss)
+
+    am = read("android/app/src/main/AndroidManifest.xml")
+    check("android: право ставить пакеты запрошено",
+          "android.permission.REQUEST_INSTALL_PACKAGES" in am)
+    # Установщику отдаётся content://-адрес: file:// система отвергает с Android 7. Authority
+    # обязан нести ${applicationId} — иначе наша сборка и апстримовский FlClash рядом заявили бы
+    # один и тот же адрес, и вторая установка упала бы при установке.
+    check("android: FileProvider объявлен",
+          "androidx.core.content.FileProvider" in am)
+    check("android: authority провайдера привязан к нашему id",
+          'android:authorities="${applicationId}.fileprovider"' in am)
+    check("android: провайдер не вынесен наружу",
+          re.search(r'<provider[^>]*android:exported="false"', am, re.S) is not None)
+    check("android: провайдер отдаёт разрешение на свой адрес",
+          'android:grantUriPermissions="true"' in am)
+
+    # Папка, которую провайдер разрешает отдать, и папка, куда приложение кладёт файл, — это
+    # ОДНО место, выраженное дважды. Разъедутся — установка упадёт на «нет доступа к файлу», и
+    # причина будет не видна ни в коде Dart, ни в коде Kotlin по отдельности.
+    fp = read("android/app/src/main/res/xml/file_paths.xml")
+    check("android: провайдер отдаёт ровно одну папку кэша",
+          fp.count("<cache-path") == 1 and 'path="update/"' in fp)
+    flow = read("lib/providers/actions/common.dart")
+    check("приложение кладёт обновление в ту же папку",
+          "join((await appPath.cacheDir.future).path, 'update')" in flow)
+    check("kotlin просит у провайдера тот же authority",
+          '"${GlobalState.application.packageName}.fileprovider"' in read(
+              "android/app/src/main/kotlin/com/follow/clash/plugins/AppPlugin.kt"))
+
+    # Сумма проверяется ПЕРЕД установкой, и отсутствие суммы обязано ОСТАНАВЛИВАТЬ установку.
+    # Проверка, которую пропускают при неудобстве, не проверка: ею закрыт ровно тот случай,
+    # когда человеку ставится пакет, которого мы не публиковали.
+    check("без контрольной суммы обновление не ставится",
+          "expected == null" in flow and "updateVerifyFailed" in flow)
+    check("скачанный файл удаляется, если он не идёт в установку",
+          "if (!installing) {" in flow and "file?.safeDelete()" in flow)
+
     print("\n— КОНТРОЛЬ —")
     # Контроль обязан доказывать, что сравнение РАБОТАЕТ, и потому проверяется в ОБЕ стороны.
     # Один лишь пункт «чепухи в файле нет» проходит сам собой даже на пустой строке и контролем

@@ -17,6 +17,7 @@ import android.os.PowerManager
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -38,6 +39,7 @@ import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import java.io.File
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import kotlinx.coroutines.CoroutineScope
@@ -184,6 +186,18 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 GlobalState.lastExitInfo()
             }
 
+            "canInstallPackages" -> {
+                result.success(canInstallPackages())
+            }
+
+            "requestInstallPackages" -> {
+                result.success(requestInstallPackages())
+            }
+
+            "installPackage" -> {
+                result.success(installPackage(call.argument<String>("path")))
+            }
+
             else -> {
                 result.notImplemented()
             }
@@ -256,6 +270,52 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
             activity.startActivity(intent)
             true
         } catch (_: Exception) {
+            false
+        }
+    }
+
+    /** Granted per app since Android 8: installing us from a browser granted it to the browser. */
+    private fun canInstallPackages(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return true
+        return GlobalState.application.packageManager.canRequestPackageInstalls()
+    }
+
+    /** Opens the system screen that grants it; that screen reports no result back to us. */
+    private fun requestInstallPackages(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return true
+        val activity = activity ?: return false
+        return try {
+            activity.startActivity(
+                Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).apply {
+                    data = "package:${GlobalState.application.packageName}".toUri()
+                },
+            )
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    private fun installPackage(path: String?): Boolean {
+        val activity = activity ?: return false
+        val file = path?.let { File(it) } ?: return false
+        if (!file.isFile) return false
+        return try {
+            val uri = FileProvider.getUriForFile(
+                GlobalState.application,
+                "${GlobalState.application.packageName}.fileprovider",
+                file,
+            )
+            activity.startActivity(
+                Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(uri, "application/vnd.android.package-archive")
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                },
+            )
+            true
+        } catch (error: Exception) {
+            GlobalState.log("installPackage failed: $error")
             false
         }
     }

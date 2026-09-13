@@ -118,12 +118,138 @@ class CommonAction extends _$CommonAction {
     ];
   }
 
+  static const _releasesUrl = 'https://github.com/$repository/releases/latest';
+
+  /// Downloads the release file this machine can install and hands it to the system. Order
+  /// matters, and MGLA.md says why: permission before the download, published checksum before
+  /// the installer, and a checksum that cannot be fetched stops the update.
+  Future<void> installUpdate(Map<String, dynamic> data) async {
+    final assets = data['assets'] is List
+        ? data['assets'] as List<dynamic>
+        : null;
+    final asset = pickUpdateAsset(assets, updateAssetSuffix());
+    if (asset == null) {
+      unawaited(launchUrl(Uri.parse(_releasesUrl)));
+      return;
+    }
+    if (Platform.isAndroid && !(await app!.canInstallPackages())) {
+      final open = await dialogs.showMessage(
+        title: currentAppLocalizations.installPermissionRequired,
+        message: TextSpan(text: currentAppLocalizations.installPermissionDesc),
+        confirmText: currentAppLocalizations.settings,
+      );
+      if (open == true) {
+        unawaited(app!.requestInstallPackages());
+      }
+      return;
+    }
+
+    final progress = ValueNotifier<double?>(null);
+    final cancelToken = CancelToken();
+    var cancelled = false;
+    unawaited(
+      dialogs.showUpdateProgress(
+        progress: progress,
+        onCancel: () {
+          cancelled = true;
+          cancelToken.cancel();
+        },
+      ),
+    );
+
+    String? failure;
+    File? file;
+    var installing = false;
+    try {
+      final directory = Directory(
+        join((await appPath.cacheDir.future).path, 'update'),
+      );
+      await directory.create(recursive: true);
+      file = File(join(directory.path, asset.name));
+      await request.downloadUpdate(
+        asset.url,
+        file.path,
+        onProgress: (value) => progress.value = value,
+        cancelToken: cancelToken,
+      );
+      final sumsAsset = pickUpdateAsset(assets, 'SHA256SUMS');
+      final sums = sumsAsset == null
+          ? null
+          : await request.getUpdateText(
+              sumsAsset.url,
+              cancelToken: cancelToken,
+            );
+      final expected = sums == null ? null : sha256ForAsset(sums, asset.name);
+      if (expected == null) {
+        failure = currentAppLocalizations.updateVerifyFailed;
+      } else {
+        final actual = (await sha256.bind(file.openRead()).first).toString();
+        if (actual != expected) {
+          commonPrint.log(
+            'update checksum mismatch for ${asset.name}',
+            logLevel: LogLevel.error,
+          );
+          failure = currentAppLocalizations.updateVerifyFailed;
+        }
+      }
+      if (failure == null) {
+        installing = true;
+        if (Platform.isAndroid) {
+          if (!await app!.installPackage(file.path)) {
+            installing = false;
+            failure = currentAppLocalizations.updateInstallFailed;
+          }
+        } else {
+          await Process.start(file.path, [], mode: ProcessStartMode.detached);
+          // The installer cannot replace files of a running app, so we leave first.
+          unawaited(ref.read(systemActionProvider.notifier).handleExit());
+        }
+      }
+    } catch (error) {
+      if (!(error is DioException && error.type == DioExceptionType.cancel)) {
+        commonPrint.log(
+          'installUpdate failed ${compactError(error)}',
+          logLevel: LogLevel.error,
+        );
+        failure = currentAppLocalizations.updateDownloadFailed;
+      }
+    } finally {
+      if (!installing) {
+        await file?.safeDelete();
+      }
+      if (!cancelled) {
+        rootNavigatorKey.currentState?.pop();
+      }
+      progress.dispose();
+    }
+
+    if (failure != null && !cancelled) {
+      final download = await dialogs.showMessage(
+        title: currentAppLocalizations.checkUpdate,
+        message: TextSpan(text: failure),
+        confirmText: currentAppLocalizations.goDownload,
+      );
+      if (download == true) {
+        unawaited(launchUrl(Uri.parse(_releasesUrl)));
+      }
+    }
+  }
+
   Future<void> checkUpdateResultHandle({
     Map<String, dynamic>? data,
     bool isUser = false,
   }) async {
     if (data != null) {
       final context = globalState.navigatorKey.currentContext!;
+      // "Update" must not end in a browser with sixteen files to choose from.
+      final assets = data['assets'];
+      final installable =
+          canInstallUpdateInApp &&
+          pickUpdateAsset(
+                assets is List ? assets : null,
+                updateAssetSuffix(),
+              ) !=
+              null;
       final res = await dialogs.showMessage(
         title: currentAppLocalizations.discoverNewVersion,
         message: _releaseSpan(
@@ -131,15 +257,17 @@ class CommonAction extends _$CommonAction {
           data['tag_name'] as String,
           data['body'] as String?,
         ),
-        confirmText: currentAppLocalizations.goDownload,
+        confirmText: installable
+            ? currentAppLocalizations.updateNow
+            : currentAppLocalizations.goDownload,
         cancelText: isUser ? null : currentAppLocalizations.noLongerRemind,
       );
       if (res == true) {
-        unawaited(
-          launchUrl(
-            Uri.parse('https://github.com/$repository/releases/latest'),
-          ),
-        );
+        if (installable) {
+          unawaited(installUpdate(data));
+        } else {
+          unawaited(launchUrl(Uri.parse(_releasesUrl)));
+        }
       } else if (!isUser && res == false) {
         ref
             .read(appSettingProvider.notifier)

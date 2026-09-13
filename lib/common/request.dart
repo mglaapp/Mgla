@@ -69,6 +69,44 @@ class Request {
     }
   }
 
+  /// Core-aware client on purpose: people reach GitHub through the tunnel as often as not.
+  Future<void> downloadUpdate(
+    String url,
+    String savePath, {
+    required void Function(double? progress) onProgress,
+    CancelToken? cancelToken,
+  }) async {
+    await _clashDio.download(
+      url,
+      savePath,
+      cancelToken: cancelToken,
+      options: Options(headers: {'User-Agent': browserUa}),
+      onReceiveProgress: (received, total) {
+        onProgress(total > 0 ? received / total : null);
+      },
+    );
+  }
+
+  Future<String?> getUpdateText(String url, {CancelToken? cancelToken}) async {
+    try {
+      final response = await _clashDio.get<String>(
+        url,
+        cancelToken: cancelToken,
+        options: Options(
+          responseType: ResponseType.plain,
+          headers: {'User-Agent': browserUa},
+        ),
+      );
+      return response.data;
+    } catch (e) {
+      commonPrint.log(
+        'getUpdateText error ${compactError(e)}',
+        logLevel: LogLevel.warning,
+      );
+      return null;
+    }
+  }
+
   Future<Map<String, dynamic>?> checkForUpdate() async {
     try {
       final response = await dio.get(

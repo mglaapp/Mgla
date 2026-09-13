@@ -59,6 +59,7 @@ class Application extends ConsumerStatefulWidget {
 
 class ApplicationState extends ConsumerState<Application> {
   Timer? _autoUpdateProfilesTaskTimer;
+  Timer? _autoCheckUpdateTaskTimer;
   bool _preHasVpn = false;
 
   final _pageTransitionsTheme = const PageTransitionsTheme(
@@ -85,6 +86,7 @@ class ApplicationState extends ConsumerState<Application> {
         exit(0);
       }
       _autoUpdateProfilesTask();
+      _autoCheckUpdateTask();
       _initLink();
       unawaited(app?.initShortcuts());
     });
@@ -116,6 +118,21 @@ class ApplicationState extends ConsumerState<Application> {
       unawaited(
         ref.read(profilesActionProvider.notifier).addProfileFormURL(url),
       );
+    });
+  }
+
+  /// Re-checks for a new version once a day while the app keeps running.
+  ///
+  /// The check at startup is not enough for this app in particular: a VPN client is started
+  /// once and then lives in the tray or in the background for weeks, so a version shipped
+  /// after launch would never be offered to the people who use it most.
+  void _autoCheckUpdateTask() {
+    _autoCheckUpdateTaskTimer = Timer(const Duration(days: 1), () async {
+      await ref.read(commonActionProvider.notifier).autoCheckUpdate();
+      if (!mounted) {
+        return;
+      }
+      _autoCheckUpdateTask();
     });
   }
 
@@ -205,6 +222,7 @@ class ApplicationState extends ConsumerState<Application> {
   void dispose() {
     linkManager.destroy();
     _autoUpdateProfilesTaskTimer?.cancel();
+    _autoCheckUpdateTaskTimer?.cancel();
     super.dispose();
   }
 }

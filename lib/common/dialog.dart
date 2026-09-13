@@ -5,6 +5,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/widgets/widgets.dart';
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -73,6 +74,52 @@ class Dialogs {
                     children: [message],
                   ),
                   style: const TextStyle(overflow: TextOverflow.visible),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  /// Closed by whoever opened it. Not dismissible: tapping the backdrop would leave a
+  /// half-written package behind, so cancelling is explicit and stops the transfer.
+  Future<void> showUpdateProgress({
+    required ValueListenable<double?> progress,
+    required VoidCallback onCancel,
+  }) async {
+    return showCommonDialog<void>(
+      dismissible: false,
+      child: Builder(
+        builder: (context) {
+          final appLocalizations = context.appLocalizations;
+          return CommonDialog(
+            title: appLocalizations.downloadingUpdate,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  onCancel();
+                  Navigator.of(context).pop();
+                },
+                child: Text(appLocalizations.cancel),
+              ),
+            ],
+            child: SizedBox(
+              width: 300,
+              child: ValueListenableBuilder<double?>(
+                valueListenable: progress,
+                builder: (_, value, _) => Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    LinearProgressIndicator(value: value),
+                    const SizedBox(height: 12),
+                    Text(
+                      value == null ? '' : '${(value * 100).round()}%',
+                      style: context.textTheme.bodyMedium,
+                    ),
+                  ],
                 ),
               ),
             ),

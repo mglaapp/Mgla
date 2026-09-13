@@ -82,6 +82,25 @@ class App {
         false;
   }
 
+  /// Asked before the download: granting it opens a settings screen, and a 55 MB wait first
+  /// loses people.
+  Future<bool> canInstallPackages() async {
+    return await methodChannel.invokeMethod<bool>('canInstallPackages') ??
+        false;
+  }
+
+  Future<bool> requestInstallPackages() async {
+    return await methodChannel.invokeMethod<bool>('requestInstallPackages') ??
+        false;
+  }
+
+  Future<bool> installPackage(String path) async {
+    return await methodChannel.invokeMethod<bool>('installPackage', {
+          'path': path,
+        }) ??
+        false;
+  }
+
   final Map<String, ImageProvider?> _packageIcons = {};
   final Map<String, Future<ImageProvider?>> _packageIconTasks = {};
 

@@ -13,9 +13,11 @@ import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/actions/system_exit.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:crypto/crypto.dart' show sha256;
+import 'package:dio/dio.dart' show CancelToken, DioException, DioExceptionType;
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart' show basename;
+import 'package:path/path.dart' show basename, join;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
 

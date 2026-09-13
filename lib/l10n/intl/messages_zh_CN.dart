@@ -297,6 +297,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS模式"),
     "domain": MessageLookupByLibrary.simpleMessage("域名"),
     "download": MessageLookupByLibrary.simpleMessage("下载"),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage("正在下载更新"),
     "edit": MessageLookupByLibrary.simpleMessage("编辑"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage("编辑全局规则"),
     "editProxy": MessageLookupByLibrary.simpleMessage("编辑代理"),
@@ -400,6 +401,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputCorrectHotkey": MessageLookupByLibrary.simpleMessage("请输入正确的快捷键"),
     "inputProxyGroupName": MessageLookupByLibrary.simpleMessage("输入策略组名称"),
     "inputRuleContent": MessageLookupByLibrary.simpleMessage("输入规则内容"),
+    "installPermissionDesc": MessageLookupByLibrary.simpleMessage(
+      "Android 需要为每个应用单独授予安装权限。请打开设置，允许来自此来源的安装，然后再次点击「立即更新」。",
+    ),
+    "installPermissionRequired": MessageLookupByLibrary.simpleMessage("需要安装权限"),
     "installedAppsPermissionDeniedMessage":
         MessageLookupByLibrary.simpleMessage(
           "读取应用列表权限已被拒绝，无法获取已安装的应用。请前往系统设置手动开启。",
@@ -844,6 +849,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("未命名"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("取消置顶"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
+    "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
+      "无法下载更新。请检查网络后重试。",
+    ),
+    "updateInstallFailed": MessageLookupByLibrary.simpleMessage(
+      "系统未接受更新文件。请从网站下载。",
+    ),
+    "updateNow": MessageLookupByLibrary.simpleMessage("立即更新"),
+    "updateVerifyFailed": MessageLookupByLibrary.simpleMessage(
+      "更新文件与校验和不一致，已删除。请稍后再试。",
+    ),
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),

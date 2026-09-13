@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Paths the app may hand to another app through a content:// URI.
+
+  Exactly one entry, and it is not the whole cache: the installer only ever needs the update
+  package we just downloaded. A wider path would expose the profile cache and the log file to
+  anything that can be talked into reading a URI we send.
+-->
+<paths>
+    <cache-path name="update" path="update/" />
+</paths>

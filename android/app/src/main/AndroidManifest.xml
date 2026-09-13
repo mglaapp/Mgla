@@ -27,6 +27,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- Updating in place: the app downloads the new package and hands it to the system
+         installer. Without this the release page in a browser is the only way out, and
+         people who install from a link rarely find their way back to it. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name=".FlClashApplication"
@@ -113,6 +117,21 @@
                 <action android:name="${applicationId}.intent.action.VPN_REVOKED" />
             </intent-filter>
         </receiver>
+
+        <!-- Handing the downloaded package to the installer. A file:// URI is rejected
+             outright since Android 7, so the installer is given a content:// URI scoped to
+             one cache folder (res/xml/file_paths.xml) and read permission for that one
+             intent. The authority carries ${applicationId}, so our build and an upstream
+             FlClash installed next to it never claim the same one. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <meta-data
             android:name="flutterEmbedding"

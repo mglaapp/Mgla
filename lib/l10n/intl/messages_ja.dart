@@ -335,6 +335,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNSモード"),
     "domain": MessageLookupByLibrary.simpleMessage("ドメイン"),
     "download": MessageLookupByLibrary.simpleMessage("ダウンロード"),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage("更新をダウンロードしています"),
     "edit": MessageLookupByLibrary.simpleMessage("編集"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage("グローバルルールを編集"),
     "editProxy": MessageLookupByLibrary.simpleMessage("プロキシを編集"),
@@ -458,6 +459,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "プロキシグループ名を入力してください",
     ),
     "inputRuleContent": MessageLookupByLibrary.simpleMessage("ルールの内容を入力してください"),
+    "installPermissionDesc": MessageLookupByLibrary.simpleMessage(
+      "Android はアプリごとにインストールを許可します。設定を開き、この提供元からのインストールを許可してから、もう一度「更新する」を押してください。",
+    ),
+    "installPermissionRequired": MessageLookupByLibrary.simpleMessage(
+      "インストールの許可が必要です",
+    ),
     "installedAppsPermissionDeniedMessage":
         MessageLookupByLibrary.simpleMessage(
           "アプリ一覧の権限が拒否されたため、インストール済みアプリを取得できません。システム設定から手動で許可してください。",
@@ -976,6 +983,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "unnamed": MessageLookupByLibrary.simpleMessage("名称未設定"),
     "unpinWindow": MessageLookupByLibrary.simpleMessage("固定を解除"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
+    "updateDownloadFailed": MessageLookupByLibrary.simpleMessage(
+      "更新をダウンロードできませんでした。接続を確認して、もう一度お試しください。",
+    ),
+    "updateInstallFailed": MessageLookupByLibrary.simpleMessage(
+      "システムが更新ファイルを受け付けませんでした。サイトからダウンロードしてください。",
+    ),
+    "updateNow": MessageLookupByLibrary.simpleMessage("更新する"),
+    "updateVerifyFailed": MessageLookupByLibrary.simpleMessage(
+      "更新ファイルがチェックサムと一致しなかったため削除しました。しばらくしてからお試しください。",
+    ),
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URLからプロファイルを取得します"),

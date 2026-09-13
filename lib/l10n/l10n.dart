@@ -1080,6 +1080,71 @@ class AppLocalizations {
     return Intl.message('Download', name: 'goDownload', desc: '', args: []);
   }
 
+  /// `Update`
+  String get updateNow {
+    return Intl.message('Update', name: 'updateNow', desc: '', args: []);
+  }
+
+  /// `Downloading the update`
+  String get downloadingUpdate {
+    return Intl.message(
+      'Downloading the update',
+      name: 'downloadingUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The update could not be downloaded. Check the connection and try again.`
+  String get updateDownloadFailed {
+    return Intl.message(
+      'The update could not be downloaded. Check the connection and try again.',
+      name: 'updateDownloadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The update file did not match its checksum and was deleted. Try again later.`
+  String get updateVerifyFailed {
+    return Intl.message(
+      'The update file did not match its checksum and was deleted. Try again later.',
+      name: 'updateVerifyFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The system refused the update file. Download it from the site instead.`
+  String get updateInstallFailed {
+    return Intl.message(
+      'The system refused the update file. Download it from the site instead.',
+      name: 'updateInstallFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Installation permission needed`
+  String get installPermissionRequired {
+    return Intl.message(
+      'Installation permission needed',
+      name: 'installPermissionRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Android grants the right to install packages to each app separately. Open settings, allow installs from this source, then tap Update again.`
+  String get installPermissionDesc {
+    return Intl.message(
+      'Android grants the right to install packages to each app separately. Open settings, allow installs from this source, then tap Update again.',
+      name: 'installPermissionDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Unknown`
   String get unknown {
     return Intl.message('Unknown', name: 'unknown', desc: '', args: []);
