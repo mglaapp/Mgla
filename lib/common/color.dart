@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:fl_clash/common/constant.dart';
 import 'package:material_ui/material_ui.dart';
 
 extension ColorExtension on Color {
@@ -115,6 +116,6 @@ extension ColorSchemeExtension on ColorScheme {
 Color? getDelayColor(int? delay) {
   if (delay == null) return null;
   if (delay < 0) return Colors.red;
-  if (delay < 600) return Colors.green;
+  if (delay < 600) return const Color(defaultPrimaryColor);
   return const Color(0xFFC57F0A);
 }

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/overwrite/overwrite.dart';
@@ -716,7 +715,7 @@ class _CheckIcon extends StatelessWidget {
       child: Icon(
         Icons.check_circle_outline,
         size: 20.ap,
-        color: Colors.greenAccent.harmonizeWith(context.colorScheme.primary),
+        color: context.colorScheme.primary,
       ),
     );
   }

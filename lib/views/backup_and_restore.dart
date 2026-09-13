@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/dav_client.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -15,6 +14,7 @@ import 'package:fl_clash/widgets/fade_box.dart';
 import 'package:fl_clash/widgets/input.dart';
 import 'package:fl_clash/widgets/list.dart';
 import 'package:fl_clash/widgets/loading.dart';
+import 'package:fl_clash/widgets/state_dot.dart';
 import 'package:fl_clash/widgets/scaffold.dart';
 import 'package:fl_clash/widgets/text.dart';
 import 'package:material_ui/material_ui.dart';
@@ -316,17 +316,22 @@ class _DavConnectionIndicator extends StatelessWidget {
                     height: 12,
                     child: CommonCircleLoading(),
                   )
-                : Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: !isConnected
-                          ? context.colorScheme.error
-                          : Colors.green.harmonizeWith(
-                              context.colorScheme.primary,
-                            ),
+                : Tooltip(
+                    message: isConnected
+                        ? context.appLocalizations.connected
+                        : context.appLocalizations.disconnected,
+                    child: Semantics(
+                      label: isConnected
+                          ? context.appLocalizations.connected
+                          : context.appLocalizations.disconnected,
+                      child: StateDot(
+                        filled: isConnected,
+                        size: 12,
+                        color: isConnected
+                            ? context.colorScheme.primary
+                            : context.colorScheme.error,
+                      ),
                     ),
-                    width: 12,
-                    height: 12,
                   ),
           ),
         );

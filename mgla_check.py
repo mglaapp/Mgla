@@ -221,6 +221,37 @@ def main() -> int:
     check("windows: имя в установщике = Mgla",
           "app_name: Mgla" in wx and "display_name: Mgla" in wx)
 
+    print("\n— состояние подключения: три признака, а не один цвет —")
+    # Дизайн-код § 4: «Подключено» больше не зелёное, и состояние НИКОГДА не передаётся одним
+    # цветом — рядом обязаны стоять слово и форма точки. Проверяется статически: глазами это
+    # ловится только в одном из трёх состояний и только человеком, различающим цвет.
+    pill = read("lib/views/dashboard/widgets/connection_state_pill.dart")
+    dot = read("lib/widgets/state_dot.dart")
+    check("признак 1 — СЛОВО: подпись берётся из локализации, а не из цвета",
+          "appLocalizations.connected" in pill and "appLocalizations.disconnected" in pill)
+    check("признак 2 — ФОРМА: точка залита только у работающего",
+          "filled: state != _TunnelState.disconnected" in pill)
+    check("форма читается сама: полая точка — прозрачная заливка при живой обводке",
+          "filled ? color : Colors.transparent" in dot and "Border.all" in dot)
+    check("признак 3 — ЦВЕТ: акцент темы у работающего, приглушённый у выключенного",
+          "scheme.primary" in pill and "scheme.onSurfaceVariant" in pill)
+    check("состояние объявлено экранному диктору (Semantics + liveRegion)",
+          "Semantics(" in pill and "liveRegion: true" in pill)
+    dash = read("lib/views/dashboard/dashboard.dart")
+    check("плашка стоит на экране подключения, а не лежит мёртвым файлом",
+          "connection_state_pill.dart" in dash and "ConnectionStatePill()" in dash)
+    # Зелёный отменён дизайн-кодом (акцент один — лёд). Литерал Colors.green жил в статусе ядра
+    # и красил «подключено» чужим цветом, мимо темы.
+    green = []
+    for f in sorted(pathlib.Path("lib").rglob("*.dart")):
+        if "/generated/" in f.as_posix() or f.name.endswith(".g.dart"):
+            continue
+        if re.search(r"Colors\.green", read(str(f))):
+            green.append(f.as_posix())
+    check("зелёного литерала в интерфейсе нет (акцент один — лёд)", not green, green[:3])
+    check("КОНТРОЛЬ: сам поиск зелёного работает",
+          bool(re.search(r"Colors\.green", "backgroundColor: Colors.greenAccent,")))
+
     print("\n— КОНТРОЛЬ —")
     # Контроль обязан доказывать, что сравнение РАБОТАЕТ, и потому проверяется в ОБЕ стороны.
     # Один лишь пункт «чепухи в файле нет» проходит сам собой даже на пустой строке и контролем

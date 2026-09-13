@@ -34,6 +34,7 @@ export 'popup.dart';
 export 'scaffold.dart';
 export 'scroll.dart';
 export 'setting.dart';
+export 'state_dot.dart';
 export 'sheet.dart';
 export 'side_sheet.dart';
 export 'subscription_info_view.dart';

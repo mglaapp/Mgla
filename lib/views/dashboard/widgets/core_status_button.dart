@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -96,14 +95,8 @@ class _CoreStatusButtonState extends ConsumerState<CoreStatusButton> {
                 iconSize: 20,
                 padding: EdgeInsets.zero,
                 style: IconButton.styleFrom(
-                  backgroundColor: Colors.green.harmonizeWith(
-                    context.colorScheme.primary,
-                  ),
-                  foregroundColor: switch (Theme.brightnessOf(context)) {
-                    Brightness.light => context.colorScheme.onSurfaceVariant,
-                    Brightness.dark =>
-                      context.colorScheme.onPrimaryFixedVariant,
-                  },
+                  backgroundColor: context.colorScheme.primary,
+                  foregroundColor: context.colorScheme.onPrimary,
                 ),
                 onPressed: _handleConnection,
                 icon: const Icon(Icons.check, fontWeight: FontWeight.w900),
@@ -116,17 +109,12 @@ class _CoreStatusButtonState extends ConsumerState<CoreStatusButton> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   backgroundColor: switch (coreStatus) {
                     CoreStatus.connecting => null,
-                    CoreStatus.connected => Colors.greenAccent,
+                    CoreStatus.connected => context.colorScheme.primary,
                     CoreStatus.disconnected => context.colorScheme.error,
                   },
                   foregroundColor: switch (coreStatus) {
                     CoreStatus.connecting => null,
-                    CoreStatus.connected => switch (Theme.brightnessOf(
-                      context,
-                    )) {
-                      Brightness.light => context.colorScheme.onSurfaceVariant,
-                      Brightness.dark => null,
-                    },
+                    CoreStatus.connected => context.colorScheme.onPrimary,
                     CoreStatus.disconnected => context.colorScheme.onError,
                   },
                 ),

@@ -40,10 +40,7 @@ class RuleItem extends StatelessWidget {
     if (rule.ruleAction != RuleAction.SUB_RULE) {
       final ruleTarget = rule.ruleTarget ?? '';
       if (ruleTarget.toUpperCase() == 'DIRECT') {
-        return (
-          invalid: false,
-          color: Colors.green.harmonizeWith(context.colorScheme.primary),
-        );
+        return (invalid: false, color: context.colorScheme.primary);
       } else if (ruleTarget.toUpperCase() == 'REJECT') {
         return (
           invalid: false,
