@@ -116,6 +116,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "accessControlSettings": MessageLookupByLibrary.simpleMessage(
       "Настройки контроля доступа",
     ),
+    "accessKey": MessageLookupByLibrary.simpleMessage("Ключ доступа"),
+    "accessKeyDesc": MessageLookupByLibrary.simpleMessage(
+      "Вставьте ключ из кабинета — адрес приложение знает само",
+    ),
+    "accessKeyTip": MessageLookupByLibrary.simpleMessage(
+      "Ключ не подошёл. Скопируйте его из кабинета целиком.",
+    ),
     "account": MessageLookupByLibrary.simpleMessage("Аккаунт"),
     "action": MessageLookupByLibrary.simpleMessage("Действие"),
     "actionMode": MessageLookupByLibrary.simpleMessage("Переключить режим"),

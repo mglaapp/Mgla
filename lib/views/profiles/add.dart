@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/pages/scan.dart';
+import 'package:fl_clash/views/profiles/access_key.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_ui/material_ui.dart';
@@ -61,6 +62,12 @@ class AddProfileView extends ConsumerWidget {
     final appLocalizations = context.appLocalizations;
     return ListView(
       children: [
+        ListItem(
+          leading: const Icon(Icons.vpn_key_sharp),
+          title: Text(appLocalizations.accessKey),
+          subtitle: Text(appLocalizations.accessKeyDesc),
+          onTap: () => showAccessKeyDialog(context, ref),
+        ),
         ListItem(
           leading: const Icon(Icons.qr_code_sharp),
           title: Text(appLocalizations.qrcode),

@@ -28,6 +28,7 @@ export 'lock.dart';
 export 'measure.dart';
 export 'mixin.dart';
 export 'motion.dart';
+export 'access_key.dart';
 export 'mgla_palette.dart';
 export 'navigator.dart';
 export 'network.dart';

@@ -545,6 +545,31 @@ class AppLocalizations {
     );
   }
 
+  /// `Access key`
+  String get accessKey {
+    return Intl.message('Access key', name: 'accessKey', desc: '', args: []);
+  }
+
+  /// `Paste the key from your account — the address is known already`
+  String get accessKeyDesc {
+    return Intl.message(
+      'Paste the key from your account — the address is known already',
+      name: 'accessKeyDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `That key did not work. Copy it from your account again, in full.`
+  String get accessKeyTip {
+    return Intl.message(
+      'That key did not work. Copy it from your account again, in full.',
+      name: 'accessKeyTip',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `File`
   String get file {
     return Intl.message('File', name: 'file', desc: '', args: []);

@@ -8,6 +8,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'widget_registry.dart';
+import 'package:fl_clash/views/profiles/access_key.dart';
+
 import 'widgets/connection_state_pill.dart';
 import 'widgets/core_status_button.dart';
 import 'widgets/start_button.dart';
@@ -202,6 +204,9 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
   @override
   Widget build(BuildContext context) {
     final dashboardState = ref.watch(dashboardStateProvider);
+    final hasProfile = ref.watch(
+      profilesProvider.select((state) => state.isNotEmpty),
+    );
     final spacing = 14.mAp;
     final children = [
       ...dashboardState.dashboardWidgets
@@ -230,9 +235,11 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (!isEdit)
-                        const Padding(
-                          padding: EdgeInsets.only(bottom: 12),
-                          child: ConnectionStatePill(),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: hasProfile
+                              ? const ConnectionStatePill()
+                              : const AccessKeyCard(),
                         ),
                       LayoutBuilder(
                         builder: (_, constraints) {

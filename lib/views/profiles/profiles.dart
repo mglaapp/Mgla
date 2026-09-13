@@ -5,6 +5,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/views/profiles/access_key.dart';
 import 'package:fl_clash/views/profiles/overwrite/overwrite.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -123,6 +124,7 @@ class _ProfilesViewState extends ConsumerState<ProfilesView> {
             isEmpty: state.profiles.isEmpty,
             nullStatus: NullStatus(
               label: appLocalizations.nullProfileDesc,
+              action: const AccessKeyButton(),
               illustration: NullStatusIllustration.profile,
             ),
             child: _ProfilesGrid(

@@ -100,6 +100,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "选中应用将会被排除在VPN之外",
     ),
     "accessControlSettings": MessageLookupByLibrary.simpleMessage("访问控制设置"),
+    "accessKey": MessageLookupByLibrary.simpleMessage("访问密钥"),
+    "accessKeyDesc": MessageLookupByLibrary.simpleMessage(
+      "粘贴个人中心里的密钥，地址由应用自己知道",
+    ),
+    "accessKeyTip": MessageLookupByLibrary.simpleMessage(
+      "该密钥无效。请从个人中心完整复制后重试。",
+    ),
     "account": MessageLookupByLibrary.simpleMessage("账号"),
     "action": MessageLookupByLibrary.simpleMessage("操作"),
     "actionMode": MessageLookupByLibrary.simpleMessage("切换模式"),

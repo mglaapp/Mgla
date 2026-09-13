@@ -252,6 +252,34 @@ def main() -> int:
     check("КОНТРОЛЬ: сам поиск зелёного работает",
           bool(re.search(r"Colors\.green", "backgroundColor: Colors.greenAccent,")))
 
+    print("\n— ключ доступа: подписка без хождения за ссылкой —")
+    # Смысл фичи в том, что человек НЕ носит адрес. Значит адрес обязан быть в приложении, и
+    # обязан быть НАШИМ: чужой сайт здесь означает, что ключи наших людей уходят к кому-то ещё.
+    ck = read("lib/common/access_key.dart")
+    check("адрес подписки берётся из константы бренда, а не из литерала в коде",
+          "subscriptionSite" in ck and "https://" not in ck)
+    check("сайт подписки — наш", "const subscriptionSite = 'https://mgla.app';" in c)
+    check("ключ превращается в адрес только по строгому образцу",
+          "_keyPattern" in ck and "{16,64}" in ck)
+    # Ссылка из буфера может оказаться какой угодно: file://, javascript: и прочее уехало бы
+    # прямо в загрузчик профиля.
+    check("чужие схемы ссылок отбиваются (в профиль идёт только http/https)",
+          "uri.scheme != 'http'" in ck and "uri.scheme != 'https'" in ck)
+    add = read("lib/views/profiles/add.dart")
+    check("в меню добавления ключ стоит ПЕРВЫМ пунктом",
+          add.index("appLocalizations.accessKey") < add.index("appLocalizations.qrcode"))
+    prof = read("lib/views/profiles/profiles.dart")
+    check("пустой список профилей предлагает действие, а не только подпись",
+          "action: const AccessKeyButton()" in prof)
+    dash2 = read("lib/views/dashboard/dashboard.dart")
+    check("нет профиля -> первый экран просит ключ; есть -> показывает состояние",
+          "hasProfile" in dash2 and "AccessKeyCard()" in dash2
+          and "ConnectionStatePill()" in dash2)
+    for lang in ("en", "ru", "ja", "zh_CN"):
+        arb = read("arb/intl_%s.arb" % lang)
+        check("подписи ключа переведены: %s" % lang,
+              '"accessKey"' in arb and '"accessKeyDesc"' in arb and '"accessKeyTip"' in arb)
+
     print("\n— КОНТРОЛЬ —")
     # Контроль обязан доказывать, что сравнение РАБОТАЕТ, и потому проверяется в ОБЕ стороны.
     # Один лишь пункт «чепухи в файле нет» проходит сам собой даже на пустой строке и контролем

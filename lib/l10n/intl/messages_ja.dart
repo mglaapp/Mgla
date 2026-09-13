@@ -102,6 +102,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "選択したアプリはVPNから除外されます",
     ),
     "accessControlSettings": MessageLookupByLibrary.simpleMessage("アクセス制御の設定"),
+    "accessKey": MessageLookupByLibrary.simpleMessage("アクセスキー"),
+    "accessKeyDesc": MessageLookupByLibrary.simpleMessage(
+      "マイページのキーを貼り付けてください。アドレスはアプリが知っています",
+    ),
+    "accessKeyTip": MessageLookupByLibrary.simpleMessage(
+      "このキーは使えませんでした。マイページからもう一度、全体をコピーしてください。",
+    ),
     "account": MessageLookupByLibrary.simpleMessage("アカウント"),
     "action": MessageLookupByLibrary.simpleMessage("アクション"),
     "actionMode": MessageLookupByLibrary.simpleMessage("モード切替"),

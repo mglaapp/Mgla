@@ -116,6 +116,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "accessControlSettings": MessageLookupByLibrary.simpleMessage(
       "Access control settings",
     ),
+    "accessKey": MessageLookupByLibrary.simpleMessage("Access key"),
+    "accessKeyDesc": MessageLookupByLibrary.simpleMessage(
+      "Paste the key from your account — the address is known already",
+    ),
+    "accessKeyTip": MessageLookupByLibrary.simpleMessage(
+      "That key did not work. Copy it from your account again, in full.",
+    ),
     "account": MessageLookupByLibrary.simpleMessage("Account"),
     "action": MessageLookupByLibrary.simpleMessage("Action"),
     "actionMode": MessageLookupByLibrary.simpleMessage("Switch mode"),

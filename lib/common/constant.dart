@@ -85,6 +85,13 @@ const bootRecordKey = 'boot_record';
 const defaultSystemDnsFallback = '223.5.5.5';
 const double dialogCommonWidth = 300;
 const repository = 'mglaapp/Mgla';
+
+/// Where an access key turns into a subscription: `<site>/sub/<key>`.
+///
+/// The key is what a person copies from their account; the address around it is ours to know, so
+/// they never have to carry a URL.
+const subscriptionSite = 'https://mgla.app';
+const subscriptionPath = '/sub/';
 const maxMobileWidth = 600;
 const maxLaptopWidth = 840;
 const defaultTestUrl = 'https://www.gstatic.com/generate_204';
