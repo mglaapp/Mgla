@@ -127,7 +127,7 @@ class CommonAction extends _$CommonAction {
     final assets = data['assets'] is List
         ? data['assets'] as List<dynamic>
         : null;
-    final asset = pickUpdateAsset(assets, updateAssetSuffix());
+    final UpdateAsset? asset = pickUpdateAsset(assets, updateAssetSuffix());
     if (asset == null) {
       unawaited(launchUrl(Uri.parse(_releasesUrl)));
       return;

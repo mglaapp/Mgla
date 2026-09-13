@@ -60,7 +60,11 @@ void main() {
     });
 
     test('picking matches by suffix, so a new version still matches', () {
-      final asset = pickUpdateAsset(_assets(), '-android-arm64-v8a.apk');
+      final UpdateAsset? asset = pickUpdateAsset(
+        _assets(),
+        '-android-arm64-v8a.apk',
+      );
+      expect(asset, isA<UpdateAsset>());
       expect(asset?.name, 'Mgla-0.9.1-android-arm64-v8a.apk');
       expect(
         asset?.url,

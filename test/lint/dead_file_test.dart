@@ -22,6 +22,13 @@ Iterable<File> _dartFiles({required bool includeGenerated}) sync* {
     }
     for (final entity in directory.listSync(recursive: true)) {
       if (entity is! File || !entity.path.endsWith('.dart')) continue;
+      // Windows отдаёт пути с обратным слэшем, и сравнение с 'lib/' ниже отбрасывало бы там
+      // ВСЕ файлы — сторож проходил бы, не проверив ничего.
+      final path = entity.path.replaceAll(r'\', '/');
+      if (path != entity.path) {
+        yield File(path);
+        continue;
+      }
       final generated =
           entity.path.endsWith('.g.dart') ||
           entity.path.endsWith('.freezed.dart') ||
