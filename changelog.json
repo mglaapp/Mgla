@@ -2,6 +2,44 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "0.9.1",
+      "tag": "v0.9.1",
+      "date": "2026-09-13",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "83e4dd0",
+              "scope": "brand",
+              "text": "Свой знак вместо апстримовского"
+            },
+            {
+              "id": "04f2a1d",
+              "scope": "profiles",
+              "text": "Подписка по ключу доступа"
+            },
+            {
+              "id": "ca2e4e8",
+              "scope": "ui",
+              "text": "Состояние подключения тремя признаками"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "93daacc",
+              "scope": "brand",
+              "text": "Исходники трея тоже нашим знаком"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.9.0",
       "tag": "v0.9.0",
       "date": "2026-09-13",
