@@ -60,6 +60,7 @@ TRAY_DIM = (0x93, 0xA0, 0xB4)
 TRAY_STATES = {1: (TRAY_DIM, False), 2: (ICE, False), 3: (ICE, True)}
 TRAY_UNIX_SCALES = {"": 18, "2.0x": 36, "3.0x": 54, "4.0x": 72}
 TRAY_ICO_SIZES = [16, 20, 24, 32, 40, 48, 64]
+TRAY_FILL = 0.88                                 # доля квадрата под знак, остальное — поле
 
 
 def draw(size: int, *, plate: bool = True, inset: float = 1.0) -> Image.Image:
@@ -92,7 +93,8 @@ def draw_tray(size: int, state: int) -> Image.Image:
     right_edge = max(x + w for x, _, w, _, _ in BARS)
     top_edge = min(y for _, y, _, _, _ in BARS)
     bottom_edge = max(y + h for _, y, _, h, _ in BARS)
-    k = big / max(right_edge - left_edge, bottom_edge - top_edge)
+    # Поле по краям: в трее знак стоит впритык к соседям, и без него он слипается с ними.
+    k = big * TRAY_FILL / max(right_edge - left_edge, bottom_edge - top_edge)
     pad_x = (big - (right_edge - left_edge) * k) / 2 - left_edge * k
     pad_y = (big - (bottom_edge - top_edge) * k) / 2 - top_edge * k
     for x, y, w, h, alpha in BARS:
@@ -114,6 +116,41 @@ def write_tray() -> None:
         draw_tray(max(TRAY_ICO_SIZES), state).save(
             ROOT / rel, format="ICO", sizes=[(s, s) for s in TRAY_ICO_SIZES])
         print("  трей, состояние %d: png x%d + ico" % (state, len(TRAY_UNIX_SCALES)))
+
+
+def tray_svg(state: int) -> str:
+    """Исходник трей-иконки. Холст 108 — тот же, что у апстрима, чтобы генератор на rsvg
+    отдавал прежние размеры."""
+    colour, full = TRAY_STATES[state]
+    view = 108.0
+    left_edge = min(x for x, _, _, _, _ in BARS)
+    right_edge = max(x + w for x, _, w, _, _ in BARS)
+    top_edge = min(y for _, y, _, _, _ in BARS)
+    bottom_edge = max(y + h for _, y, _, h, _ in BARS)
+    k = view * TRAY_FILL / max(right_edge - left_edge, bottom_edge - top_edge)
+    pad_x = (view - (right_edge - left_edge) * k) / 2 - left_edge * k
+    pad_y = (view - (bottom_edge - top_edge) * k) / 2 - top_edge * k
+    hex_colour = "#%02X%02X%02X" % colour
+    out = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<svg width="108" height="108" viewBox="0 0 108 108"'
+           ' xmlns="http://www.w3.org/2000/svg">',
+           '    <title>status_%d</title>' % state]
+    for x, y, w, h, alpha in BARS:
+        out.append('    <rect x="%.2f" y="%.2f" width="%.2f" height="%.2f" rx="%.2f"'
+                   ' fill="%s" fill-opacity="%.2f"/>'
+                   % (pad_x + x * k, pad_y + y * k, w * k, h * k, h * k / 2,
+                      hex_colour, 1.0 if full else alpha))
+    out.append('</svg>')
+    return "\n".join(out) + "\n"
+
+
+def write_tray_sources() -> None:
+    for state in TRAY_STATES:
+        rel = "assets_source/images/icon/status_%d.svg" % state
+        path = ROOT / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(tray_svg(state), encoding="utf-8")
+        print("  %s" % rel)
 
 
 def write_png(rel: str, size: int) -> None:
@@ -184,6 +221,8 @@ def main() -> int:
         write_ico(rel)
     print("== Трей")
     write_tray()
+    print("== Исходники трея (из них генератор апстрима делает то же самое)")
+    write_tray_sources()
     print("== Android")
     fg = ROOT / "android/app/src/main/res/drawable/ic_launcher_foreground.xml"
     fg.write_text(android_vector(), encoding="utf-8")

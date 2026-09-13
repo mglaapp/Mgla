@@ -314,6 +314,12 @@ def main() -> int:
     ):
         check("картинка на месте и нужного размера: %s" % path.split("/")[-1],
               png_size(path) == (want, want), png_size(path))
+    # У трея ДВА пути к одной картинке: наш скрипт и генератор апстрима на rsvg из
+    # assets_source/*.svg. Пока исходник чужой, любой прогон генератора возвращает чужой знак.
+    for state in (1, 2, 3):
+        svg = read("assets_source/images/icon/status_%d.svg" % state)
+        check("исходник трея %d нарисован нашим знаком" % state,
+              "#7DD3FC" in svg or "#93A0B4" in svg, svg[:60])
     for path in ("windows/runner/resources/app_icon.ico", "assets/images/icon.ico"):
         try:
             head = io.open(path, "rb").read(6)
