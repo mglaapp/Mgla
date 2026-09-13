@@ -280,6 +280,50 @@ def main() -> int:
         check("подписи ключа переведены: %s" % lang,
               '"accessKey"' in arb and '"accessKeyDesc"' in arb and '"accessKeyTip"' in arb)
 
+    print("\n— знак приложения: то, что человек видит на телефоне и в панели задач —")
+    # 0.9.0 уехал публично с ЧУЖИМ знаком: имена проверялись, картинки — нет. Иконка лежит в
+    # девяти местах, и достаточно одному вернуться при слиянии, чтобы у части людей на экране
+    # снова оказался FlClash. Перерисовывает всё tool/mgla_icon.py.
+    fg = read("android/app/src/main/res/drawable/ic_launcher_foreground.xml")
+    check("android: знак нарисован льдом", 'android:fillColor="#7DD3FC"' in fg)
+    for alien in ("#6666FB", "#336AB6", "#5CA8E9"):
+        check("android: чужого цвета %s в знаке нет" % alien, alien not in fg)
+    check("android: фон адаптивной иконки — наша ночь, а не белый апстрима",
+          "#12161D" in read("android/app/src/main/res/values/ic_launcher_background.xml"))
+    # Безопасная зона адаптивной иконки — центральные 72 из 108. Всё, что шире, обрезается
+    # маской на части устройств, и «знак с обрезанными краями» увидит только владелец такого
+    # телефона, то есть не мы.
+    coords = [float(v) for v in re.findall(r"M(\d+\.\d+),", fg)]
+    check("android: знак вписан в безопасную зону (не обрежется маской)",
+          bool(coords) and min(coords) >= 18.0, coords[:2])
+
+    def png_size(path: str) -> tuple[int, int] | None:
+        try:
+            raw = io.open(path, "rb").read(24)
+        except OSError:
+            return None
+        if len(raw) < 24 or raw[:8] != b"\x89PNG\r\n\x1a\n":
+            return None
+        return (int.from_bytes(raw[16:20], "big"), int.from_bytes(raw[20:24], "big"))
+
+    for path, want in (
+        ("assets/images/icon.png", 512),
+        ("android/app/src/main/ic_launcher-playstore.png", 512),
+        ("macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_1024.png", 1024),
+        ("macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_16.png", 16),
+    ):
+        check("картинка на месте и нужного размера: %s" % path.split("/")[-1],
+              png_size(path) == (want, want), png_size(path))
+    for path in ("windows/runner/resources/app_icon.ico", "assets/images/icon.ico"):
+        try:
+            head = io.open(path, "rb").read(6)
+        except OSError:
+            head = b""
+        # Первые байты .ico: 0,0 (резерв), 1,0 (тип «иконка»), дальше число картинок внутри.
+        check("windows/linux: %s собран и несёт несколько размеров" % path.split("/")[-1],
+              head[:4] == b"\x00\x00\x01\x00" and int.from_bytes(head[4:6], "little") >= 5,
+              head)
+
     print("\n— КОНТРОЛЬ —")
     # Контроль обязан доказывать, что сравнение РАБОТАЕТ, и потому проверяется в ОБЕ стороны.
     # Один лишь пункт «чепухи в файле нет» проходит сам собой даже на пустой строке и контролем
