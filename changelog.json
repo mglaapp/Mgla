@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "versions": [
     {
-      "version": "0.9.2",
-      "tag": "v0.9.2",
+      "version": "0.9.3",
+      "tag": "v0.9.3",
       "date": "2026-09-13",
       "prerelease": false,
       "groups": [
@@ -14,6 +14,16 @@
               "id": "ef66d38",
               "scope": "update",
               "text": "Обновление изнутри на Android и Windows"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "163909f",
+              "scope": "lint",
+              "text": "Сторож мёртвых файлов молчал на Windows"
             }
           ]
         }
