@@ -227,7 +227,9 @@ class Request {
         return Result.error(code is String && code.isNotEmpty ? code : 'error');
       }
       final parsed = parse(data);
-      return parsed == null ? Result.error('bad_response') : Result.success(parsed);
+      return parsed == null
+          ? Result.error('bad_response')
+          : Result.success(parsed);
     } catch (e) {
       commonPrint.log(
         'api $path failed ${compactError(e)}',
@@ -244,29 +246,36 @@ class Request {
       _api('/status', query: {'key': key}, parse: AccountStatus.fromJson);
 
   Future<Result<UsdtInvoice>> createUsdtInvoice(String key, String plan) =>
-      _api('/pay/usdt', form: {'key': key, 'plan': plan}, parse: UsdtInvoice.fromJson);
+      _api(
+        '/pay/usdt',
+        form: {'key': key, 'plan': plan},
+        parse: UsdtInvoice.fromJson,
+      );
 
   /// Привязать почту: сервер шлёт письмо, ссылка из письма привязывает аккаунт.
   Future<Result<int>> bindEmail(String key, String email) => _api(
-        '/bind/email',
-        form: {'key': key, 'email': email},
-        parse: (data) => data['minutes'] is int ? data['minutes'] as int : 0,
-      );
+    '/bind/email',
+    form: {'key': key, 'email': email},
+    parse: (data) => data['minutes'] is int ? data['minutes'] as int : 0,
+  );
 
   /// Ссылка в бота, которая привяжет телеграм к этому аккаунту.
   Future<Result<String>> bindTelegram(String key) => _api(
-        '/bind/telegram',
-        form: {'key': key},
-        parse: (data) {
-          final link = data['link'];
-          return link is String && link.isNotEmpty ? link : null;
-        },
-      );
+    '/bind/telegram',
+    form: {'key': key},
+    parse: (data) {
+      final link = data['link'];
+      return link is String && link.isNotEmpty ? link : null;
+    },
+  );
 
   /// «Я оплатил»: просим сверить блокчейн немедленно. Безопасно при любом числе нажатий —
   /// зачёт идёт по хэшу перевода, повтор упирается в ограничение базы на стороне сервера.
-  Future<Result<AccountStatus>> checkUsdtPayment(String key) =>
-      _api('/pay/usdt/check', form: {'key': key}, parse: AccountStatus.fromJson);
+  Future<Result<AccountStatus>> checkUsdtPayment(String key) => _api(
+    '/pay/usdt/check',
+    form: {'key': key},
+    parse: AccountStatus.fromJson,
+  );
 }
 
 final request = Request();

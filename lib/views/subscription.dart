@@ -47,7 +47,9 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     // Сначала выбранный профиль, потом любой наш: человек мог добавить и чужую подписку,
     // и спрашивать наш сервер о чужом ключе незачем — [accessKeyOf] такие и отсеивает.
     final ordered = [
-      ...state.profiles.where((profile) => profile.id == state.currentProfileId),
+      ...state.profiles.where(
+        (profile) => profile.id == state.currentProfileId,
+      ),
       ...state.profiles,
     ];
     for (final profile in ordered) {
@@ -88,7 +90,9 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
       return;
     }
     final account = result.data!;
-    await ref.read(profilesActionProvider.notifier).addProfileFormURL(account.subUrl);
+    await ref
+        .read(profilesActionProvider.notifier)
+        .addProfileFormURL(account.subUrl);
     if (!mounted) return;
     // Не окно со ссылкой, а экран возврата доступа: почта и телеграм вперёд, ссылка последней.
     // Показать ссылку первой значит предложить как основной способ то, что равно паролю.
@@ -119,15 +123,12 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
 
   void _complain(String code) {
     final l = context.appLocalizations;
-    dialogs.showNotifier(
-      switch (code) {
-        'unknown_key' => l.errUnknownKey,
-        'usdt_off' => l.errUsdtOff,
-        'too_many' => l.errTooMany,
-        _ => l.errNetwork,
-      },
-      level: MessageLevel.error,
-    );
+    dialogs.showNotifier(switch (code) {
+      'unknown_key' => l.errUnknownKey,
+      'usdt_off' => l.errUsdtOff,
+      'too_many' => l.errTooMany,
+      _ => l.errNetwork,
+    }, level: MessageLevel.error);
   }
 
   Widget _buildNoAccount() {
@@ -248,10 +249,11 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
         padding: kMaterialListPadding.copyWith(top: 16, bottom: 16),
         child: ListView(
           children: [
-            if (_busy) const Padding(
-              padding: EdgeInsets.only(bottom: 12),
-              child: LinearProgressIndicator(minHeight: 2),
-            ),
+            if (_busy)
+              const Padding(
+                padding: EdgeInsets.only(bottom: 12),
+                child: LinearProgressIndicator(minHeight: 2),
+              ),
             if (status == null) _buildNoAccount() else _buildStatus(status),
             if (_errorCode != null) ...[
               const SizedBox(height: 12),
@@ -464,19 +466,16 @@ class _RecoveryViewState extends ConsumerState<RecoveryView> {
 
   void _complain(String code) {
     final l = context.appLocalizations;
-    dialogs.showNotifier(
-      switch (code) {
-        'bad_email' => l.errBadEmail,
-        'mail_off' => l.errMailOff,
-        'mail_err' => l.errMailOff,
-        'tg_off' => l.errTgOff,
-        'too_soon' => l.errTooSoon,
-        'too_many' => l.errTooMany,
-        'unknown_key' => l.errUnknownKey,
-        _ => l.errNetwork,
-      },
-      level: MessageLevel.error,
-    );
+    dialogs.showNotifier(switch (code) {
+      'bad_email' => l.errBadEmail,
+      'mail_off' => l.errMailOff,
+      'mail_err' => l.errMailOff,
+      'tg_off' => l.errTgOff,
+      'too_soon' => l.errTooSoon,
+      'too_many' => l.errTooMany,
+      'unknown_key' => l.errUnknownKey,
+      _ => l.errNetwork,
+    }, level: MessageLevel.error);
   }
 
   @override
@@ -564,7 +563,9 @@ class _RecoveryViewState extends ConsumerState<RecoveryView> {
                         tooltip: l.copy,
                         icon: const Icon(Icons.copy),
                         onPressed: () async {
-                          await Clipboard.setData(ClipboardData(text: loginUrl));
+                          await Clipboard.setData(
+                            ClipboardData(text: loginUrl),
+                          );
                           if (mounted) dialogs.showNotifier(l.copy);
                         },
                       ),
@@ -577,7 +578,9 @@ class _RecoveryViewState extends ConsumerState<RecoveryView> {
                             ? null
                             : () => Navigator.of(context).pop(),
                         child: Text(
-                          _countdown > 0 ? '${l.savedIt} ($_countdown)' : l.savedIt,
+                          _countdown > 0
+                              ? '${l.savedIt} ($_countdown)'
+                              : l.savedIt,
                         ),
                       ),
                     ),

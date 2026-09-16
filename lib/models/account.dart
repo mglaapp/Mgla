@@ -36,9 +36,7 @@ class Plan {
 
   static List<Plan> listFrom(Object? json) {
     if (json is! List) return const [];
-    return [
-      for (final item in json) ?Plan.fromJson(item),
-    ];
+    return [for (final item in json) ?Plan.fromJson(item)];
   }
 }
 
@@ -153,10 +151,16 @@ class UsdtInvoice {
     return UsdtInvoice(
       address: address,
       amount: amount,
-      network: json['network'] is String ? json['network'] as String : 'TRON (TRC-20)',
-      qrPayload: json['qr_payload'] is String ? json['qr_payload'] as String : '',
+      network: json['network'] is String
+          ? json['network'] as String
+          : 'TRON (TRC-20)',
+      qrPayload: json['qr_payload'] is String
+          ? json['qr_payload'] as String
+          : '',
       qrSvg: json['qr_svg'] is String ? json['qr_svg'] as String : '',
-      minutesLeft: json['minutes_left'] is int ? json['minutes_left'] as int : 0,
+      minutesLeft: json['minutes_left'] is int
+          ? json['minutes_left'] as int
+          : 0,
     );
   }
 }
