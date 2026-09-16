@@ -63,4 +63,67 @@ void main() {
       isNull,
     );
   });
+
+  // ── accessKeyOf: обратная сторона, ею живёт экран подписки ──────────────────
+  // Ключ нигде не хранится вторым местом: он вынимается из адреса профиля. Две копии одного
+  // секрета расходятся молча, и расходятся ровно тогда, когда человек платит.
+
+  test('the key comes back out of our own subscription address', () {
+    expect(
+      accessKeyOf(
+        '$subscriptionSite$subscriptionPath'
+        '7f3c9a21b4e85d06',
+      ),
+      '7f3c9a21b4e85d06',
+    );
+  });
+
+  test('what subscriptionUrlOf built, accessKeyOf reads back', () {
+    const key = '9ac0394dfc2f68b5846e7ac4';
+    expect(accessKeyOf(subscriptionUrlOf(key)), key);
+  });
+
+  test('a foreign subscription address gives no key', () {
+    // Про чужие ключи наш сервер ничего не знает, и спрашивать его о них значит отправлять
+    // чужой секрет на наш сервер.
+    expect(accessKeyOf('https://vpn.example/sub/7f3c9a21b4e85d06'), isNull);
+    expect(
+      accessKeyOf('https://171.22.30.253.sslip.io/sub/7f3c9a21b4e85d06'),
+      isNull,
+    );
+  });
+
+  test('our address with junk instead of a key gives no key', () {
+    expect(accessKeyOf('$subscriptionSite$subscriptionPath'), isNull);
+    expect(
+      accessKeyOf(
+        '$subscriptionSite$subscriptionPath'
+        '7f3c9a',
+      ),
+      isNull,
+    );
+    expect(
+      accessKeyOf(
+        '$subscriptionSite$subscriptionPath'
+        'ключ-по-русски',
+      ),
+      isNull,
+    );
+  });
+
+  test('nothing at all gives no key', () {
+    expect(accessKeyOf(null), isNull);
+    expect(accessKeyOf(''), isNull);
+    expect(accessKeyOf('   '), isNull);
+  });
+
+  test('spaces around a stored address do not hide the key', () {
+    expect(
+      accessKeyOf(
+        '  $subscriptionSite$subscriptionPath'
+        '7f3c9a21b4e85d06\n',
+      ),
+      '7f3c9a21b4e85d06',
+    );
+  });
 }
