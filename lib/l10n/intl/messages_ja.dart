@@ -226,6 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "checkUpdate": MessageLookupByLibrary.simpleMessage("更新を確認"),
     "checkUpdateError": MessageLookupByLibrary.simpleMessage("すでに最新バージョンです"),
+    "choosePayment": MessageLookupByLibrary.simpleMessage("お支払い方法をお選びください"),
     "clearData": MessageLookupByLibrary.simpleMessage("データを消去"),
     "clearSearch": MessageLookupByLibrary.simpleMessage("検索をクリア"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage("クリップボードへエクスポート"),
@@ -357,6 +358,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "entries": MessageLookupByLibrary.simpleMessage(" 件"),
     "entriesCount": m8,
     "errBadEmail": MessageLookupByLibrary.simpleMessage("メールアドレスの形式ではありません"),
+    "errCardOff": MessageLookupByLibrary.simpleMessage("現在カード決済はご利用いただけません"),
     "errMailOff": MessageLookupByLibrary.simpleMessage("現在メールの送信はご利用いただけません"),
     "errNetwork": MessageLookupByLibrary.simpleMessage("サーバーに接続できませんでした"),
     "errTgOff": MessageLookupByLibrary.simpleMessage(
@@ -667,6 +669,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("パレット"),
     "password": MessageLookupByLibrary.simpleMessage("パスワード"),
     "paste": MessageLookupByLibrary.simpleMessage("貼り付け"),
+    "pay": MessageLookupByLibrary.simpleMessage("支払う"),
+    "payCard": MessageLookupByLibrary.simpleMessage("カードで支払う"),
     "payOnSite": MessageLookupByLibrary.simpleMessage("サイトで支払う"),
     "payUsdt": MessageLookupByLibrary.simpleMessage("USDT で支払う"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(

@@ -53,8 +53,12 @@ class AccountStatus {
   final List<Plan> plans;
 
   /// Способ, который целиком помещается в приложение: платим напрямую, посредника нет.
-  /// Карта и крипто-шлюз всегда уводят на страницу платёжной системы, поэтому здесь их нет.
   final bool usdtEnabled;
+
+  /// Карта. Страница оплаты принадлежит платёжной системе и открывается у неё — в приложении
+  /// помещается только кнопка. Показывается, лишь когда сервер подтвердил, что платёжка
+  /// настроена: кнопка, ведущая в никуда, стоит дороже отсутствующей.
+  final bool cardEnabled;
 
   const AccountStatus({
     required this.key,
@@ -66,6 +70,7 @@ class AccountStatus {
     required this.quotaGb,
     required this.plans,
     required this.usdtEnabled,
+    required this.cardEnabled,
   });
 
   static AccountStatus? fromJson(Object? json) {
@@ -84,6 +89,7 @@ class AccountStatus {
       quotaGb: (json['quota_gb'] as num?)?.toDouble(),
       plans: Plan.listFrom(json['plans']),
       usdtEnabled: methods is Map && methods['usdt'] == true,
+      cardEnabled: methods is Map && methods['card'] == true,
     );
   }
 }

@@ -282,6 +282,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdateError": MessageLookupByLibrary.simpleMessage(
       "The app is already up to date",
     ),
+    "choosePayment": MessageLookupByLibrary.simpleMessage(
+      "How would you like to pay?",
+    ),
     "clearData": MessageLookupByLibrary.simpleMessage("Clear data"),
     "clearSearch": MessageLookupByLibrary.simpleMessage("Clear search"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage(
@@ -440,6 +443,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "entriesCount": m8,
     "errBadEmail": MessageLookupByLibrary.simpleMessage(
       "That does not look like an email address",
+    ),
+    "errCardOff": MessageLookupByLibrary.simpleMessage(
+      "Card payment is unavailable right now",
     ),
     "errMailOff": MessageLookupByLibrary.simpleMessage(
       "Sending letters is unavailable right now",
@@ -814,6 +820,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("Palette"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "paste": MessageLookupByLibrary.simpleMessage("Paste"),
+    "pay": MessageLookupByLibrary.simpleMessage("Pay"),
+    "payCard": MessageLookupByLibrary.simpleMessage("Pay by card"),
     "payOnSite": MessageLookupByLibrary.simpleMessage("Pay on the website"),
     "payUsdt": MessageLookupByLibrary.simpleMessage("Pay with USDT"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(

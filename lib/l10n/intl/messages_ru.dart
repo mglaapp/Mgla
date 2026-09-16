@@ -290,6 +290,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkUpdateError": MessageLookupByLibrary.simpleMessage(
       "У вас уже последняя версия",
     ),
+    "choosePayment": MessageLookupByLibrary.simpleMessage("Чем платить?"),
     "clearData": MessageLookupByLibrary.simpleMessage("Очистить данные"),
     "clearSearch": MessageLookupByLibrary.simpleMessage("Очистить поиск"),
     "clipboardExport": MessageLookupByLibrary.simpleMessage(
@@ -452,6 +453,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "entriesCount": m8,
     "errBadEmail": MessageLookupByLibrary.simpleMessage(
       "Адрес не похож на почтовый",
+    ),
+    "errCardOff": MessageLookupByLibrary.simpleMessage(
+      "Оплата картой сейчас недоступна",
     ),
     "errMailOff": MessageLookupByLibrary.simpleMessage(
       "Отправка писем сейчас недоступна",
@@ -838,6 +842,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("Палитра"),
     "password": MessageLookupByLibrary.simpleMessage("Пароль"),
     "paste": MessageLookupByLibrary.simpleMessage("Вставить"),
+    "pay": MessageLookupByLibrary.simpleMessage("Оплатить"),
+    "payCard": MessageLookupByLibrary.simpleMessage("Оплатить картой"),
     "payOnSite": MessageLookupByLibrary.simpleMessage("Оплатить на сайте"),
     "payUsdt": MessageLookupByLibrary.simpleMessage("Оплатить USDT"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(

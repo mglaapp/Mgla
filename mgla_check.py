@@ -474,6 +474,24 @@ def main() -> int:
               all(f'"{code}"' in read(f"arb/intl_{lang}.arb")
                   for lang in ("en", "ru", "ja", "zh_CN")))
 
+    print("\n— оплата картой: кнопка только под подтверждение сервера —")
+    # Кнопка, ведущая в никуда, стоит дороже отсутствующей: человек уходит, решив, что сервис
+    # сломан. Поэтому оба способа показываются, только когда сервер сказал, что они настроены.
+    check("карта показывается по ответу сервера, а не всегда",
+          "status.cardEnabled" in sub and "methods['card'] == true" in api_dart)
+    check("оплата картой уходит в браузер, а не рисуется внутри",
+          "_payCard" in sub and "dialogs.openUrl(result.data!)" in sub)
+    # Лишний экран между человеком и оплатой — это люди, которые не доходят.
+    check("выбор способа спрашивается ТОЛЬКО когда способов два",
+          "if (status.usdtEnabled && !status.cardEnabled) return _pay(plan);" in sub
+          and "if (status.cardEnabled && !status.usdtEnabled) return _payCard(plan);" in sub)
+    check("когда не настроено ничего — честная ссылка на сайт, а не мёртвая кнопка",
+          "l.payOnSite" in sub and "dialogs.openUrl(accountUrl)" in sub)
+    for code in ("payCard", "choosePayment", "errCardOff"):
+        check(f"надпись {code} переведена на все четыре языка",
+              all(f'"{code}"' in read(f"arb/intl_{lang}.arb")
+                  for lang in ("en", "ru", "ja", "zh_CN")))
+
     check("КОНТРОЛЬ: заведомо отсутствующая надпись НЕ находится во всех четырёх",
           not all('"ЗаведомоНетТакогоКлюча"' in read(f"arb/intl_{lang}.arb")
                   for lang in ("en", "ru", "ja", "zh_CN")))

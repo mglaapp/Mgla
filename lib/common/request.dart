@@ -252,6 +252,18 @@ class Request {
         parse: UsdtInvoice.fromJson,
       );
 
+  /// Ссылка на оплату картой. Приложение её ОТКРЫВАЕТ: страница оплаты принадлежит платёжной
+  /// системе, и показывать её внутри значило бы просить ввести карту в окне без адресной
+  /// строки.
+  Future<Result<String>> createCardPayment(String key, String plan) => _api(
+    '/pay/card',
+    form: {'key': key, 'plan': plan},
+    parse: (data) {
+      final url = data['url'];
+      return url is String && url.isNotEmpty ? url : null;
+    },
+  );
+
   /// Привязать почту: сервер шлёт письмо, ссылка из письма привязывает аккаунт.
   Future<Result<int>> bindEmail(String key, String email) => _api(
     '/bind/email',

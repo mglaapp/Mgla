@@ -103,6 +103,53 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     await _load();
   }
 
+  /// Чем платить. Спрашиваем ТОЛЬКО когда есть из чего выбирать: лишний экран между
+  /// человеком и оплатой — это люди, которые не доходят.
+  Future<void> _choosePayment(AccountStatus status, Plan plan) async {
+    if (status.usdtEnabled && !status.cardEnabled) return _pay(plan);
+    if (status.cardEnabled && !status.usdtEnabled) return _payCard(plan);
+    if (!status.usdtEnabled && !status.cardEnabled) {
+      await dialogs.openUrl(accountUrl);
+      return;
+    }
+    final l = context.appLocalizations;
+    final choice = await dialogs.showCommonDialog<String>(
+      child: CommonDialog(
+        title: l.choosePayment,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop('card'),
+            child: Text(l.payCard),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop('usdt'),
+            child: Text(l.payUsdt),
+          ),
+        ],
+        child: Text(plan.title),
+      ),
+    );
+    if (choice == 'usdt') return _pay(plan);
+    if (choice == 'card') return _payCard(plan);
+  }
+
+  /// Оплата картой уходит в браузер целиком: у платёжной системы своя страница, свои правила
+  /// и свой 3-D Secure. Подтверждение приходит к нам её уведомлением, поэтому возвращаться в
+  /// приложение и что-то нажимать человеку не нужно — статус подтянется сам.
+  Future<void> _payCard(Plan plan) async {
+    final key = _key;
+    if (key == null) return;
+    setState(() => _busy = true);
+    final result = await request.createCardPayment(key, plan.code);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (result.isError) {
+      _complain(result.message);
+      return;
+    }
+    await dialogs.openUrl(result.data!);
+  }
+
   Future<void> _pay(Plan plan) async {
     final key = _key;
     if (key == null) return;
@@ -126,6 +173,7 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     dialogs.showNotifier(switch (code) {
       'unknown_key' => l.errUnknownKey,
       'usdt_off' => l.errUsdtOff,
+      'card_off' => l.errCardOff,
       'too_many' => l.errTooMany,
       _ => l.errNetwork,
     }, level: MessageLevel.error);
@@ -214,10 +262,18 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
               DecorationListItem(
                 title: Text(plan.title),
                 subtitle: TooltipLabel('\$${plan.usd.toStringAsFixed(2)}'),
-                trailing: status.usdtEnabled
+                trailing: (status.usdtEnabled || status.cardEnabled)
                     ? FilledButton(
-                        onPressed: _busy ? null : () => _pay(plan),
-                        child: Text(l.payUsdt),
+                        onPressed: _busy
+                            ? null
+                            : () => _choosePayment(status, plan),
+                        child: Text(
+                          status.usdtEnabled && !status.cardEnabled
+                              ? l.payUsdt
+                              : (status.cardEnabled && !status.usdtEnabled
+                                    ? l.payCard
+                                    : l.pay),
+                        ),
                       )
                     : TextButton(
                         onPressed: () => dialogs.openUrl(accountUrl),

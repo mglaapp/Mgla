@@ -670,6 +670,36 @@ class AppLocalizations {
     return Intl.message('Pay with USDT', name: 'payUsdt', desc: '', args: []);
   }
 
+  /// `Pay`
+  String get pay {
+    return Intl.message('Pay', name: 'pay', desc: '', args: []);
+  }
+
+  /// `Pay by card`
+  String get payCard {
+    return Intl.message('Pay by card', name: 'payCard', desc: '', args: []);
+  }
+
+  /// `How would you like to pay?`
+  String get choosePayment {
+    return Intl.message(
+      'How would you like to pay?',
+      name: 'choosePayment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Card payment is unavailable right now`
+  String get errCardOff {
+    return Intl.message(
+      'Card payment is unavailable right now',
+      name: 'errCardOff',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Pay on the website`
   String get payOnSite {
     return Intl.message(
