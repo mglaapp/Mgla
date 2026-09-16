@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:test/test.dart';
 
+import '../helpers/repo_paths.dart';
+
 const _entryPoints = ['lib/main.dart'];
 
 /// Types, and the top level names a file publishes alongside them — the
@@ -24,17 +26,14 @@ Iterable<File> _dartFiles({required bool includeGenerated}) sync* {
       if (entity is! File || !entity.path.endsWith('.dart')) continue;
       // Windows отдаёт пути с обратным слэшем, и сравнение с 'lib/' ниже отбрасывало бы там
       // ВСЕ файлы — сторож проходил бы, не проверив ничего.
-      final path = entity.path.replaceAll(r'\', '/');
-      if (path != entity.path) {
-        yield File(path);
-        continue;
-      }
-      final generated =
-          entity.path.endsWith('.g.dart') ||
-          entity.path.endsWith('.freezed.dart') ||
-          entity.path.contains('/generated/');
-      if (generated && !includeGenerated) continue;
-      yield entity;
+      //
+      // Нормализуем СРАЗУ и дальше работаем только с результатом. Прежняя правка
+      // нормализовала путь и тут же уходила по continue, минуя отбор сгенерированных: на
+      // Windows — то есть ровно там, где её и делали — сторож читал файлы, которые обязан
+      // пропускать. Починка, меняющая поведение на чинимой платформе, чинит наполовину.
+      final path = repoPath(entity.path);
+      if (isGeneratedPath(path) && !includeGenerated) continue;
+      yield File(path);
     }
   }
 }

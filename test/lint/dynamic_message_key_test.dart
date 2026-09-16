@@ -5,6 +5,8 @@ import 'package:fl_clash/common/l10n_labels.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../helpers/repo_paths.dart';
+
 const _arbDir = 'arb';
 const _libDir = 'lib';
 
@@ -46,7 +48,7 @@ void main() {
     final offenders = <String>[];
     for (final entity in Directory(_libDir).listSync(recursive: true)) {
       if (entity is! File || !entity.path.endsWith('.dart')) continue;
-      final path = entity.path;
+      final path = repoPath(entity.path);
       if (path.contains('/generated/') || path.contains('/l10n/')) continue;
       if (entity.readAsStringSync().contains('Intl.message(')) {
         offenders.add(path);

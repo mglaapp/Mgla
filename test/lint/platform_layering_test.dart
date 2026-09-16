@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
+
+import '../helpers/repo_paths.dart';
 import 'package:test/test.dart';
 
 const _platformPackages = [
@@ -60,10 +62,11 @@ Iterable<File> _dartFilesIn(String root) sync* {
     fail('$root no longer exists; update this test.');
   }
   for (final entity in directory.listSync(recursive: true)) {
-    if (entity is File &&
-        entity.path.endsWith('.dart') &&
-        !entity.path.contains('/generated/')) {
-      yield entity;
+    if (entity is File) {
+      final path = repoPath(entity.path);
+      if (path.endsWith('.dart') && !isGeneratedPath(path)) {
+        yield File(path);
+      }
     }
   }
 }
@@ -91,7 +94,7 @@ void main() {
 
     for (final root in ['lib/common', 'lib/enum', 'lib/models']) {
       for (final file in _dartFilesIn(root)) {
-        final relative = p.relative(file.path);
+        final relative = relativeRepoPath(file.path);
         if (_platformModules.contains(relative)) {
           continue;
         }
