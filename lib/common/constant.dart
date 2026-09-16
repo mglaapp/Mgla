@@ -91,7 +91,18 @@ const repository = 'mglaapp/Mgla';
 /// The key is what a person copies from their account; the address around it is ours to know, so
 /// they never have to carry a URL.
 const subscriptionSite = 'https://mgla.app';
+
+/// Наш телеграм. Пока это бот входа: своего канала нет, а прежняя ссылка в «О программе»
+/// вела в канал апстрима — то есть уводила купившего подписку к чужим людям. Отвечать в
+/// боте на письма пока некому, и это известно: владелец занимается им отдельно.
+const telegramContact = 'https://t.me/mgla_vpn_bot';
 const subscriptionPath = '/sub/';
+
+/// Личный кабинет: и покупка, и продление живут там же, где вход.
+///
+/// Собирается из [subscriptionSite] намеренно: второй раз вписанный адрес переживёт первый
+/// при переезде домена и уведёт человека в никуда ровно в момент оплаты.
+const accountUrl = '$subscriptionSite/cab';
 const maxMobileWidth = 600;
 const maxLaptopWidth = 840;
 const defaultTestUrl = 'https://www.gstatic.com/generate_204';

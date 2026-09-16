@@ -132,6 +132,17 @@ class SubscriptionInfoDetailView extends StatelessWidget {
             title: appLocalizations.expireTime,
             items: [_buildItem(value: expire)],
           ),
+          const SizedBox(height: 12),
+          // Продление стоит там, где человек уже спросил «сколько у меня осталось». В другом
+          // месте эта кнопка была бы рекламой; здесь она ответ на заданный вопрос.
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: () => dialogs.openUrl(accountUrl),
+              icon: const Icon(Icons.autorenew),
+              label: Text(appLocalizations.renewSubscription),
+            ),
+          ),
         ],
       ),
     );

@@ -182,6 +182,91 @@ class Request {
     token.cancel();
     return res;
   }
+
+  // ---------------------------------------------------------------- наш API
+  // Пять вызовов, которыми приложение обходится без браузера. Адрес собирается из константы
+  // бренда: вписанный здесь второй раз, он переживёт первый при смене домена и уведёт
+  // человека в никуда ровно в момент оплаты.
+  //
+  // Ошибка возвращается КОДОМ, а не готовым текстом: текст сервера один, а языков в
+  // приложении четыре, и показывать русскую строку японцу — это не локализация.
+
+  static const _apiBase = '$subscriptionSite/api/v1';
+
+  Future<Result<T>> _api<T>(
+    String path, {
+    Map<String, dynamic>? form,
+    Map<String, dynamic>? query,
+    required T? Function(Map<String, dynamic>) parse,
+  }) async {
+    // Отказы 4xx — это ОТВЕТ, а не сбой: в них лежит код, ради которого всё и затевалось.
+    // Без этого Dio бросил бы исключение и «ключ не найден» стал бы неотличим от «нет сети».
+    final options = Options(
+      responseType: ResponseType.json,
+      validateStatus: (code) => code != null && code < 500,
+      contentType: form == null ? null : Headers.formUrlEncodedContentType,
+    );
+    try {
+      final response = form == null
+          ? await dio.get(
+              '$_apiBase$path',
+              queryParameters: query,
+              options: options,
+            )
+          : await dio.post('$_apiBase$path', data: form, options: options);
+      final data = response.data;
+      if (data is! Map<String, dynamic>) {
+        return Result.error('bad_response');
+      }
+      if (data['ok'] != true) {
+        final code = data['error'];
+        commonPrint.log(
+          'api $path refused: ${data['error']} ${data['message']}',
+          logLevel: LogLevel.warning,
+        );
+        return Result.error(code is String && code.isNotEmpty ? code : 'error');
+      }
+      final parsed = parse(data);
+      return parsed == null ? Result.error('bad_response') : Result.success(parsed);
+    } catch (e) {
+      commonPrint.log(
+        'api $path failed ${compactError(e)}',
+        logLevel: LogLevel.warning,
+      );
+      return Result.error('network');
+    }
+  }
+
+  Future<Result<NewAccount>> createAccount() =>
+      _api('/account', form: const {}, parse: NewAccount.fromJson);
+
+  Future<Result<AccountStatus>> accountStatus(String key) =>
+      _api('/status', query: {'key': key}, parse: AccountStatus.fromJson);
+
+  Future<Result<UsdtInvoice>> createUsdtInvoice(String key, String plan) =>
+      _api('/pay/usdt', form: {'key': key, 'plan': plan}, parse: UsdtInvoice.fromJson);
+
+  /// Привязать почту: сервер шлёт письмо, ссылка из письма привязывает аккаунт.
+  Future<Result<int>> bindEmail(String key, String email) => _api(
+        '/bind/email',
+        form: {'key': key, 'email': email},
+        parse: (data) => data['minutes'] is int ? data['minutes'] as int : 0,
+      );
+
+  /// Ссылка в бота, которая привяжет телеграм к этому аккаунту.
+  Future<Result<String>> bindTelegram(String key) => _api(
+        '/bind/telegram',
+        form: {'key': key},
+        parse: (data) {
+          final link = data['link'];
+          return link is String && link.isNotEmpty ? link : null;
+        },
+      );
+
+  /// «Я оплатил»: просим сверить блокчейн немедленно. Безопасно при любом числе нажатий —
+  /// зачёт идёт по хэшу перевода, повтор упирается в ограничение базы на стороне сервера.
+  Future<Result<AccountStatus>> checkUsdtPayment(String key) =>
+      _api('/pay/usdt/check', form: {'key': key}, parse: AccountStatus.fromJson);
 }
 
 final request = Request();

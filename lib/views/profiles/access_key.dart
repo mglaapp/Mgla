@@ -72,6 +72,25 @@ class AccessKeyCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const AccessKeyButton(),
+            const SizedBox(height: 4),
+            // Приложение выложено публично, и его ставят, ещё не купив доступ. Пока отсюда
+            // некуда было пойти, установка кончалась экраном, который просит то, чего у
+            // человека нет. Wrap, а не Row: на узком экране строка переносится, а не режется.
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(
+                  appLocalizations.noAccessKeyYet,
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => dialogs.openUrl(subscriptionSite),
+                  child: Text(appLocalizations.getSubscription),
+                ),
+              ],
+            ),
           ],
         ),
       ),

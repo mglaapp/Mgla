@@ -123,7 +123,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "accessKeyTip": MessageLookupByLibrary.simpleMessage(
       "That key did not work. Copy it from your account again, in full.",
     ),
+    "accessNotPaid": MessageLookupByLibrary.simpleMessage("Access not paid"),
+    "accessPaidUntil": MessageLookupByLibrary.simpleMessage(
+      "Access paid until",
+    ),
     "account": MessageLookupByLibrary.simpleMessage("Account"),
+    "accountCreated": MessageLookupByLibrary.simpleMessage("Account created"),
+    "accountCreatedTip": MessageLookupByLibrary.simpleMessage(
+      "Save the login link. Without it you cannot sign in to the site from another device: the app keeps working, the website login does not.",
+    ),
     "action": MessageLookupByLibrary.simpleMessage("Action"),
     "actionMode": MessageLookupByLibrary.simpleMessage("Switch mode"),
     "actionProxy": MessageLookupByLibrary.simpleMessage("System proxy"),
@@ -241,6 +249,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Due to system limitations, the battery optimization status cannot be read correctly while running",
     ),
     "bind": MessageLookupByLibrary.simpleMessage("Bind"),
+    "bindEmail": MessageLookupByLibrary.simpleMessage("Link an email address"),
+    "bindTelegram": MessageLookupByLibrary.simpleMessage("Link Telegram"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("Blacklist mode"),
     "blockConnection": MessageLookupByLibrary.simpleMessage("Block connection"),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Bypass domains"),
@@ -344,6 +354,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "When enabled, crash logs without sensitive information are uploaded automatically when the app crashes",
     ),
     "create": MessageLookupByLibrary.simpleMessage("Create"),
+    "createAccount": MessageLookupByLibrary.simpleMessage("Create account"),
     "createProfile": MessageLookupByLibrary.simpleMessage("Create profile"),
     "createProfileFromUrlTip": m2,
     "creationTime": MessageLookupByLibrary.simpleMessage("Creation time"),
@@ -377,7 +388,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteMultipTip": m4,
     "deleteTip": m5,
     "desc": MessageLookupByLibrary.simpleMessage(
-      "A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.",
+      "Mgla is the app for the mgla.app service. Open source, no ads; nothing leaves the device on its own. ClashMeta core.",
     ),
     "destination": MessageLookupByLibrary.simpleMessage("Destination"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage(
@@ -422,10 +433,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "editProxyGroup": MessageLookupByLibrary.simpleMessage("Edit proxy group"),
     "editRule": MessageLookupByLibrary.simpleMessage("Edit rule"),
     "editSsid": MessageLookupByLibrary.simpleMessage("Edit SSID"),
+    "emailAddress": MessageLookupByLibrary.simpleMessage("Email address"),
     "emptyTip": m7,
     "en": MessageLookupByLibrary.simpleMessage("English"),
     "entries": MessageLookupByLibrary.simpleMessage(" entries"),
     "entriesCount": m8,
+    "errBadEmail": MessageLookupByLibrary.simpleMessage(
+      "That does not look like an email address",
+    ),
+    "errMailOff": MessageLookupByLibrary.simpleMessage(
+      "Sending letters is unavailable right now",
+    ),
+    "errNetwork": MessageLookupByLibrary.simpleMessage(
+      "Could not reach the server",
+    ),
+    "errTgOff": MessageLookupByLibrary.simpleMessage(
+      "Telegram sign-in is unavailable right now",
+    ),
+    "errTooMany": MessageLookupByLibrary.simpleMessage(
+      "Too many attempts, try again later",
+    ),
+    "errTooSoon": MessageLookupByLibrary.simpleMessage(
+      "A letter has already been sent, wait a minute",
+    ),
+    "errUnknownKey": MessageLookupByLibrary.simpleMessage("Key not found"),
+    "errUsdtOff": MessageLookupByLibrary.simpleMessage(
+      "USDT payment is unavailable right now",
+    ),
     "exclude": MessageLookupByLibrary.simpleMessage("Hide from recent tasks"),
     "excludeDesc": MessageLookupByLibrary.simpleMessage(
       "Hide the app from recent tasks while it is in the background",
@@ -500,6 +534,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Use the low-memory Geo loader",
     ),
     "geoipCode": MessageLookupByLibrary.simpleMessage("GeoIP code"),
+    "getSubscription": MessageLookupByLibrary.simpleMessage(
+      "Get a subscription",
+    ),
     "global": MessageLookupByLibrary.simpleMessage("Global"),
     "go": MessageLookupByLibrary.simpleMessage("Go"),
     "goDownload": MessageLookupByLibrary.simpleMessage("Download"),
@@ -526,6 +563,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "hours": MessageLookupByLibrary.simpleMessage("hours"),
     "hoursAgo": m12,
     "hoursCount": m13,
+    "iPaid": MessageLookupByLibrary.simpleMessage("I have paid"),
     "icon": MessageLookupByLibrary.simpleMessage("Icon"),
     "iconRecords": MessageLookupByLibrary.simpleMessage("Icon records"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("Icon style"),
@@ -567,9 +605,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "installPermissionRequired": MessageLookupByLibrary.simpleMessage(
       "Installation permission needed",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -622,6 +661,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "The app exited unexpectedly while it was starting up last time. Automatic setup was skipped for this launch; you can start it manually to retry.",
     ),
     "layout": MessageLookupByLibrary.simpleMessage("Layout"),
+    "letterSent": MessageLookupByLibrary.simpleMessage("Letter sent"),
     "light": MessageLookupByLibrary.simpleMessage("Light"),
     "list": MessageLookupByLibrary.simpleMessage("List"),
     "listen": MessageLookupByLibrary.simpleMessage("Listen"),
@@ -648,6 +688,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "logcat": MessageLookupByLibrary.simpleMessage("Logcat"),
     "logcatDesc": MessageLookupByLibrary.simpleMessage(
       "Disabling hides the log entry point",
+    ),
+    "loginLinkTitle": MessageLookupByLibrary.simpleMessage("Login link"),
+    "loginLinkWarning": MessageLookupByLibrary.simpleMessage(
+      "This link is the same as a password: whoever opens it is signed in to your account. Do not send it in chats and do not post it anywhere. Keep it the way you keep a password.",
     ),
     "logs": MessageLookupByLibrary.simpleMessage("Logs"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("Captured log records"),
@@ -678,6 +722,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Override the default system exit behavior",
     ),
     "minutesAgo": m20,
+    "minutesLeftLabel": MessageLookupByLibrary.simpleMessage(
+      "Invoice valid, minutes",
+    ),
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixed port"),
     "mode": MessageLookupByLibrary.simpleMessage("Mode"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monochrome"),
@@ -711,6 +758,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkType": MessageLookupByLibrary.simpleMessage("Network type"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Neutral"),
     "nextMatch": MessageLookupByLibrary.simpleMessage("Next match"),
+    "noAccessKeyYet": MessageLookupByLibrary.simpleMessage(
+      "No access key yet?",
+    ),
     "noData": MessageLookupByLibrary.simpleMessage("No data"),
     "noHotKey": MessageLookupByLibrary.simpleMessage("No hotkeys yet"),
     "noInfo": MessageLookupByLibrary.simpleMessage("No info"),
@@ -765,6 +815,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("Palette"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "paste": MessageLookupByLibrary.simpleMessage("Paste"),
+    "payOnSite": MessageLookupByLibrary.simpleMessage("Pay on the website"),
+    "payUsdt": MessageLookupByLibrary.simpleMessage("Pay with USDT"),
+    "paymentNotSeen": MessageLookupByLibrary.simpleMessage(
+      "The payment is not visible on the network yet. A transfer takes up to a few minutes, tap again shortly.",
+    ),
+    "paymentReceived": MessageLookupByLibrary.simpleMessage("Payment received"),
     "pickFromAlbum": MessageLookupByLibrary.simpleMessage("Choose from album"),
     "pinWindow": MessageLookupByLibrary.simpleMessage("Pin window"),
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
@@ -856,6 +912,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "quickFill": MessageLookupByLibrary.simpleMessage("Quick fill"),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Rainbow"),
+    "recoverAccess": MessageLookupByLibrary.simpleMessage("Getting back in"),
+    "recoverAccessTip": MessageLookupByLibrary.simpleMessage(
+      "The account lives in this app. Link an email address or Telegram, otherwise there is nothing to get your paid access back with from another device.",
+    ),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir port"),
     "redo": MessageLookupByLibrary.simpleMessage("Redo"),
     "remote": MessageLookupByLibrary.simpleMessage("Remote"),
@@ -866,6 +926,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Remote destination",
     ),
     "remove": MessageLookupByLibrary.simpleMessage("Remove"),
+    "renewSubscription": MessageLookupByLibrary.simpleMessage(
+      "Renew subscription",
+    ),
     "request": MessageLookupByLibrary.simpleMessage("Request"),
     "requests": MessageLookupByLibrary.simpleMessage("Requests"),
     "requestsDesc": MessageLookupByLibrary.simpleMessage(
@@ -1038,6 +1101,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "rulesCount": m26,
     "save": MessageLookupByLibrary.simpleMessage("Save"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save the changes?"),
+    "savedIt": MessageLookupByLibrary.simpleMessage("I have saved it"),
     "script": MessageLookupByLibrary.simpleMessage("Script"),
     "scriptModeDesc": MessageLookupByLibrary.simpleMessage(
       "Script mode: uses external extension scripts to override the configuration in one click",
@@ -1067,9 +1131,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
     "selectedCountTitle": m28,
+    "sendLetter": MessageLookupByLibrary.simpleMessage("Send the letter"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "showLess": MessageLookupByLibrary.simpleMessage("Collapse"),
+    "showLink": MessageLookupByLibrary.simpleMessage("Show the link"),
     "showMore": MessageLookupByLibrary.simpleMessage("Expand"),
     "showNotificationStopAction": MessageLookupByLibrary.simpleMessage(
       "Stop button in notification",
@@ -1116,6 +1182,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sub-rule cannot be empty",
     ),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
+    "subscription": MessageLookupByLibrary.simpleMessage("Subscription"),
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage(
       "Subscription info",
     ),
@@ -1194,6 +1261,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Obtain a profile from a URL",
     ),
     "urlTip": m29,
+    "usdtAddress": MessageLookupByLibrary.simpleMessage("Address"),
+    "usdtAmount": MessageLookupByLibrary.simpleMessage("Amount"),
+    "usdtNetwork": MessageLookupByLibrary.simpleMessage("Network"),
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "usedTraffic": MessageLookupByLibrary.simpleMessage("Used traffic"),
@@ -1213,6 +1283,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage(
       "WebDAV configuration",
     ),
+    "website": MessageLookupByLibrary.simpleMessage("Website"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
     "yearsAgo": m30,
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),

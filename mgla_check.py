@@ -390,6 +390,94 @@ def main() -> int:
     check("КОНТРОЛЬ: файлы действительно прочитаны, а не пусты",
           len(c) > 1000 and len(rc) > 500, (len(c), len(rc)))
 
+    print("\n— пути к покупке и продлению: приложение не должно быть тупиком —")
+    # Приложение выложено публично, и его ставят, ещё не купив доступ. Пока из него некуда
+    # было пойти за подпиской, установка кончалась пустым экраном, а продление искали в
+    # браузере по памяти. Адрес кабинета при этом обязан быть ОДИН: вписанный второй раз, он
+    # переживёт первый при смене домена и уведёт человека в никуда в момент оплаты.
+    check("кабинет собирается из адреса сайта, а не вписан второй раз",
+          "const accountUrl = '$subscriptionSite/cab';" in c)
+    ak = read("lib/views/profiles/access_key.dart")
+    check("первый экран предлагает оформить подписку, а не только ввести ключ",
+          "appLocalizations.getSubscription" in ak and "subscriptionSite" in ak)
+    sv = read("lib/widgets/subscription_info_view.dart")
+    check("продление стоит там, где показан срок",
+          "appLocalizations.renewSubscription" in sv and "accountUrl" in sv)
+    ab = read("lib/views/about.dart")
+    check("в «О программе» есть наш сайт", "appLocalizations.website" in ab)
+    # Кнопка «Telegram» вела в канал апстрима: человек, купивший подписку у нас, уходил из
+    # нашего экрана к чужим людям. Своего канала нет, поэтому пока это бот входа.
+    check("телеграм ведёт к нам, а не в канал апстрима",
+          "telegramContact" in ab and "t.me/FlClash" not in ab)
+    check("чужих участников в «О программе» не осталось",
+          "Contributor" not in ab
+          and not pathlib.Path("assets/images/avatar").exists()
+          and "assets/images/avatar/" not in read("pubspec.yaml"))
+    check("описание говорит о нас, а не об абстрактном клиенте",
+          "mgla.app" in read("arb/intl_ru.arb").split('"desc":')[1].split("\n")[0])
+    check("КОНТРОЛЬ: чужой канал опознался бы, будь он на месте",
+          "t.me/FlClash" in "dialogs.openUrl('https://t.me/FlClash');")
+
+    print("\n— подписка в приложении: аккаунт, статус, оплата без браузера —")
+    sub = read("lib/views/subscription.dart")
+    # Ключ не хранится вторым местом НАМЕРЕННО: он уже лежит в адресе профиля. Две копии
+    # одного секрета расходятся молча, и расходятся ровно тогда, когда человек платит.
+    check("ключ берётся из адреса профиля, а не хранится второй раз",
+          "accessKeyOf(profile.url)" in sub)
+    ak2 = read("lib/common/access_key.dart")
+    check("разбор ключа отбивает ЧУЖОЙ адрес подписки",
+          "value.startsWith(prefix)" in ak2 and "subscriptionSite" in ak2)
+    req = read("lib/common/request.dart")
+    check("адрес API собирается из константы бренда",
+          "_apiBase = '$subscriptionSite/api/v1'" in req)
+    # Отказ сервера приходит КОДОМ: текст на сервере один, а языков в приложении четыре.
+    check("отказ показывается по коду, а не русской строкой сервера",
+          "'unknown_key' =>" in sub and "data['error']" in req)
+    # 4xx для нас ОТВЕТ, а не сбой: в нём лежит код. Без этого «ключ не найден» неотличим
+    # от «нет сети», и человек идёт в поддержку с неверной жалобой.
+    check("отказы 4xx читаются как ответ, а не как сбой сети",
+          "validateStatus" in req)
+    check("оплата USDT показывается, только когда сервер её подтвердил",
+          "status.usdtEnabled" in sub)
+    check("для карты кнопка честно уводит на сайт, а не притворяется оплатой",
+          "payOnSite" in sub and "accountUrl" in sub)
+    tools = read("lib/views/tools.dart")
+    check("подписка стоит ПЕРВЫМ разделом инструментов, а не в «Другом»",
+          "_getSubscriptionList()" in tools
+          and tools.index("_getSubscriptionList()") < tools.index("_getOtherList("))
+    for code in ("subscription", "createAccount", "payUsdt", "errUnknownKey"):
+        check(f"надпись {code} переведена на все четыре языка",
+              all(f'"{code}"' in read(f"arb/intl_{lang}.arb")
+                  for lang in ("en", "ru", "ja", "zh_CN")))
+    print("\n— возврат доступа: порядок способов и таймер на подтверждении —")
+    # Решение владельца 16-09, то же, что на сайте 13-09: почта и телеграм вперёд, ссылка
+    # последней. Пока ссылка стояла первой, она читалась как основной способ — а она равна
+    # паролю и теряется вместе с устройством.
+    check("почта идёт раньше телеграма, телеграм раньше ссылки входа",
+          sub.index("l.bindEmail") < sub.index("l.bindTelegram") < sub.index("l.loginLinkTitle"))
+    # Кнопка, доступная сразу, нажимается ДО чтения: человек подтверждает, что понял про
+    # пароль, не прочитав про пароль. Отсчёт — цена одного прочтения.
+    check("подтверждение недоступно, пока идёт отсчёт",
+          "_countdown > 0" in sub and "onPressed: _countdown > 0" in sub)
+    check("отсчёт не меньше трёх секунд",
+          "_readSeconds = 4" in sub or "_readSeconds = 3" in sub)
+    check("ссылка входа приложением НЕ хранится (её нет ни в одном хранилище)",
+          "loginUrl" in sub and "SharedPreferences" not in sub and "setString" not in sub)
+    check("экран возврата открывается и позже, но уже без ссылки",
+          "RecoveryView(accessKey: status.key)" in sub)
+    check("QR рисуется, только когда картинка пришла с сервера",
+          "invoice.qrSvg.isNotEmpty" in sub and "SvgPicture.string" in sub)
+    api_dart = read("lib/models/account.dart")
+    check("пустой QR — рабочий случай, а не поломка", "qrSvg: json['qr_svg'] is String" in api_dart)
+    for code in ("recoverAccess", "loginLinkWarning", "savedIt", "bindTelegram"):
+        check(f"надпись {code} переведена на все четыре языка",
+              all(f'"{code}"' in read(f"arb/intl_{lang}.arb")
+                  for lang in ("en", "ru", "ja", "zh_CN")))
+
+    check("КОНТРОЛЬ: заведомо отсутствующая надпись НЕ находится во всех четырёх",
+          not all('"ЗаведомоНетТакогоКлюча"' in read(f"arb/intl_{lang}.arb")
+                  for lang in ("en", "ru", "ja", "zh_CN")))
+
     print(f"\nИТОГО: {_ok} PASS, {_fail} FAIL")
     return 1 if _fail else 0
 

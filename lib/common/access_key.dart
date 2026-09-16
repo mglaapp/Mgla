@@ -27,6 +27,24 @@ String? subscriptionUrlOf(String? input) {
   return _httpUrl(value);
 }
 
+/// Ключ подписки, вынутый из адреса профиля, — обратная сторона [subscriptionUrlOf].
+///
+/// Второй раз ключ нигде не хранится НАМЕРЕННО: он уже лежит в адресе профиля, а две копии
+/// одного секрета расходятся молча — та, что осталась старой, потом отвечает «ключ не найден»
+/// ровно в тот момент, когда человек платит.
+///
+/// Чужой адрес отбивается: про чужие подписки наш сервер ничего не знает, и спрашивать его о
+/// них значит отправлять чужой ключ на наш сервер.
+String? accessKeyOf(String? url) {
+  final value = url?.trim() ?? '';
+  const prefix = '$subscriptionSite$subscriptionPath';
+  if (!value.startsWith(prefix)) {
+    return null;
+  }
+  final key = value.substring(prefix.length);
+  return _keyPattern.hasMatch(key) ? key : null;
+}
+
 String? _httpUrl(String? value) {
   if (value == null || value.isEmpty) {
     return null;

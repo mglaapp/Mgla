@@ -123,7 +123,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "accessKeyTip": MessageLookupByLibrary.simpleMessage(
       "Ключ не подошёл. Скопируйте его из кабинета целиком.",
     ),
+    "accessNotPaid": MessageLookupByLibrary.simpleMessage("Доступ не оплачен"),
+    "accessPaidUntil": MessageLookupByLibrary.simpleMessage(
+      "Доступ оплачен до",
+    ),
     "account": MessageLookupByLibrary.simpleMessage("Аккаунт"),
+    "accountCreated": MessageLookupByLibrary.simpleMessage("Аккаунт создан"),
+    "accountCreatedTip": MessageLookupByLibrary.simpleMessage(
+      "Сохраните ссылку входа. Без неё не войти на сайт с другого устройства: в приложении доступ останется, а вход на сайт — нет.",
+    ),
     "action": MessageLookupByLibrary.simpleMessage("Действие"),
     "actionMode": MessageLookupByLibrary.simpleMessage("Переключить режим"),
     "actionProxy": MessageLookupByLibrary.simpleMessage("Системный прокси"),
@@ -243,6 +251,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Из-за системных ограничений во время работы невозможно корректно получить статус оптимизации батареи",
     ),
     "bind": MessageLookupByLibrary.simpleMessage("Привязать"),
+    "bindEmail": MessageLookupByLibrary.simpleMessage("Привязать почту"),
+    "bindTelegram": MessageLookupByLibrary.simpleMessage("Привязать телеграм"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage(
       "Режим чёрного списка",
     ),
@@ -352,6 +362,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "При включении в случае сбоя приложения автоматически загружаются логи сбоя без конфиденциальной информации",
     ),
     "create": MessageLookupByLibrary.simpleMessage("Создать"),
+    "createAccount": MessageLookupByLibrary.simpleMessage("Создать аккаунт"),
     "createProfile": MessageLookupByLibrary.simpleMessage("Создать профиль"),
     "createProfileFromUrlTip": m2,
     "creationTime": MessageLookupByLibrary.simpleMessage("Время создания"),
@@ -385,7 +396,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteMultipTip": m4,
     "deleteTip": m5,
     "desc": MessageLookupByLibrary.simpleMessage(
-      "Многоплатформенный прокси-клиент на основе ClashMeta: простой и удобный, с открытым исходным кодом и без рекламы.",
+      "Mgla — приложение сервиса mgla.app. Открытый исходный код, без рекламы; из устройства само ничего не уходит. Ядро ClashMeta.",
     ),
     "destination": MessageLookupByLibrary.simpleMessage("Назначение"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage(
@@ -434,10 +445,33 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "editRule": MessageLookupByLibrary.simpleMessage("Редактировать правило"),
     "editSsid": MessageLookupByLibrary.simpleMessage("Изменить SSID"),
+    "emailAddress": MessageLookupByLibrary.simpleMessage("Адрес почты"),
     "emptyTip": m7,
     "en": MessageLookupByLibrary.simpleMessage("Английский"),
     "entries": MessageLookupByLibrary.simpleMessage(" записей"),
     "entriesCount": m8,
+    "errBadEmail": MessageLookupByLibrary.simpleMessage(
+      "Адрес не похож на почтовый",
+    ),
+    "errMailOff": MessageLookupByLibrary.simpleMessage(
+      "Отправка писем сейчас недоступна",
+    ),
+    "errNetwork": MessageLookupByLibrary.simpleMessage(
+      "Не удалось связаться с сервером",
+    ),
+    "errTgOff": MessageLookupByLibrary.simpleMessage(
+      "Вход через телеграм сейчас недоступен",
+    ),
+    "errTooMany": MessageLookupByLibrary.simpleMessage(
+      "Слишком много попыток, попробуйте позже",
+    ),
+    "errTooSoon": MessageLookupByLibrary.simpleMessage(
+      "Письмо уже отправлено, подождите минуту",
+    ),
+    "errUnknownKey": MessageLookupByLibrary.simpleMessage("Ключ не найден"),
+    "errUsdtOff": MessageLookupByLibrary.simpleMessage(
+      "Оплата USDT сейчас недоступна",
+    ),
     "exclude": MessageLookupByLibrary.simpleMessage("Скрыть из недавних задач"),
     "excludeDesc": MessageLookupByLibrary.simpleMessage(
       "Скрывать приложение из недавних задач, когда оно в фоне",
@@ -514,6 +548,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "При включении используется Geo-загрузчик с низким потреблением памяти",
     ),
     "geoipCode": MessageLookupByLibrary.simpleMessage("Код GeoIP"),
+    "getSubscription": MessageLookupByLibrary.simpleMessage(
+      "Оформить подписку",
+    ),
     "global": MessageLookupByLibrary.simpleMessage("Глобальный"),
     "go": MessageLookupByLibrary.simpleMessage("Перейти"),
     "goDownload": MessageLookupByLibrary.simpleMessage("Скачать"),
@@ -540,6 +577,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "hours": MessageLookupByLibrary.simpleMessage("часов"),
     "hoursAgo": m12,
     "hoursCount": m13,
+    "iPaid": MessageLookupByLibrary.simpleMessage("Я оплатил"),
     "icon": MessageLookupByLibrary.simpleMessage("Значок"),
     "iconRecords": MessageLookupByLibrary.simpleMessage("История значков"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("Стиль значков"),
@@ -581,9 +619,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "installPermissionRequired": MessageLookupByLibrary.simpleMessage(
       "Нужно разрешение на установку",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -634,6 +673,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "В прошлый раз приложение неожиданно завершилось во время запуска. Автоматическая настройка для этого запуска пропущена; вы можете запустить её вручную.",
     ),
     "layout": MessageLookupByLibrary.simpleMessage("Макет"),
+    "letterSent": MessageLookupByLibrary.simpleMessage("Письмо отправлено"),
     "light": MessageLookupByLibrary.simpleMessage("Светлая"),
     "list": MessageLookupByLibrary.simpleMessage("Список"),
     "listen": MessageLookupByLibrary.simpleMessage("Прослушивание"),
@@ -660,6 +700,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "logcat": MessageLookupByLibrary.simpleMessage("Захват логов"),
     "logcatDesc": MessageLookupByLibrary.simpleMessage(
       "При отключении раздел логов будет скрыт",
+    ),
+    "loginLinkTitle": MessageLookupByLibrary.simpleMessage("Ссылка входа"),
+    "loginLinkWarning": MessageLookupByLibrary.simpleMessage(
+      "Эта ссылка равна паролю: кто её откроет, тот войдёт в ваш аккаунт. Не отправляйте её в переписке и нигде не выкладывайте. Храните как пароль.",
     ),
     "logs": MessageLookupByLibrary.simpleMessage("Логи"),
     "logsDesc": MessageLookupByLibrary.simpleMessage(
@@ -698,6 +742,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Изменяет стандартное поведение при выходе",
     ),
     "minutesAgo": m20,
+    "minutesLeftLabel": MessageLookupByLibrary.simpleMessage(
+      "Счёт действует, минут",
+    ),
     "mixedPort": MessageLookupByLibrary.simpleMessage("Смешанный порт"),
     "mode": MessageLookupByLibrary.simpleMessage("Режим"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Монохром"),
@@ -729,6 +776,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkType": MessageLookupByLibrary.simpleMessage("Тип сети"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Нейтральная"),
     "nextMatch": MessageLookupByLibrary.simpleMessage("Следующее совпадение"),
+    "noAccessKeyYet": MessageLookupByLibrary.simpleMessage("Ключа ещё нет?"),
     "noData": MessageLookupByLibrary.simpleMessage("Нет данных"),
     "noHotKey": MessageLookupByLibrary.simpleMessage("Горячих клавиш пока нет"),
     "noInfo": MessageLookupByLibrary.simpleMessage("Нет информации"),
@@ -791,6 +839,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("Палитра"),
     "password": MessageLookupByLibrary.simpleMessage("Пароль"),
     "paste": MessageLookupByLibrary.simpleMessage("Вставить"),
+    "payOnSite": MessageLookupByLibrary.simpleMessage("Оплатить на сайте"),
+    "payUsdt": MessageLookupByLibrary.simpleMessage("Оплатить USDT"),
+    "paymentNotSeen": MessageLookupByLibrary.simpleMessage(
+      "Платёж пока не виден в сети. Перевод идёт до нескольких минут — нажмите ещё раз чуть позже.",
+    ),
+    "paymentReceived": MessageLookupByLibrary.simpleMessage("Оплата получена"),
     "pickFromAlbum": MessageLookupByLibrary.simpleMessage("Выбрать из галереи"),
     "pinWindow": MessageLookupByLibrary.simpleMessage(
       "Закрепить поверх всех окон",
@@ -888,6 +942,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "quickFill": MessageLookupByLibrary.simpleMessage("Быстрое заполнение"),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Радуга"),
+    "recoverAccess": MessageLookupByLibrary.simpleMessage("Как вернуть доступ"),
+    "recoverAccessTip": MessageLookupByLibrary.simpleMessage(
+      "Аккаунт живёт в этом приложении. Привяжите почту или телеграм — иначе вернуть оплаченный доступ с другого устройства будет нечем.",
+    ),
     "redirPort": MessageLookupByLibrary.simpleMessage("Порт Redir"),
     "redo": MessageLookupByLibrary.simpleMessage("Повторить"),
     "remote": MessageLookupByLibrary.simpleMessage("Удалённо"),
@@ -898,6 +956,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Удалённое назначение",
     ),
     "remove": MessageLookupByLibrary.simpleMessage("Убрать"),
+    "renewSubscription": MessageLookupByLibrary.simpleMessage(
+      "Продлить подписку",
+    ),
     "request": MessageLookupByLibrary.simpleMessage("Запрос"),
     "requests": MessageLookupByLibrary.simpleMessage("Запросы"),
     "requestsDesc": MessageLookupByLibrary.simpleMessage(
@@ -1082,6 +1143,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "rulesCount": m26,
     "save": MessageLookupByLibrary.simpleMessage("Сохранить"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Сохранить изменения?"),
+    "savedIt": MessageLookupByLibrary.simpleMessage("Я сохранил"),
     "script": MessageLookupByLibrary.simpleMessage("Скрипт"),
     "scriptModeDesc": MessageLookupByLibrary.simpleMessage(
       "Режим скрипта: использует внешние скрипты-расширения для переопределения конфигурации в один клик",
@@ -1111,9 +1173,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Выбрано"),
     "selectedCountTitle": m28,
+    "sendLetter": MessageLookupByLibrary.simpleMessage("Отправить письмо"),
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
     "showLess": MessageLookupByLibrary.simpleMessage("Свернуть"),
+    "showLink": MessageLookupByLibrary.simpleMessage("Показать ссылку"),
     "showMore": MessageLookupByLibrary.simpleMessage("Развернуть"),
     "showNotificationStopAction": MessageLookupByLibrary.simpleMessage(
       "Кнопка остановки в уведомлении",
@@ -1164,6 +1228,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Подправило не может быть пустым",
     ),
     "submit": MessageLookupByLibrary.simpleMessage("Отправить"),
+    "subscription": MessageLookupByLibrary.simpleMessage("Подписка"),
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage(
       "Информация о подписке",
     ),
@@ -1246,6 +1311,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("Получить профиль по URL"),
     "urlTip": m29,
+    "usdtAddress": MessageLookupByLibrary.simpleMessage("Адрес"),
+    "usdtAmount": MessageLookupByLibrary.simpleMessage("Сумма"),
+    "usdtNetwork": MessageLookupByLibrary.simpleMessage("Сеть"),
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системный hosts",
@@ -1269,6 +1337,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage(
       "Настройка WebDAV",
     ),
+    "website": MessageLookupByLibrary.simpleMessage("Сайт"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage(
       "Режим белого списка",
     ),

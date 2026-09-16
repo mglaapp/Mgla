@@ -570,6 +570,341 @@ class AppLocalizations {
     );
   }
 
+  /// `No access key yet?`
+  String get noAccessKeyYet {
+    return Intl.message(
+      'No access key yet?',
+      name: 'noAccessKeyYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get a subscription`
+  String get getSubscription {
+    return Intl.message(
+      'Get a subscription',
+      name: 'getSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Renew subscription`
+  String get renewSubscription {
+    return Intl.message(
+      'Renew subscription',
+      name: 'renewSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Website`
+  String get website {
+    return Intl.message('Website', name: 'website', desc: '', args: []);
+  }
+
+  /// `Subscription`
+  String get subscription {
+    return Intl.message(
+      'Subscription',
+      name: 'subscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create account`
+  String get createAccount {
+    return Intl.message(
+      'Create account',
+      name: 'createAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account created`
+  String get accountCreated {
+    return Intl.message(
+      'Account created',
+      name: 'accountCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save the login link. Without it you cannot sign in to the site from another device: the app keeps working, the website login does not.`
+  String get accountCreatedTip {
+    return Intl.message(
+      'Save the login link. Without it you cannot sign in to the site from another device: the app keeps working, the website login does not.',
+      name: 'accountCreatedTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access paid until`
+  String get accessPaidUntil {
+    return Intl.message(
+      'Access paid until',
+      name: 'accessPaidUntil',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access not paid`
+  String get accessNotPaid {
+    return Intl.message(
+      'Access not paid',
+      name: 'accessNotPaid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pay with USDT`
+  String get payUsdt {
+    return Intl.message('Pay with USDT', name: 'payUsdt', desc: '', args: []);
+  }
+
+  /// `Pay on the website`
+  String get payOnSite {
+    return Intl.message(
+      'Pay on the website',
+      name: 'payOnSite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I have paid`
+  String get iPaid {
+    return Intl.message('I have paid', name: 'iPaid', desc: '', args: []);
+  }
+
+  /// `The payment is not visible on the network yet. A transfer takes up to a few minutes, tap again shortly.`
+  String get paymentNotSeen {
+    return Intl.message(
+      'The payment is not visible on the network yet. A transfer takes up to a few minutes, tap again shortly.',
+      name: 'paymentNotSeen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment received`
+  String get paymentReceived {
+    return Intl.message(
+      'Payment received',
+      name: 'paymentReceived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount`
+  String get usdtAmount {
+    return Intl.message('Amount', name: 'usdtAmount', desc: '', args: []);
+  }
+
+  /// `Address`
+  String get usdtAddress {
+    return Intl.message('Address', name: 'usdtAddress', desc: '', args: []);
+  }
+
+  /// `Network`
+  String get usdtNetwork {
+    return Intl.message('Network', name: 'usdtNetwork', desc: '', args: []);
+  }
+
+  /// `Invoice valid, minutes`
+  String get minutesLeftLabel {
+    return Intl.message(
+      'Invoice valid, minutes',
+      name: 'minutesLeftLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Key not found`
+  String get errUnknownKey {
+    return Intl.message(
+      'Key not found',
+      name: 'errUnknownKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `USDT payment is unavailable right now`
+  String get errUsdtOff {
+    return Intl.message(
+      'USDT payment is unavailable right now',
+      name: 'errUsdtOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Too many attempts, try again later`
+  String get errTooMany {
+    return Intl.message(
+      'Too many attempts, try again later',
+      name: 'errTooMany',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not reach the server`
+  String get errNetwork {
+    return Intl.message(
+      'Could not reach the server',
+      name: 'errNetwork',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting back in`
+  String get recoverAccess {
+    return Intl.message(
+      'Getting back in',
+      name: 'recoverAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The account lives in this app. Link an email address or Telegram, otherwise there is nothing to get your paid access back with from another device.`
+  String get recoverAccessTip {
+    return Intl.message(
+      'The account lives in this app. Link an email address or Telegram, otherwise there is nothing to get your paid access back with from another device.',
+      name: 'recoverAccessTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Link an email address`
+  String get bindEmail {
+    return Intl.message(
+      'Link an email address',
+      name: 'bindEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Link Telegram`
+  String get bindTelegram {
+    return Intl.message(
+      'Link Telegram',
+      name: 'bindTelegram',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email address`
+  String get emailAddress {
+    return Intl.message(
+      'Email address',
+      name: 'emailAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send the letter`
+  String get sendLetter {
+    return Intl.message(
+      'Send the letter',
+      name: 'sendLetter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Letter sent`
+  String get letterSent {
+    return Intl.message('Letter sent', name: 'letterSent', desc: '', args: []);
+  }
+
+  /// `Login link`
+  String get loginLinkTitle {
+    return Intl.message(
+      'Login link',
+      name: 'loginLinkTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This link is the same as a password: whoever opens it is signed in to your account. Do not send it in chats and do not post it anywhere. Keep it the way you keep a password.`
+  String get loginLinkWarning {
+    return Intl.message(
+      'This link is the same as a password: whoever opens it is signed in to your account. Do not send it in chats and do not post it anywhere. Keep it the way you keep a password.',
+      name: 'loginLinkWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show the link`
+  String get showLink {
+    return Intl.message('Show the link', name: 'showLink', desc: '', args: []);
+  }
+
+  /// `I have saved it`
+  String get savedIt {
+    return Intl.message('I have saved it', name: 'savedIt', desc: '', args: []);
+  }
+
+  /// `That does not look like an email address`
+  String get errBadEmail {
+    return Intl.message(
+      'That does not look like an email address',
+      name: 'errBadEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sending letters is unavailable right now`
+  String get errMailOff {
+    return Intl.message(
+      'Sending letters is unavailable right now',
+      name: 'errMailOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Telegram sign-in is unavailable right now`
+  String get errTgOff {
+    return Intl.message(
+      'Telegram sign-in is unavailable right now',
+      name: 'errTgOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A letter has already been sent, wait a minute`
+  String get errTooSoon {
+    return Intl.message(
+      'A letter has already been sent, wait a minute',
+      name: 'errTooSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `File`
   String get file {
     return Intl.message('File', name: 'file', desc: '', args: []);
@@ -855,10 +1190,10 @@ class AppLocalizations {
     );
   }
 
-  /// `A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.`
+  /// `Mgla is the app for the mgla.app service. Open source, no ads; nothing leaves the device on its own. ClashMeta core.`
   String get desc {
     return Intl.message(
-      'A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.',
+      'Mgla is the app for the mgla.app service. Open source, no ads; nothing leaves the device on its own. ClashMeta core.',
       name: 'desc',
       desc: '',
       args: [],
