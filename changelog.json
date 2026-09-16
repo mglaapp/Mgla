@@ -2,6 +2,24 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "0.9.4",
+      "tag": "v0.9.4",
+      "date": "2026-09-16",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "2b22f0a",
+              "scope": "account",
+              "text": "Подписка и оплата в приложении"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.9.3",
       "tag": "v0.9.3",
       "date": "2026-09-13",
