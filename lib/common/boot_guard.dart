@@ -13,6 +13,7 @@ class BootGuard {
   final Future<void> Function(BootRecord record) _writeRecord;
   final Future<AppExitInfo?> Function() _readExitInfo;
   final Future<bool> Function() _readCrashReport;
+  final void Function(AppExitInfo exit) _reportExit;
   final int Function() _now;
 
   BootDecision _decision = const BootDecision();
@@ -23,18 +24,23 @@ class BootGuard {
     Future<void> Function(BootRecord record)? writeRecord,
     Future<AppExitInfo?> Function()? readExitInfo,
     Future<bool> Function()? readCrashReport,
+    void Function(AppExitInfo exit)? reportExit,
     int Function()? now,
   }) : _supported = supported ?? system.isAndroid,
        _readRecord = readRecord ?? preferences.getBootRecord,
        _writeRecord = writeRecord ?? preferences.saveBootRecord,
        _readExitInfo = readExitInfo ?? system.lastExitInfo,
        _readCrashReport = readCrashReport ?? _localCrashReport,
+       _reportExit = reportExit ?? _recordExit,
        _now = now ?? _currentMilliseconds;
 
   static int _currentMilliseconds() => DateTime.now().millisecondsSinceEpoch;
 
   static Future<bool> _localCrashReport() async =>
       crashReports.recordedBeforeThisRun();
+
+  static void _recordExit(AppExitInfo exit) =>
+      crashReports.recordExit(exit.reason.name, exit.description);
 
   BootDecision get decision => _decision;
 
@@ -45,6 +51,11 @@ class BootGuard {
     final record = await _readRecord();
     final exitInfo = await _readExitInfo();
     final crashReported = await _readCrashReport();
+    if (exitInfo != null &&
+        exitInfo.reason.isCrash &&
+        exitInfo.timestamp > (record?.handledExitAt ?? 0)) {
+      _reportExit(exitInfo);
+    }
     final decision = resolveBootDecision(
       record: record,
       exitInfo: exitInfo,

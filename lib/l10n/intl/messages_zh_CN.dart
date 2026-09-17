@@ -253,6 +253,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "country": MessageLookupByLibrary.simpleMessage("区域"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("检测到崩溃"),
     "crashDetectedTip": m1,
+    "crashReportsUpload": MessageLookupByLibrary.simpleMessage("发送崩溃报告"),
+    "crashReportsUploadDesc": MessageLookupByLibrary.simpleMessage(
+      "应用崩溃时，下次启动时向我们发送报告。链接、密钥、地址和邮箱会先被删除",
+    ),
     "crashTest": MessageLookupByLibrary.simpleMessage("崩溃测试"),
     "crashlytics": MessageLookupByLibrary.simpleMessage("崩溃分析"),
     "crashlyticsTip": MessageLookupByLibrary.simpleMessage(

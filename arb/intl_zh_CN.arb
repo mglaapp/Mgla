@@ -51,6 +51,8 @@
   "logcatDesc": "禁用将会隐藏日志入口",
   "autoCheckUpdate": "自动检查更新",
   "autoCheckUpdateDesc": "应用启动时自动检查更新",
+  "crashReportsUpload": "发送崩溃报告",
+  "crashReportsUploadDesc": "应用崩溃时，下次启动时向我们发送报告。链接、密钥、地址和邮箱会先被删除",
   "checkCertificate": "校验 TLS 证书",
   "checkCertificateDesc": "拒绝不受信任的证书。关闭后订阅和备份将暴露于中间人攻击",
   "accessControl": "访问控制",

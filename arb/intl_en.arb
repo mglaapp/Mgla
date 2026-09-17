@@ -51,6 +51,8 @@
   "logcatDesc": "Disabling hides the log entry point",
   "autoCheckUpdate": "Auto check for updates",
   "autoCheckUpdateDesc": "Check for updates automatically when the app starts",
+  "crashReportsUpload": "Send crash reports",
+  "crashReportsUploadDesc": "If the app crashes, send us a report on the next launch. Links, keys, addresses and email are removed first",
   "checkCertificate": "Verify TLS certificates",
   "checkCertificateDesc": "Reject untrusted certificates. Turning this off exposes subscriptions and backups to man-in-the-middle attacks",
   "accessControl": "Access control",

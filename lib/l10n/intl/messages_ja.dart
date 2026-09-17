@@ -281,6 +281,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "country": MessageLookupByLibrary.simpleMessage("地域"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("クラッシュを検出しました"),
     "crashDetectedTip": m1,
+    "crashReportsUpload": MessageLookupByLibrary.simpleMessage("クラッシュレポートを送信"),
+    "crashReportsUploadDesc": MessageLookupByLibrary.simpleMessage(
+      "アプリがクラッシュした場合、次回起動時にレポートを送信します。リンク、キー、アドレス、メールは事前に削除されます",
+    ),
     "crashTest": MessageLookupByLibrary.simpleMessage("クラッシュテスト"),
     "crashlytics": MessageLookupByLibrary.simpleMessage("クラッシュ分析"),
     "crashlyticsTip": MessageLookupByLibrary.simpleMessage(

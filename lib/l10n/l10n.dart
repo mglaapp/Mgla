@@ -425,6 +425,26 @@ class AppLocalizations {
     );
   }
 
+  /// `Send crash reports`
+  String get crashReportsUpload {
+    return Intl.message(
+      'Send crash reports',
+      name: 'crashReportsUpload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If the app crashes, send us a report on the next launch. Links, keys, addresses and email are removed first`
+  String get crashReportsUploadDesc {
+    return Intl.message(
+      'If the app crashes, send us a report on the next launch. Links, keys, addresses and email are removed first',
+      name: 'crashReportsUploadDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Verify TLS certificates`
   String get checkCertificate {
     return Intl.message(

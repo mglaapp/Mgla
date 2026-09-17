@@ -193,6 +193,21 @@ class Request {
 
   static const _apiBase = '$subscriptionSite/api/v1';
 
+  /// Version and platform only: the account key already travels in the request.
+  static String? appHeader() {
+    try {
+      final info = globalState.packageInfo;
+      return '${info.version}+${info.buildNumber}; ${Platform.operatingSystem}';
+    } on Error {
+      return null;
+    }
+  }
+
+  static Map<String, String> _appHeaders() {
+    final value = appHeader();
+    return value == null ? const {} : {'X-Mgla-App': value};
+  }
+
   Future<Result<T>> _api<T>(
     String path, {
     Map<String, dynamic>? form,
@@ -205,6 +220,7 @@ class Request {
       responseType: ResponseType.json,
       validateStatus: (code) => code != null && code < 500,
       contentType: form == null ? null : Headers.formUrlEncodedContentType,
+      headers: _appHeaders(),
     );
     try {
       final response = form == null
@@ -288,6 +304,33 @@ class Request {
     form: {'key': key},
     parse: AccountStatus.fromJson,
   );
+
+  /// No account key on purpose: a crash report must not say whose app it came from.
+  Future<CrashDelivery> sendCrashReport(Map<String, String> report) async {
+    try {
+      final response = await dio.post(
+        '$_apiBase/crash',
+        data: report,
+        options: Options(
+          contentType: Headers.jsonContentType,
+          headers: _appHeaders(),
+          validateStatus: (_) => true,
+          sendTimeout: const Duration(seconds: 15),
+          receiveTimeout: const Duration(seconds: 15),
+        ),
+      );
+      final code = response.statusCode ?? 0;
+      return code == 429 || code >= 500
+          ? CrashDelivery.retryLater
+          : CrashDelivery.delivered;
+    } catch (e) {
+      commonPrint.log(
+        'crash report not sent ${compactError(e)}',
+        logLevel: LogLevel.warning,
+      );
+      return CrashDelivery.retryLater;
+    }
+  }
 }
 
 final request = Request();

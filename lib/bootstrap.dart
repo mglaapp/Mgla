@@ -152,6 +152,9 @@ class Bootstrap {
     );
     unawaited(_container.read(commonActionProvider.notifier).autoCheckUpdate());
     unawaited(
+      _container.read(commonActionProvider.notifier).uploadCrashReports(),
+    );
+    unawaited(
       autoLaunch?.updateStatus(_container.read(appSettingProvider).autoLaunch),
     );
     if (!_container.read(appSettingProvider).silentLaunch) {

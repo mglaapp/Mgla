@@ -21,6 +21,7 @@ BootGuard _guard(
   bool crashReported = false,
   int now = 5000,
   void Function()? onCrashProbe,
+  void Function(AppExitInfo exit)? onExit,
 }) {
   return BootGuard(
     supported: supported,
@@ -31,11 +32,52 @@ BootGuard _guard(
       onCrashProbe?.call();
       return crashReported;
     },
+    reportExit: onExit ?? (_) {},
     now: () => now,
   );
 }
 
 void main() {
+  group('a crash only the system saw is reported', () {
+    test('once, when it is newer than the handled exit', () async {
+      final store = _RecordStore()
+        ..record = const BootRecord(
+          stage: BootStage.running,
+          profileId: 7,
+          startedAt: 1000,
+          handledExitAt: 900,
+        );
+      final reported = <AppExitInfo>[];
+      const exit = AppExitInfo(
+        reason: AppExitReason.anr,
+        timestamp: 2000,
+        description: 'Input dispatching timed out',
+      );
+      final guard = _guard(store, exitInfo: exit, onExit: reported.add);
+
+      await guard.evaluate(profileId: 7);
+      await guard.evaluate(profileId: 7);
+
+      expect(reported, [exit]);
+    });
+
+    test('not for an exit the user or the system caused', () async {
+      final reported = <AppExitInfo>[];
+      final guard = _guard(
+        _RecordStore(),
+        exitInfo: const AppExitInfo(
+          reason: AppExitReason.userRequested,
+          timestamp: 2000,
+        ),
+        onExit: reported.add,
+      );
+
+      await guard.evaluate(profileId: 7);
+
+      expect(reported, isEmpty);
+    });
+  });
+
   test(
     'a first launch records a starting stage and recovers nothing',
     () async {

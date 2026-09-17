@@ -357,6 +357,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "country": MessageLookupByLibrary.simpleMessage("Регион"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("Обнаружен сбой"),
     "crashDetectedTip": m1,
+    "crashReportsUpload": MessageLookupByLibrary.simpleMessage(
+      "Отправлять отчёты о падениях",
+    ),
+    "crashReportsUploadDesc": MessageLookupByLibrary.simpleMessage(
+      "Если приложение упадёт, при следующем запуске отправить нам отчёт. Ссылки, ключи, адреса и почта из него вырезаются",
+    ),
     "crashTest": MessageLookupByLibrary.simpleMessage("Тест сбоя"),
     "crashlytics": MessageLookupByLibrary.simpleMessage("Аналитика сбоев"),
     "crashlyticsTip": MessageLookupByLibrary.simpleMessage(

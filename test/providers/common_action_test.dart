@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:fl_clash/common/crash_report.dart';
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/core/interface.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -167,6 +169,59 @@ void main() {
         container.read(commonActionProvider.notifier).autoCheckUpdate(),
         completion(isFalse),
       );
+    });
+  });
+
+  group('CommonAction.uploadCrashReports', () {
+    late Directory directory;
+    late CrashReports reports;
+
+    setUp(() {
+      directory = Directory.systemTemp.createTempSync('mgla_upload_');
+      reports = CrashReports()..useDirectory(directory);
+      reports.record(StateError('boom'), null, kind: 'init');
+    });
+
+    tearDown(() => directory.deleteSync(recursive: true));
+
+    test('sends nothing when the user turned reports off', () async {
+      final container = buildContainer();
+      container
+          .read(appSettingProvider.notifier)
+          .update((state) => state.copyWith(crashReportsUpload: false));
+      var calls = 0;
+
+      final handled = await container
+          .read(commonActionProvider.notifier)
+          .uploadCrashReports(
+            reports: reports,
+            send: (_) async {
+              calls++;
+              return CrashDelivery.delivered;
+            },
+          );
+
+      expect(handled, 0);
+      expect(calls, 0);
+    });
+
+    test('sends by default and names the running version', () async {
+      final container = buildContainer();
+      final sent = <Map<String, String>>[];
+
+      final handled = await container
+          .read(commonActionProvider.notifier)
+          .uploadCrashReports(
+            reports: reports,
+            send: (report) async {
+              sent.add(report);
+              return CrashDelivery.delivered;
+            },
+          );
+
+      expect(handled, 1);
+      expect(sent.single['version'], runningVersion);
+      expect(sent.single['kind'], 'init');
     });
   });
 }

@@ -80,6 +80,17 @@ class CommonAction extends _$CommonAction {
     return res != null;
   }
 
+  Future<int> uploadCrashReports({
+    CrashReports? reports,
+    Future<CrashDelivery> Function(Map<String, String> report)? send,
+  }) async {
+    if (!ref.read(appSettingProvider).crashReportsUpload) return 0;
+    return (reports ?? crashReports).upload(
+      send ?? request.sendCrashReport,
+      fallbackVersion: globalState.packageInfo.version,
+    );
+  }
+
   TextSpan _releaseSpan(BuildContext context, String tagName, String? body) {
     final textTheme = context.textTheme;
     final version = parseReleaseChangelog(body);

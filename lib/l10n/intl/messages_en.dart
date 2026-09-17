@@ -351,6 +351,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "country": MessageLookupByLibrary.simpleMessage("Region"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("Crash detected"),
     "crashDetectedTip": m1,
+    "crashReportsUpload": MessageLookupByLibrary.simpleMessage(
+      "Send crash reports",
+    ),
+    "crashReportsUploadDesc": MessageLookupByLibrary.simpleMessage(
+      "If the app crashes, send us a report on the next launch. Links, keys, addresses and email are removed first",
+    ),
     "crashTest": MessageLookupByLibrary.simpleMessage("Crash test"),
     "crashlytics": MessageLookupByLibrary.simpleMessage("Crash analytics"),
     "crashlyticsTip": MessageLookupByLibrary.simpleMessage(
