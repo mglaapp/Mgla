@@ -131,4 +131,73 @@ void main() {
       );
     });
   });
+
+  group('where updates come from (mirror since 05-10)', () {
+    test('our mirror is asked first, GitHub second, both over https', () {
+      final sources = updateSources();
+      expect(sources, hasLength(2));
+      expect(sources.first, 'https://mgla.app/api/v1/app/release');
+      expect(sources.last, startsWith('https://api.github.com/repos/'));
+      expect(updatePageUrl, 'https://mgla.app/download');
+    });
+
+    test('only a strictly newer tag counts as an update', () {
+      expect(isNewerRelease({'tag_name': 'v0.9.6'}, '0.9.5'), isTrue);
+      expect(isNewerRelease({'tag_name': 'v0.9.5'}, '0.9.5'), isFalse);
+      expect(isNewerRelease({'tag_name': 'v0.9.4'}, '0.9.5'), isFalse);
+      expect(isNewerRelease({'tag_name': 'v0.10.0'}, '0.9.5'), isTrue);
+    });
+
+    test('anything unreadable is "no update here", never an exception', () {
+      // The caller moves on to GitHub on false; an exception would end the check instead.
+      expect(isNewerRelease(null, '0.9.5'), isFalse);
+      expect(isNewerRelease({}, '0.9.5'), isFalse);
+      expect(isNewerRelease({'tag_name': 5}, '0.9.5'), isFalse);
+      expect(isNewerRelease({'tag_name': ''}, '0.9.5'), isFalse);
+      expect(isNewerRelease({'tag_name': 'v0.9.6-pre.1'}, '0.9.5'), isFalse);
+      expect(isNewerRelease({'error': 'no_mirror'}, '0.9.5'), isFalse);
+    });
+
+    test('the mirror answer installs through the same picker as GitHub', () {
+      // The shape omnivpn/app_mirror.release_payload() returns: GitHub's own field names, file
+      // links on mgla.app, SHA256SUMS among the assets. If the server ever drifts from this,
+      // the update falls back to opening the page instead of installing.
+      final release = <String, dynamic>{
+        'tag_name': 'v0.9.6',
+        'body': 'notes',
+        'mirror': true,
+        'assets': [
+          {
+            'name': 'Mgla-0.9.6-windows-amd64-setup.exe',
+            'size': 39000764,
+            'browser_download_url':
+                'https://mgla.app/download/v0.9.6/Mgla-0.9.6-windows-amd64-setup.exe',
+            'digest': 'sha256:${'a' * 64}',
+          },
+          {
+            'name': 'Mgla-0.9.6-android-arm64-v8a.apk',
+            'size': 55614697,
+            'browser_download_url':
+                'https://mgla.app/download/v0.9.6/Mgla-0.9.6-android-arm64-v8a.apk',
+            'digest': 'sha256:${'b' * 64}',
+          },
+          {
+            'name': 'SHA256SUMS',
+            'size': 1472,
+            'browser_download_url':
+                'https://mgla.app/download/v0.9.6/SHA256SUMS',
+          },
+        ],
+      };
+      expect(isNewerRelease(release, '0.9.5'), isTrue);
+      final assets = release['assets'] as List<dynamic>;
+      final exe = pickUpdateAsset(assets, updateAssetSuffix(Abi.windowsX64));
+      expect(exe?.url, startsWith('https://mgla.app/download/v0.9.6/'));
+      expect(exe?.size, 39000764);
+      final apk = pickUpdateAsset(assets, updateAssetSuffix(Abi.androidArm64));
+      expect(apk?.name, 'Mgla-0.9.6-android-arm64-v8a.apk');
+      final sums = pickUpdateAsset(assets, 'SHA256SUMS');
+      expect(sums?.url, 'https://mgla.app/download/v0.9.6/SHA256SUMS');
+    });
+  });
 }

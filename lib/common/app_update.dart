@@ -2,6 +2,9 @@ import 'dart:convert' show LineSplitter;
 import 'dart:ffi' show Abi;
 import 'dart:io';
 
+import 'constant.dart';
+import 'package.dart';
+
 class UpdateAsset {
   const UpdateAsset({
     required this.name,
@@ -55,3 +58,31 @@ String? sha256ForAsset(String sums, String assetName) {
 }
 
 bool get canInstallUpdateInApp => Platform.isAndroid || Platform.isWindows;
+
+/// Where to ask about a newer version, in order: our own mirror first, then GitHub.
+///
+/// The mirror (mgla.app/api/v1/app/release, since 05-10) answers in GitHub's own release shape,
+/// with file links on mgla.app: from Russia GitHub opens slowly or not at all, and our name is
+/// the one the person already reaches. GitHub stays second, so a mirror that is down or behind
+/// never leaves anyone without an update — see [isNewerRelease] in Request.checkForUpdate.
+List<String> updateSources() => [
+  '$subscriptionSite/api/v1/app/release',
+  'https://api.github.com/repos/$repository/releases/latest',
+];
+
+/// The download page on our site: every build, picked for the device that opens it.
+const updatePageUrl = '$subscriptionSite/download';
+
+/// True when [release] (a GitHub-shaped release) is newer than [currentVersion].
+///
+/// False, not an exception, for anything unreadable: a tag like `v0.9.5-pre.1` or a missing
+/// tag must read as "no update here", so the caller moves on to the next source.
+bool isNewerRelease(Map<String, dynamic>? release, String currentVersion) {
+  final tag = release?['tag_name'];
+  if (tag is! String || tag.isEmpty) return false;
+  try {
+    return compareVersions(tag.replaceFirst('v', ''), currentVersion) > 0;
+  } catch (_) {
+    return false;
+  }
+}

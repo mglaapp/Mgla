@@ -129,7 +129,9 @@ class CommonAction extends _$CommonAction {
     ];
   }
 
-  static const _releasesUrl = 'https://github.com/$repository/releases/latest';
+  /// "Go download" opens our own page (05-10): it offers the build for the device that opens
+  /// it and links GitHub for everything else, so GitHub is still one tap away when needed.
+  static const _releasesUrl = updatePageUrl;
 
   /// Downloads the release file this machine can install and hands it to the system. Order
   /// matters, and MGLA.md says why: permission before the download, published checksum before

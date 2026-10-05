@@ -12,6 +12,10 @@ import 'package:fl_clash/state.dart';
 class Request {
   late final Dio dio;
   late final Dio _clashDio;
+
+  /// Update checks only. Bounded, unlike [dio]: the mirror is asked first, and a host that
+  /// never answers must hand over to GitHub in seconds, not after the system's TCP timeout.
+  late final Dio _updateDio;
   String? userAgent;
 
   ProviderReader? _read;
@@ -22,6 +26,13 @@ class Request {
 
   Request() {
     dio = Dio(BaseOptions(headers: {'User-Agent': browserUa}));
+    _updateDio = Dio(
+      BaseOptions(
+        headers: {'User-Agent': browserUa},
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 20),
+      ),
+    );
     _clashDio = Dio();
     _clashDio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
@@ -107,22 +118,37 @@ class Request {
     }
   }
 
+  /// A newer release, or null. Asks [updateSources] in order: our mirror, then GitHub.
+  ///
+  /// The next source is asked when one fails AND when one simply has nothing newer: a mirror
+  /// that fell behind (its disk filled up, a sync failed) must not hide a release GitHub
+  /// already has. Whichever answers first with a newer version wins, and its file links are
+  /// the ones installUpdate downloads from.
   Future<Map<String, dynamic>?> checkForUpdate() async {
+    final version = globalState.packageInfo.version;
+    for (final url in updateSources()) {
+      final data = await _latestRelease(url);
+      if (isNewerRelease(data, version)) return data;
+    }
+    return null;
+  }
+
+  Future<Map<String, dynamic>?> _latestRelease(String url) async {
     try {
-      final response = await dio.get(
-        'https://api.github.com/repos/$repository/releases/latest',
+      final response = await _updateDio.get(
+        url,
         options: Options(responseType: ResponseType.json),
       );
-      if (response.statusCode != 200) return null;
-      final data = response.data as Map<String, dynamic>;
-      final remoteVersion = data['tag_name'];
-      final version = globalState.packageInfo.version;
-      final hasUpdate =
-          compareVersions(remoteVersion.replaceAll('v', ''), version) > 0;
-      if (!hasUpdate) return null;
+      final data = response.data;
+      if (response.statusCode != 200 || data is! Map<String, dynamic>) {
+        return null;
+      }
       return data;
     } catch (e) {
-      commonPrint.log('checkForUpdate failed', logLevel: LogLevel.warning);
+      commonPrint.log(
+        'checkForUpdate failed at ${Uri.tryParse(url)?.host} ${compactError(e)}',
+        logLevel: LogLevel.warning,
+      );
       return null;
     }
   }
