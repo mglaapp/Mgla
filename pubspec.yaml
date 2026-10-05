@@ -108,6 +108,9 @@ flutter:
     - assets/fonts/
     - assets/images/
     - assets/images/empty/
+    # иконки монет для оплаты (05-10): СВОИМИ файлами, как шрифты — там, где сеть режут,
+    # картинки с сервера были бы пустыми квадратами. Лицензия — assets/coins/LICENSE.txt.
+    - assets/coins/
     - path: assets/images/tray/unix/
       platforms: [ macos, linux ]
     - path: assets/images/tray/windows/

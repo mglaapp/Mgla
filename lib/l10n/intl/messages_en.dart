@@ -278,6 +278,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkCertificateDesc": MessageLookupByLibrary.simpleMessage(
       "Reject untrusted certificates. Turning this off exposes subscriptions and backups to man-in-the-middle attacks",
     ),
+    "checkTransfer": MessageLookupByLibrary.simpleMessage("Check the transfer"),
     "checkUpdate": MessageLookupByLibrary.simpleMessage("Check for updates"),
     "checkUpdateError": MessageLookupByLibrary.simpleMessage(
       "The app is already up to date",
@@ -367,6 +368,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "createProfile": MessageLookupByLibrary.simpleMessage("Create profile"),
     "createProfileFromUrlTip": m2,
     "creationTime": MessageLookupByLibrary.simpleMessage("Creation time"),
+    "cryptoDesc": MessageLookupByLibrary.simpleMessage(
+      "A direct transfer to our wallet, no middlemen. USDT and USDC need no exchange rate. Pick a coin, then a network.",
+    ),
+    "cryptocurrency": MessageLookupByLibrary.simpleMessage("Cryptocurrency"),
     "custom": MessageLookupByLibrary.simpleMessage("Custom"),
     "cut": MessageLookupByLibrary.simpleMessage("Cut"),
     "dark": MessageLookupByLibrary.simpleMessage("Dark"),
@@ -452,6 +457,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "errCardOff": MessageLookupByLibrary.simpleMessage(
       "Card payment is unavailable right now",
+    ),
+    "errCoinsOff": MessageLookupByLibrary.simpleMessage(
+      "Crypto payment is unavailable right now",
+    ),
+    "errHashNotAccepted": MessageLookupByLibrary.simpleMessage(
+      "Transfer not confirmed: check the hash or try again in a minute.",
     ),
     "errMailOff": MessageLookupByLibrary.simpleMessage(
       "Sending letters is unavailable right now",
@@ -741,6 +752,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monochrome"),
     "monthsAgo": m21,
     "more": MessageLookupByLibrary.simpleMessage("More"),
+    "moreCoins": MessageLookupByLibrary.simpleMessage("More coins"),
     "multipleValuesTip": MessageLookupByLibrary.simpleMessage(
       "Separate multiple values with commas",
     ),
@@ -764,6 +776,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "networkException": MessageLookupByLibrary.simpleMessage(
       "Network error, please check your connection and try again",
+    ),
+    "networkOnlyWarn": MessageLookupByLibrary.simpleMessage(
+      "This network only — a transfer on another network will be lost.",
     ),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
     "networkType": MessageLookupByLibrary.simpleMessage("Network type"),
@@ -828,6 +843,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "paste": MessageLookupByLibrary.simpleMessage("Paste"),
     "pay": MessageLookupByLibrary.simpleMessage("Pay"),
     "payCard": MessageLookupByLibrary.simpleMessage("Pay by card"),
+    "payCardSbp": MessageLookupByLibrary.simpleMessage("Russian card or SBP"),
+    "payCardSbpButton": MessageLookupByLibrary.simpleMessage(
+      "Pay by card or SBP",
+    ),
+    "payCardSbpDesc": MessageLookupByLibrary.simpleMessage(
+      "Pay in roubles with a Russian card or via SBP through the FreeKassa payment service. Access turns on right after payment.",
+    ),
+    "payExact": MessageLookupByLibrary.simpleMessage(
+      "Send exactly this amount — that is how we recognise your payment.",
+    ),
+    "payExchangeWarn": MessageLookupByLibrary.simpleMessage(
+      "Paying from an exchange? It deducts a withdrawal fee — exactly this amount must ARRIVE at the address.",
+    ),
     "payOnSite": MessageLookupByLibrary.simpleMessage("Pay on the website"),
     "payUsdt": MessageLookupByLibrary.simpleMessage("Pay with USDT"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(
@@ -1245,6 +1273,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "turnOff": MessageLookupByLibrary.simpleMessage("Turn off"),
     "turnOn": MessageLookupByLibrary.simpleMessage("Turn on"),
+    "txHashLabel": MessageLookupByLibrary.simpleMessage(
+      "Transaction hash (0x…)",
+    ),
     "undo": MessageLookupByLibrary.simpleMessage("Undo"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("Unified delay"),
     "unifiedDelayDesc": MessageLookupByLibrary.simpleMessage(

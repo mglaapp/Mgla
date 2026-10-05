@@ -671,5 +671,18 @@
   "authorize": "授权",
   "installedAppsPermissionRequired": "需要读取应用列表权限",
   "installedAppsPermissionDesc": "当前系统在授权前不会提供已安装的应用列表，授权后即可配置分应用代理。",
-  "installedAppsPermissionDeniedMessage": "读取应用列表权限已被拒绝，无法获取已安装的应用。请前往系统设置手动开启。"
+  "installedAppsPermissionDeniedMessage": "读取应用列表权限已被拒绝，无法获取已安装的应用。请前往系统设置手动开启。",
+  "payCardSbp": "俄罗斯银行卡或SBP",
+  "payCardSbpDesc": "通过 FreeKassa 支付服务，使用俄罗斯银行卡或 SBP 以卢布付款。付款后立即开通。",
+  "payCardSbpButton": "用银行卡或 SBP 付款",
+  "cryptocurrency": "加密货币",
+  "cryptoDesc": "直接转账到我们的钱包，无中间方。USDT 和 USDC 无需汇率换算。先选币种，再选网络。",
+  "moreCoins": "更多币种",
+  "payExact": "请准确发送此金额——我们靠它识别您的付款。",
+  "payExchangeWarn": "从交易所付款？交易所会扣提币手续费——到账金额必须正好是这个数。",
+  "networkOnlyWarn": "仅限此网络——其他网络的转账将会丢失。",
+  "txHashLabel": "交易哈希（0x…）",
+  "checkTransfer": "核对转账",
+  "errCoinsOff": "加密货币付款暂不可用",
+  "errHashNotAccepted": "转账未确认：请检查哈希，或一分钟后重试。"
 }

@@ -1,0 +1,2 @@
+Иконки btc, eth, usdt, usdc, sol, trx, bnb, ltc, matic(pol), xrp, doge — набор cryptocurrency-icons 0.18.1
+(github.com/spothq/cryptocurrency-icons), лицензия CC0-1.0. ton, base, arb — нарисованы для Mgla (05-10).

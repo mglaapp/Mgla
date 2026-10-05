@@ -5589,6 +5589,131 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Russian card or SBP`
+  String get payCardSbp {
+    return Intl.message(
+      'Russian card or SBP',
+      name: 'payCardSbp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pay in roubles with a Russian card or via SBP through the FreeKassa payment service. Access turns on right after payment.`
+  String get payCardSbpDesc {
+    return Intl.message(
+      'Pay in roubles with a Russian card or via SBP through the FreeKassa payment service. Access turns on right after payment.',
+      name: 'payCardSbpDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pay by card or SBP`
+  String get payCardSbpButton {
+    return Intl.message(
+      'Pay by card or SBP',
+      name: 'payCardSbpButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cryptocurrency`
+  String get cryptocurrency {
+    return Intl.message(
+      'Cryptocurrency',
+      name: 'cryptocurrency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A direct transfer to our wallet, no middlemen. USDT and USDC need no exchange rate. Pick a coin, then a network.`
+  String get cryptoDesc {
+    return Intl.message(
+      'A direct transfer to our wallet, no middlemen. USDT and USDC need no exchange rate. Pick a coin, then a network.',
+      name: 'cryptoDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `More coins`
+  String get moreCoins {
+    return Intl.message('More coins', name: 'moreCoins', desc: '', args: []);
+  }
+
+  /// `Send exactly this amount — that is how we recognise your payment.`
+  String get payExact {
+    return Intl.message(
+      'Send exactly this amount — that is how we recognise your payment.',
+      name: 'payExact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paying from an exchange? It deducts a withdrawal fee — exactly this amount must ARRIVE at the address.`
+  String get payExchangeWarn {
+    return Intl.message(
+      'Paying from an exchange? It deducts a withdrawal fee — exactly this amount must ARRIVE at the address.',
+      name: 'payExchangeWarn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This network only — a transfer on another network will be lost.`
+  String get networkOnlyWarn {
+    return Intl.message(
+      'This network only — a transfer on another network will be lost.',
+      name: 'networkOnlyWarn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction hash (0x…)`
+  String get txHashLabel {
+    return Intl.message(
+      'Transaction hash (0x…)',
+      name: 'txHashLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check the transfer`
+  String get checkTransfer {
+    return Intl.message(
+      'Check the transfer',
+      name: 'checkTransfer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Crypto payment is unavailable right now`
+  String get errCoinsOff {
+    return Intl.message(
+      'Crypto payment is unavailable right now',
+      name: 'errCoinsOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transfer not confirmed: check the hash or try again in a minute.`
+  String get errHashNotAccepted {
+    return Intl.message(
+      'Transfer not confirmed: check the hash or try again in a minute.',
+      name: 'errHashNotAccepted',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

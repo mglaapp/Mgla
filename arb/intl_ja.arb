@@ -671,5 +671,18 @@
   "authorize": "許可",
   "installedAppsPermissionRequired": "アプリ一覧の権限が必要です",
   "installedAppsPermissionDesc": "このシステムでは、許可するまでインストール済みアプリの一覧が提供されません。許可すると、アプリごとのプロキシを設定できます。",
-  "installedAppsPermissionDeniedMessage": "アプリ一覧の権限が拒否されたため、インストール済みアプリを取得できません。システム設定から手動で許可してください。"
+  "installedAppsPermissionDeniedMessage": "アプリ一覧の権限が拒否されたため、インストール済みアプリを取得できません。システム設定から手動で許可してください。",
+  "payCardSbp": "ロシアのカードまたはSBP",
+  "payCardSbpDesc": "FreeKassa決済サービスを通じて、ロシアのカードまたはSBPでルーブル払い。支払い後すぐにアクセスが有効になります。",
+  "payCardSbpButton": "カードまたはSBPで支払う",
+  "cryptocurrency": "暗号資産",
+  "cryptoDesc": "仲介なしで当社ウォレットへ直接送金。USDTとUSDCは為替換算不要。通貨を選び、次にネットワークを選んでください。",
+  "moreCoins": "その他の通貨",
+  "payExact": "この金額をそのまま送金してください。金額で支払いを識別します。",
+  "payExchangeWarn": "取引所から支払う場合、出金手数料が差し引かれます。アドレスにこの金額がそのまま届くようにしてください。",
+  "networkOnlyWarn": "このネットワークのみ。他のネットワークでの送金は失われます。",
+  "txHashLabel": "トランザクションハッシュ（0x…）",
+  "checkTransfer": "送金を確認",
+  "errCoinsOff": "現在、暗号資産での支払いはご利用いただけません",
+  "errHashNotAccepted": "送金を確認できません。ハッシュを確認するか、1分後に再試行してください。"
 }

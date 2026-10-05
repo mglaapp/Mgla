@@ -224,6 +224,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkCertificateDesc": MessageLookupByLibrary.simpleMessage(
       "信頼できない証明書を拒否します。無効にすると、サブスクリプションやバックアップが中間者攻撃にさらされます",
     ),
+    "checkTransfer": MessageLookupByLibrary.simpleMessage("送金を確認"),
     "checkUpdate": MessageLookupByLibrary.simpleMessage("更新を確認"),
     "checkUpdateError": MessageLookupByLibrary.simpleMessage("すでに最新バージョンです"),
     "choosePayment": MessageLookupByLibrary.simpleMessage("お支払い方法をお選びください"),
@@ -295,6 +296,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "createProfile": MessageLookupByLibrary.simpleMessage("プロファイルを作成"),
     "createProfileFromUrlTip": m2,
     "creationTime": MessageLookupByLibrary.simpleMessage("作成日時"),
+    "cryptoDesc": MessageLookupByLibrary.simpleMessage(
+      "仲介なしで当社ウォレットへ直接送金。USDTとUSDCは為替換算不要。通貨を選び、次にネットワークを選んでください。",
+    ),
+    "cryptocurrency": MessageLookupByLibrary.simpleMessage("暗号資産"),
     "custom": MessageLookupByLibrary.simpleMessage("カスタム"),
     "cut": MessageLookupByLibrary.simpleMessage("切り取り"),
     "dark": MessageLookupByLibrary.simpleMessage("ダーク"),
@@ -363,6 +368,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "entriesCount": m8,
     "errBadEmail": MessageLookupByLibrary.simpleMessage("メールアドレスの形式ではありません"),
     "errCardOff": MessageLookupByLibrary.simpleMessage("現在カード決済はご利用いただけません"),
+    "errCoinsOff": MessageLookupByLibrary.simpleMessage(
+      "現在、暗号資産での支払いはご利用いただけません",
+    ),
+    "errHashNotAccepted": MessageLookupByLibrary.simpleMessage(
+      "送金を確認できません。ハッシュを確認するか、1分後に再試行してください。",
+    ),
     "errMailOff": MessageLookupByLibrary.simpleMessage("現在メールの送信はご利用いただけません"),
     "errNetwork": MessageLookupByLibrary.simpleMessage("サーバーに接続できませんでした"),
     "errTgOff": MessageLookupByLibrary.simpleMessage(
@@ -604,6 +615,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("モノクローム"),
     "monthsAgo": m21,
     "more": MessageLookupByLibrary.simpleMessage("その他"),
+    "moreCoins": MessageLookupByLibrary.simpleMessage("その他の通貨"),
     "multipleValuesTip": MessageLookupByLibrary.simpleMessage(
       "複数の値はカンマで区切ってください",
     ),
@@ -619,6 +631,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkDetection": MessageLookupByLibrary.simpleMessage("ネットワーク検出"),
     "networkException": MessageLookupByLibrary.simpleMessage(
       "ネットワークエラーです。接続を確認してから再試行してください",
+    ),
+    "networkOnlyWarn": MessageLookupByLibrary.simpleMessage(
+      "このネットワークのみ。他のネットワークでの送金は失われます。",
     ),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("ネットワーク速度"),
     "networkType": MessageLookupByLibrary.simpleMessage("ネットワーク種別"),
@@ -675,6 +690,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "paste": MessageLookupByLibrary.simpleMessage("貼り付け"),
     "pay": MessageLookupByLibrary.simpleMessage("支払う"),
     "payCard": MessageLookupByLibrary.simpleMessage("カードで支払う"),
+    "payCardSbp": MessageLookupByLibrary.simpleMessage("ロシアのカードまたはSBP"),
+    "payCardSbpButton": MessageLookupByLibrary.simpleMessage("カードまたはSBPで支払う"),
+    "payCardSbpDesc": MessageLookupByLibrary.simpleMessage(
+      "FreeKassa決済サービスを通じて、ロシアのカードまたはSBPでルーブル払い。支払い後すぐにアクセスが有効になります。",
+    ),
+    "payExact": MessageLookupByLibrary.simpleMessage(
+      "この金額をそのまま送金してください。金額で支払いを識別します。",
+    ),
+    "payExchangeWarn": MessageLookupByLibrary.simpleMessage(
+      "取引所から支払う場合、出金手数料が差し引かれます。アドレスにこの金額がそのまま届くようにしてください。",
+    ),
     "payOnSite": MessageLookupByLibrary.simpleMessage("サイトで支払う"),
     "payUsdt": MessageLookupByLibrary.simpleMessage("USDT で支払う"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(
@@ -1032,6 +1058,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tunDesc": MessageLookupByLibrary.simpleMessage("管理者モードでのみ有効"),
     "turnOff": MessageLookupByLibrary.simpleMessage("オフにする"),
     "turnOn": MessageLookupByLibrary.simpleMessage("オンにする"),
+    "txHashLabel": MessageLookupByLibrary.simpleMessage("トランザクションハッシュ（0x…）"),
     "undo": MessageLookupByLibrary.simpleMessage("元に戻す"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("統一遅延"),
     "unifiedDelayDesc": MessageLookupByLibrary.simpleMessage(

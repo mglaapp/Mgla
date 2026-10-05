@@ -197,4 +197,120 @@ void main() {
       expect(UsdtInvoice.fromJson({'address': '', 'amount': '3.5'}), isNull);
     });
   });
+  group('монеты (05-10)', () {
+    test(
+      'каталог: монета с сетями, мусорные сети и монеты без сетей выброшены',
+      () {
+        final coins = CoinGroup.listFrom([
+          {
+            'sym': 'USDT',
+            'name': 'Tether',
+            'icon': 'usdt',
+            'popular': true,
+            'nets': [
+              {'code': 'usdt_trc20', 'net': 'TRON (TRC-20)', 'icon': 'trx'},
+              'мусор',
+              {'net': 'без кода'},
+              {
+                'code': 'bnb',
+                'net': 'BNB Chain',
+                'icon': 'bnb',
+                'by_hash': true,
+              },
+            ],
+          },
+          {'sym': 'EMPTY', 'nets': []},
+          {
+            'nets': [
+              {'code': 'x'},
+            ],
+          },
+          null,
+        ]);
+        expect(coins.map((group) => group.sym), ['USDT']);
+        expect(coins.single.nets.map((net) => net.code), ['usdt_trc20', 'bnb']);
+        expect(coins.single.nets.last.byHash, isTrue);
+        expect(coins.single.popular, isTrue);
+      },
+    );
+
+    test('статус старого сервера: монет нет, ничего не падает', () {
+      final status = AccountStatus.fromJson({
+        'key': 'k',
+        'methods': {'usdt': true, 'card': true},
+      });
+      expect(status!.coinsEnabled, isFalse);
+      expect(status.coins, isEmpty);
+    });
+
+    test('статус нового сервера: каталог и флаг монет', () {
+      final status = AccountStatus.fromJson({
+        'key': 'k',
+        'methods': {'coins': true},
+        'coins_catalog': [
+          {
+            'sym': 'BTC',
+            'nets': [
+              {'code': 'btc', 'net': 'Bitcoin'},
+            ],
+          },
+        ],
+      });
+      expect(status!.coinsEnabled, isTrue);
+      expect(status.coins.single.name, 'BTC', reason: 'без имени — символ');
+    });
+
+    test('счёт монетой: сумма строкой как есть, без округления', () {
+      final invoice = CryptoInvoice.fromJson({
+        'id': 7,
+        'coin': 'usdc_polygon',
+        'sym': 'USDC',
+        'network': 'Polygon',
+        'coin_icon': 'usdc',
+        'net_icon': 'pol',
+        'address': '0xabc',
+        'amount': '3.5299',
+        'status': 'pending',
+        'minutes_left': 59,
+      });
+      expect(invoice, isNotNull);
+      expect(invoice!.amount, '3.5299');
+      expect(invoice.paid, isFalse);
+      expect(invoice.byHash, isFalse);
+      expect(invoice.minutesLeft, 59);
+    });
+
+    test('счёт без id, адреса или суммы не собирается', () {
+      expect(
+        CryptoInvoice.fromJson({'coin': 'btc', 'address': 'a', 'amount': '1'}),
+        isNull,
+      );
+      expect(
+        CryptoInvoice.fromJson({'id': 1, 'coin': 'btc', 'amount': '1'}),
+        isNull,
+      );
+      expect(
+        CryptoInvoice.fromJson({'id': 1, 'coin': 'btc', 'address': 'a'}),
+        isNull,
+      );
+      expect(CryptoInvoice.fromJson('строка'), isNull);
+    });
+
+    test('проверка: зачтён / причина отказа хеша', () {
+      final ok = CryptoCheck.fromJson({
+        'paid': true,
+        'key': 'k',
+        'active': true,
+      });
+      expect(ok!.paid, isTrue);
+      expect(ok.status?.active, isTrue);
+      final no = CryptoCheck.fromJson({
+        'paid': false,
+        'reason': 'wrong_amount',
+      });
+      expect(no!.paid, isFalse);
+      expect(no.reason, 'wrong_amount');
+      expect(no.status, isNull, reason: 'без ключа статус не выдумывается');
+    });
+  });
 }

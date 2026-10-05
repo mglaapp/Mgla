@@ -280,6 +280,33 @@ class Request {
     },
   );
 
+  /// Счёт на оплату монетой. Живой счёт на тот же тариф и монету сервер отдаёт повторно:
+  /// обновлённый экран не должен показать новую сумму, когда старая уже отправлена.
+  Future<Result<CryptoInvoice>> createCryptoInvoice(
+    String key,
+    String plan,
+    String coin,
+  ) => _api(
+    '/pay/crypto',
+    form: {'key': key, 'plan': plan, 'coin': coin},
+    parse: CryptoInvoice.fromJson,
+  );
+
+  /// «Я оплатил» по монете: сервер сверяет сеть сейчас и отвечает, зачтён ли счёт.
+  Future<Result<CryptoCheck>> checkCryptoPayment(String key, int id) => _api(
+    '/pay/crypto/check',
+    form: {'key': key, 'id': '$id'},
+    parse: CryptoCheck.fromJson,
+  );
+
+  /// BNB: зачёт по хешу транзакции, который человек вставил сам.
+  Future<Result<CryptoCheck>> claimCryptoHash(String key, int id, String tx) =>
+      _api(
+        '/pay/crypto/hash',
+        form: {'key': key, 'id': '$id', 'tx': tx},
+        parse: CryptoCheck.fromJson,
+      );
+
   /// Привязать почту: сервер шлёт письмо, ссылка из письма привязывает аккаунт.
   Future<Result<int>> bindEmail(String key, String email) => _api(
     '/bind/email',

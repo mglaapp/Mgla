@@ -5,6 +5,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/views/profiles/access_key.dart';
+import 'package:fl_clash/views/subscription_pay.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,8 +23,9 @@ import 'package:material_ui/material_ui.dart';
 /// копия секрета разошлась бы с первой молча, и разошлась бы она ровно в тот момент, когда
 /// человек платит.
 ///
-/// ЧЕГО ЗДЕСЬ НЕТ. Карты и крипто-шлюза: их страница принадлежит платёжной системе и обязана
-/// открываться у неё. Для них кнопка честно уводит на сайт, а не притворяется, что платит.
+/// ОПЛАТА (05-10): экран выбора способа [PaymentMethodView] — карта РФ / СБП первой (её страница
+/// принадлежит платёжной системе и открывается у неё), ниже монеты напрямую со счётом внутри
+/// приложения. Старый сервер без монет — прежний путь USDT.
 class SubscriptionView extends ConsumerStatefulWidget {
   const SubscriptionView({super.key});
 
@@ -85,10 +87,7 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     final result = await request.createAccount();
     if (!mounted) return;
     setState(() => _busy = false);
-    if (result.isError) {
-      _complain(result.message);
-      return;
-    }
+    if (result.isError) return complainPayment(context, result.message);
     final account = result.data!;
     await ref
         .read(profilesActionProvider.notifier)
@@ -103,51 +102,27 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     await _load();
   }
 
-  /// Чем платить. Спрашиваем ТОЛЬКО когда есть из чего выбирать: лишний экран между
-  /// человеком и оплатой — это люди, которые не доходят.
-  Future<void> _choosePayment(AccountStatus status, Plan plan) async {
-    if (status.usdtEnabled && !status.cardEnabled) return _pay(plan);
-    if (status.cardEnabled && !status.usdtEnabled) return _payCard(plan);
-    if (!status.usdtEnabled && !status.cardEnabled) {
-      await dialogs.openUrl(accountUrl);
-      return;
-    }
-    final l = context.appLocalizations;
-    final choice = await dialogs.showCommonDialog<String>(
-      child: CommonDialog(
-        title: l.choosePayment,
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop('card'),
-            child: Text(l.payCard),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop('usdt'),
-            child: Text(l.payUsdt),
-          ),
-        ],
-        child: Text(plan.title),
-      ),
-    );
-    if (choice == 'usdt') return _pay(plan);
-    if (choice == 'card') return _payCard(plan);
-  }
+  /// Есть ли экран выбора: карта (её показываем с акцентом даже одну) или монеты.
+  static bool _hasMethodScreen(AccountStatus status) =>
+      status.cardEnabled || (status.coinsEnabled && status.coins.isNotEmpty);
 
-  /// Оплата картой уходит в браузер целиком: у платёжной системы своя страница, свои правила
-  /// и свой 3-D Secure. Подтверждение приходит к нам её уведомлением, поэтому возвращаться в
-  /// приложение и что-то нажимать человеку не нужно — статус подтянется сам.
-  Future<void> _payCard(Plan plan) async {
+  /// Чем платить. Карта РФ / СБП и монеты — на экране выбора; старый сервер без монет и без
+  /// карты — прежний путь USDT; не настроено ничего — сайт.
+  Future<void> _choosePayment(AccountStatus status, Plan plan) async {
     final key = _key;
     if (key == null) return;
-    setState(() => _busy = true);
-    final result = await request.createCardPayment(key, plan.code);
-    if (!mounted) return;
-    setState(() => _busy = false);
-    if (result.isError) {
-      _complain(result.message);
+    if (_hasMethodScreen(status)) {
+      // Карта уходит в браузер, и её подтверждение приходит уведомлением платёжки, — поэтому
+      // статус перечитывается при любом возврате, а не только после зачтённой монеты.
+      await BaseNavigator.push<bool>(
+        context,
+        PaymentMethodView(status: status, plan: plan, accessKey: key),
+      );
+      await _load();
       return;
     }
-    await dialogs.openUrl(result.data!);
+    if (status.usdtEnabled) return _pay(plan);
+    await dialogs.openUrl(accountUrl);
   }
 
   Future<void> _pay(Plan plan) async {
@@ -157,26 +132,12 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     final result = await request.createUsdtInvoice(key, plan.code);
     if (!mounted) return;
     setState(() => _busy = false);
-    if (result.isError) {
-      _complain(result.message);
-      return;
-    }
+    if (result.isError) return complainPayment(context, result.message);
     await BaseNavigator.push(
       context,
       _UsdtPayView(invoice: result.data!, accessKey: key),
     );
     await _load();
-  }
-
-  void _complain(String code) {
-    final l = context.appLocalizations;
-    dialogs.showNotifier(switch (code) {
-      'unknown_key' => l.errUnknownKey,
-      'usdt_off' => l.errUsdtOff,
-      'card_off' => l.errCardOff,
-      'too_many' => l.errTooMany,
-      _ => l.errNetwork,
-    }, level: MessageLevel.error);
   }
 
   Widget _buildNoAccount() {
@@ -262,17 +223,13 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
               DecorationListItem(
                 title: Text(plan.title),
                 subtitle: TooltipLabel('\$${plan.usd.toStringAsFixed(2)}'),
-                trailing: (status.usdtEnabled || status.cardEnabled)
+                trailing: (status.usdtEnabled || _hasMethodScreen(status))
                     ? FilledButton(
                         onPressed: _busy
                             ? null
                             : () => _choosePayment(status, plan),
                         child: Text(
-                          status.usdtEnabled && !status.cardEnabled
-                              ? l.payUsdt
-                              : (status.cardEnabled && !status.usdtEnabled
-                                    ? l.payCard
-                                    : l.pay),
+                          _hasMethodScreen(status) ? l.pay : l.payUsdt,
                         ),
                       )
                     : TextButton(

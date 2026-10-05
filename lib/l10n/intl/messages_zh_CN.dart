@@ -208,6 +208,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "checkCertificateDesc": MessageLookupByLibrary.simpleMessage(
       "拒绝不受信任的证书。关闭后订阅和备份将暴露于中间人攻击",
     ),
+    "checkTransfer": MessageLookupByLibrary.simpleMessage("核对转账"),
     "checkUpdate": MessageLookupByLibrary.simpleMessage("检查更新"),
     "checkUpdateError": MessageLookupByLibrary.simpleMessage("当前应用已经是最新版了"),
     "choosePayment": MessageLookupByLibrary.simpleMessage("选择支付方式"),
@@ -267,6 +268,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "createProfile": MessageLookupByLibrary.simpleMessage("创建配置"),
     "createProfileFromUrlTip": m2,
     "creationTime": MessageLookupByLibrary.simpleMessage("创建时间"),
+    "cryptoDesc": MessageLookupByLibrary.simpleMessage(
+      "直接转账到我们的钱包，无中间方。USDT 和 USDC 无需汇率换算。先选币种，再选网络。",
+    ),
+    "cryptocurrency": MessageLookupByLibrary.simpleMessage("加密货币"),
     "custom": MessageLookupByLibrary.simpleMessage("自定义"),
     "cut": MessageLookupByLibrary.simpleMessage("剪切"),
     "dark": MessageLookupByLibrary.simpleMessage("深色"),
@@ -325,6 +330,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "entriesCount": m8,
     "errBadEmail": MessageLookupByLibrary.simpleMessage("这不像是一个邮箱地址"),
     "errCardOff": MessageLookupByLibrary.simpleMessage("当前无法使用银行卡支付"),
+    "errCoinsOff": MessageLookupByLibrary.simpleMessage("加密货币付款暂不可用"),
+    "errHashNotAccepted": MessageLookupByLibrary.simpleMessage(
+      "转账未确认：请检查哈希，或一分钟后重试。",
+    ),
     "errMailOff": MessageLookupByLibrary.simpleMessage("当前无法发送邮件"),
     "errNetwork": MessageLookupByLibrary.simpleMessage("无法连接到服务器"),
     "errTgOff": MessageLookupByLibrary.simpleMessage("当前无法使用 Telegram 登录"),
@@ -524,6 +533,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("单色"),
     "monthsAgo": m21,
     "more": MessageLookupByLibrary.simpleMessage("更多"),
+    "moreCoins": MessageLookupByLibrary.simpleMessage("更多币种"),
     "multipleValuesTip": MessageLookupByLibrary.simpleMessage("多个值使用逗号分隔"),
     "name": MessageLookupByLibrary.simpleMessage("名称"),
     "nameserver": MessageLookupByLibrary.simpleMessage("域名服务器"),
@@ -534,6 +544,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkDesc": MessageLookupByLibrary.simpleMessage("修改网络相关设置"),
     "networkDetection": MessageLookupByLibrary.simpleMessage("网络检测"),
     "networkException": MessageLookupByLibrary.simpleMessage("网络异常，请检查连接后重试"),
+    "networkOnlyWarn": MessageLookupByLibrary.simpleMessage(
+      "仅限此网络——其他网络的转账将会丢失。",
+    ),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("网络速度"),
     "networkType": MessageLookupByLibrary.simpleMessage("网络类型"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("中性"),
@@ -579,6 +592,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "paste": MessageLookupByLibrary.simpleMessage("粘贴"),
     "pay": MessageLookupByLibrary.simpleMessage("支付"),
     "payCard": MessageLookupByLibrary.simpleMessage("用银行卡支付"),
+    "payCardSbp": MessageLookupByLibrary.simpleMessage("俄罗斯银行卡或SBP"),
+    "payCardSbpButton": MessageLookupByLibrary.simpleMessage("用银行卡或 SBP 付款"),
+    "payCardSbpDesc": MessageLookupByLibrary.simpleMessage(
+      "通过 FreeKassa 支付服务，使用俄罗斯银行卡或 SBP 以卢布付款。付款后立即开通。",
+    ),
+    "payExact": MessageLookupByLibrary.simpleMessage("请准确发送此金额——我们靠它识别您的付款。"),
+    "payExchangeWarn": MessageLookupByLibrary.simpleMessage(
+      "从交易所付款？交易所会扣提币手续费——到账金额必须正好是这个数。",
+    ),
     "payOnSite": MessageLookupByLibrary.simpleMessage("在网站支付"),
     "payUsdt": MessageLookupByLibrary.simpleMessage("用 USDT 支付"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(
@@ -890,6 +912,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tunDesc": MessageLookupByLibrary.simpleMessage("仅在管理员模式生效"),
     "turnOff": MessageLookupByLibrary.simpleMessage("关闭"),
     "turnOn": MessageLookupByLibrary.simpleMessage("开启"),
+    "txHashLabel": MessageLookupByLibrary.simpleMessage("交易哈希（0x…）"),
     "undo": MessageLookupByLibrary.simpleMessage("撤销"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("统一延迟"),
     "unifiedDelayDesc": MessageLookupByLibrary.simpleMessage("去除握手等额外延迟"),

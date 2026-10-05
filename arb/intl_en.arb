@@ -671,5 +671,18 @@
   "authorize": "Authorize",
   "installedAppsPermissionRequired": "App list permission required",
   "installedAppsPermissionDesc": "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
-  "installedAppsPermissionDeniedMessage": "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings."
+  "installedAppsPermissionDeniedMessage": "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+  "payCardSbp": "Russian card or SBP",
+  "payCardSbpDesc": "Pay in roubles with a Russian card or via SBP through the FreeKassa payment service. Access turns on right after payment.",
+  "payCardSbpButton": "Pay by card or SBP",
+  "cryptocurrency": "Cryptocurrency",
+  "cryptoDesc": "A direct transfer to our wallet, no middlemen. USDT and USDC need no exchange rate. Pick a coin, then a network.",
+  "moreCoins": "More coins",
+  "payExact": "Send exactly this amount — that is how we recognise your payment.",
+  "payExchangeWarn": "Paying from an exchange? It deducts a withdrawal fee — exactly this amount must ARRIVE at the address.",
+  "networkOnlyWarn": "This network only — a transfer on another network will be lost.",
+  "txHashLabel": "Transaction hash (0x…)",
+  "checkTransfer": "Check the transfer",
+  "errCoinsOff": "Crypto payment is unavailable right now",
+  "errHashNotAccepted": "Transfer not confirmed: check the hash or try again in a minute."
 }

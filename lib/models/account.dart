@@ -60,6 +60,12 @@ class AccountStatus {
   /// настроена: кнопка, ведущая в никуда, стоит дороже отсутствующей.
   final bool cardEnabled;
 
+  /// Монеты напрямую (сервер с 05-10): весь счёт помещается в приложение, как USDT.
+  final bool coinsEnabled;
+
+  /// Каталог монет: монета -> сети. Пусто у старого сервера — тогда остаётся путь USDT.
+  final List<CoinGroup> coins;
+
   const AccountStatus({
     required this.key,
     required this.active,
@@ -71,6 +77,8 @@ class AccountStatus {
     required this.plans,
     required this.usdtEnabled,
     required this.cardEnabled,
+    this.coinsEnabled = false,
+    this.coins = const [],
   });
 
   static AccountStatus? fromJson(Object? json) {
@@ -90,6 +98,8 @@ class AccountStatus {
       plans: Plan.listFrom(json['plans']),
       usdtEnabled: methods is Map && methods['usdt'] == true,
       cardEnabled: methods is Map && methods['card'] == true,
+      coinsEnabled: methods is Map && methods['coins'] == true,
+      coins: CoinGroup.listFrom(json['coins_catalog']),
     );
   }
 }
@@ -167,6 +177,178 @@ class UsdtInvoice {
       minutesLeft: json['minutes_left'] is int
           ? json['minutes_left'] as int
           : 0,
+    );
+  }
+}
+
+/// Сеть одной монеты: код счёта на сервере («usdt_trc20») и подпись («TRON (TRC-20)»).
+@immutable
+class CoinNet {
+  final String code;
+  final String network;
+
+  /// Имя картинки СЕТИ из assets/coins. Картинки лежат в приложении: тянуть их с сервера там,
+  /// где сеть режут, значит показать пустые квадраты.
+  final String icon;
+
+  /// BNB: бесплатного списка входящих переводов нет — человек вставляет хеш транзакции сам.
+  final bool byHash;
+
+  const CoinNet({
+    required this.code,
+    required this.network,
+    required this.icon,
+    required this.byHash,
+  });
+
+  static CoinNet? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final code = json['code'];
+    if (code is! String || code.isEmpty) return null;
+    final net = json['net'];
+    final icon = json['icon'];
+    return CoinNet(
+      code: code,
+      network: net is String && net.isNotEmpty ? net : code,
+      icon: icon is String ? icon : '',
+      byHash: json['by_hash'] == true,
+    );
+  }
+}
+
+/// Монета в каталоге: одна строка, сети внутри (USDT в шести сетях — это «USDT», а не шесть
+/// кнопок). Порядок и названия задаёт сервер — те же, что на сайте.
+@immutable
+class CoinGroup {
+  final String sym;
+  final String name;
+  final String icon;
+
+  /// Популярные показываются сразу, остальные — под «Ещё».
+  final bool popular;
+  final List<CoinNet> nets;
+
+  const CoinGroup({
+    required this.sym,
+    required this.name,
+    required this.icon,
+    required this.popular,
+    required this.nets,
+  });
+
+  static CoinGroup? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final sym = json['sym'];
+    if (sym is! String || sym.isEmpty) return null;
+    final raw = json['nets'];
+    final nets = raw is List
+        ? [for (final item in raw) ?CoinNet.fromJson(item)]
+        : <CoinNet>[];
+    // Монета без единой сети — это кнопка, ведущая в никуда.
+    if (nets.isEmpty) return null;
+    final name = json['name'];
+    final icon = json['icon'];
+    return CoinGroup(
+      sym: sym,
+      name: name is String && name.isNotEmpty ? name : sym,
+      icon: icon is String ? icon : '',
+      popular: json['popular'] == true,
+      nets: nets,
+    );
+  }
+
+  static List<CoinGroup> listFrom(Object? json) {
+    if (json is! List) return const [];
+    return [for (final item in json) ?CoinGroup.fromJson(item)];
+  }
+}
+
+/// Счёт на оплату монетой: то же, что страница счёта на сайте.
+@immutable
+class CryptoInvoice {
+  final int id;
+  final String coin;
+  final String sym;
+  final String network;
+  final String coinIcon;
+  final String netIcon;
+  final String address;
+
+  /// Сумма СТРОКОЙ и уже подрезанная: по ней идёт сверка с блокчейном до последнего знака.
+  final String amount;
+  final bool byHash;
+  final bool paid;
+  final String qrSvg;
+  final int minutesLeft;
+
+  const CryptoInvoice({
+    required this.id,
+    required this.coin,
+    required this.sym,
+    required this.network,
+    required this.coinIcon,
+    required this.netIcon,
+    required this.address,
+    required this.amount,
+    required this.byHash,
+    required this.paid,
+    required this.qrSvg,
+    required this.minutesLeft,
+  });
+
+  static CryptoInvoice? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final id = json['id'];
+    final address = json['address'];
+    final amount = json['amount'];
+    final coin = json['coin'];
+    if (id is! int ||
+        coin is! String ||
+        address is! String ||
+        address.isEmpty ||
+        amount is! String ||
+        amount.isEmpty) {
+      return null;
+    }
+    String text(String field) =>
+        json[field] is String ? json[field] as String : '';
+    return CryptoInvoice(
+      id: id,
+      coin: coin,
+      sym: text('sym').isEmpty ? coin.toUpperCase() : text('sym'),
+      network: text('network'),
+      coinIcon: text('coin_icon'),
+      netIcon: text('net_icon'),
+      address: address,
+      amount: amount,
+      byHash: json['by_hash'] == true,
+      paid: json['status'] == 'paid',
+      qrSvg: text('qr_svg'),
+      minutesLeft: json['minutes_left'] is int
+          ? json['minutes_left'] as int
+          : 0,
+    );
+  }
+}
+
+/// Ответ «я оплатил» по монете: зачтён ли СЧЁТ и что теперь с доступом.
+@immutable
+class CryptoCheck {
+  final bool paid;
+  final AccountStatus? status;
+
+  /// Почему хеш не зачтён (BNB): код, а не текст — языков в приложении четыре.
+  final String? reason;
+
+  const CryptoCheck({required this.paid, required this.status, this.reason});
+
+  static CryptoCheck? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final reason = json['reason'];
+    return CryptoCheck(
+      paid: json['paid'] == true,
+      status: AccountStatus.fromJson(json),
+      reason: reason is String && reason.isNotEmpty ? reason : null,
     );
   }
 }
