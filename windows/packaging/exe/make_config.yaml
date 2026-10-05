@@ -10,9 +10,14 @@ output_base_file_name: Mgla.exe
 # absolute path via Directory.current.
 setup_icon_file: windows\runner\resources\app_icon.ico
 locales:
+  # Order matters: Inno Setup preselects the language of Windows itself, and falls back to
+  # the FIRST entry when there is no match. English first, then Russian - most of our people
+  # install on a Russian Windows, and until 0.9.5 the installer had no Russian at all.
+  # Russian.isl ships with Inno Setup (official translation), so no file is needed for it.
+  - lang: en
+  - lang: ru
   # Written into the .iss verbatim, so this one stays relative to the generated
   # script in dist/.
   - lang: zh
     file: ..\windows\packaging\exe\ChineseSimplified.isl
-  - lang: en
 privileges_required: admin
