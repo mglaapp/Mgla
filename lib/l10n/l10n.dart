@@ -5714,6 +5714,50 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `{count, plural, =1{1 network} other{{count} networks}}`
+  String networksCount(num count) {
+    return Intl.plural(
+      count,
+      one: '1 network',
+      other: '$count networks',
+      name: 'networksCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count, plural, =1{1 day left} other{{count} days left}}`
+  String daysLeftCount(num count) {
+    return Intl.plural(
+      count,
+      one: '1 day left',
+      other: '$count days left',
+      name: 'daysLeftCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Choose a period`
+  String get choosePlan {
+    return Intl.message(
+      'Choose a period',
+      name: 'choosePlan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Details`
+  String get subscriptionDetails {
+    return Intl.message(
+      'Details',
+      name: 'subscriptionDetails',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

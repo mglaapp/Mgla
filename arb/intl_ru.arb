@@ -684,5 +684,9 @@
   "txHashLabel": "Хеш транзакции (0x…)",
   "checkTransfer": "Проверить перевод",
   "errCoinsOff": "Оплата монетами сейчас недоступна",
-  "errHashNotAccepted": "Перевод не подтверждён: проверьте хеш или повторите через минуту."
+  "errHashNotAccepted": "Перевод не подтверждён: проверьте хеш или повторите через минуту.",
+  "networksCount": "{count, plural, one{{count} сеть} few{{count} сети} many{{count} сетей} other{{count} сети}}",
+  "daysLeftCount": "{count, plural, one{остался {count} день} few{осталось {count} дня} many{осталось {count} дней} other{осталось {count} дня}}",
+  "choosePlan": "Выберите срок",
+  "subscriptionDetails": "Подробнее"
 }

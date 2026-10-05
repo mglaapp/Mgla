@@ -684,5 +684,9 @@
   "txHashLabel": "交易哈希（0x…）",
   "checkTransfer": "核对转账",
   "errCoinsOff": "加密货币付款暂不可用",
-  "errHashNotAccepted": "转账未确认：请检查哈希，或一分钟后重试。"
+  "errHashNotAccepted": "转账未确认：请检查哈希，或一分钟后重试。",
+  "networksCount": "{count} 个网络",
+  "daysLeftCount": "剩余 {count} 天",
+  "choosePlan": "选择时长",
+  "subscriptionDetails": "详情"
 }

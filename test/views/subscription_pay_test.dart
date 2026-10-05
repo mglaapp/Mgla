@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/subscription_pay.dart';
@@ -113,6 +114,28 @@ void main() {
     expect(find.text('TON'), findsOneWidget);
     // Монета с одной сетью — сразу строка с сетью, раскрывать нечего.
     expect(find.text('Bitcoin'), findsOneWidget);
+  });
+
+  testWidgets('число сетей подписано словом, а не голой цифрой', (
+    tester,
+  ) async {
+    await _pump(tester, _status());
+    final l = tester.element(find.byType(PaymentMethodView)).appLocalizations;
+
+    // «Tether · 2» читалось как цена или курс (отзыв владельца на 0.9.5-pre.1).
+    expect(find.text('Tether · ${l.networksCount(2)}'), findsOneWidget);
+    expect(find.text('Tether · 2'), findsNothing);
+  });
+
+  test('по-русски сети склоняются: 1 сеть, 2 сети, 6 сетей', () async {
+    final l = await AppLocalizations.load(const Locale('ru'));
+    expect(l.networksCount(1), '1 сеть');
+    expect(l.networksCount(2), '2 сети');
+    expect(l.networksCount(6), '6 сетей');
+    expect(l.daysLeftCount(1), 'остался 1 день');
+    expect(l.daysLeftCount(3), 'осталось 3 дня');
+    expect(l.daysLeftCount(20), 'осталось 20 дней');
+    await AppLocalizations.load(const Locale('en'));
   });
 
   testWidgets('редкие монеты спрятаны под «Ещё»', (tester) async {

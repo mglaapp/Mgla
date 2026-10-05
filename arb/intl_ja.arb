@@ -684,5 +684,9 @@
   "txHashLabel": "トランザクションハッシュ（0x…）",
   "checkTransfer": "送金を確認",
   "errCoinsOff": "現在、暗号資産での支払いはご利用いただけません",
-  "errHashNotAccepted": "送金を確認できません。ハッシュを確認するか、1分後に再試行してください。"
+  "errHashNotAccepted": "送金を確認できません。ハッシュを確認するか、1分後に再試行してください。",
+  "networksCount": "{count} ネットワーク",
+  "daysLeftCount": "残り{count}日",
+  "choosePlan": "期間を選択",
+  "subscriptionDetails": "詳細"
 }

@@ -12,6 +12,85 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+/// Ключ нашей подписки: сначала выбранный профиль, потом любой наш.
+///
+/// Человек мог добавить и чужую подписку, и спрашивать наш сервер о чужом ключе незачем —
+/// [accessKeyOf] такие и отсеивает. Одна функция на экран подписки и блок на главном: два
+/// разных правила выбора ключа показали бы на двух экранах два разных срока.
+String? ourAccessKey(ProfilesState state) {
+  final ordered = [
+    ...state.profiles.where((profile) => profile.id == state.currentProfileId),
+    ...state.profiles,
+  ];
+  for (final profile in ordered) {
+    final key = accessKeyOf(profile.url);
+    if (key != null) return key;
+  }
+  return null;
+}
+
+/// Есть ли экран выбора: карта (её показываем с акцентом даже одну) или монеты.
+bool hasPaymentMethodScreen(AccountStatus status) =>
+    status.cardEnabled || (status.coinsEnabled && status.coins.isNotEmpty);
+
+/// Можно ли заплатить внутри приложения хоть чем-то; нет — остаётся сайт.
+bool canPayInApp(AccountStatus status) =>
+    status.usdtEnabled || hasPaymentMethodScreen(status);
+
+/// Оплата тарифа: карта РФ / СБП и монеты — на экране выбора; старый сервер без монет и без
+/// карты — прежний путь USDT; не настроено ничего — сайт.
+///
+/// Одна дорога для экрана подписки и блока на главном: вторая копия разошлась бы с первой
+/// ровно на том способе, который добавят следующим. Возвращается после возврата человека —
+/// вызывающий перечитывает статус: карта подтверждается уведомлением платёжки, а не здесь.
+Future<void> openPayment(
+  BuildContext context,
+  AccountStatus status,
+  Plan plan,
+  String accessKey,
+) async {
+  if (hasPaymentMethodScreen(status)) {
+    await BaseNavigator.push<bool>(
+      context,
+      PaymentMethodView(status: status, plan: plan, accessKey: accessKey),
+    );
+    return;
+  }
+  if (!status.usdtEnabled) {
+    await dialogs.openUrl(accountUrl);
+    return;
+  }
+  final result = await request.createUsdtInvoice(accessKey, plan.code);
+  if (!context.mounted) return;
+  if (result.isError) return complainPayment(context, result.message);
+  await BaseNavigator.push(
+    context,
+    _UsdtPayView(invoice: result.data!, accessKey: accessKey),
+  );
+}
+
+/// Завести аккаунт: профиль ставится сразу, ссылка входа показывается сразу.
+///
+/// Показать её обязательно и именно здесь: аккаунт из приложения ни к чему не привязан, и
+/// человек, потерявший ссылку, теряет вход на сайт навсегда. Приложение её не хранит —
+/// хранить ссылку входа значит хранить пароль.
+Future<void> createAccountFlow(BuildContext context, WidgetRef ref) async {
+  final result = await request.createAccount();
+  if (!context.mounted) return;
+  if (result.isError) return complainPayment(context, result.message);
+  final account = result.data!;
+  await ref
+      .read(profilesActionProvider.notifier)
+      .addProfileFormURL(account.subUrl);
+  if (!context.mounted) return;
+  // Не окно со ссылкой, а экран возврата доступа: почта и телеграм вперёд, ссылка последней.
+  // Показать ссылку первой значит предложить как основной способ то, что равно паролю.
+  await BaseNavigator.push(
+    context,
+    RecoveryView(accessKey: account.key, loginUrl: account.loginUrl),
+  );
+}
+
 /// Подписка целиком в приложении: срок, трафик, покупка и продление.
 ///
 /// ЗАЧЕМ ЭКРАН СУЩЕСТВУЕТ. Приложение выложено публично, и его ставят, ещё не купив доступ.
@@ -44,22 +123,7 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _load());
   }
 
-  String? get _key {
-    final state = ref.read(profilesStateProvider);
-    // Сначала выбранный профиль, потом любой наш: человек мог добавить и чужую подписку,
-    // и спрашивать наш сервер о чужом ключе незачем — [accessKeyOf] такие и отсеивает.
-    final ordered = [
-      ...state.profiles.where(
-        (profile) => profile.id == state.currentProfileId,
-      ),
-      ...state.profiles,
-    ];
-    for (final profile in ordered) {
-      final key = accessKeyOf(profile.url);
-      if (key != null) return key;
-    }
-    return null;
-  }
+  String? get _key => ourAccessKey(ref.read(profilesStateProvider));
 
   Future<void> _load() async {
     final key = _key;
@@ -77,66 +141,23 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     });
   }
 
-  /// Завести аккаунт: профиль ставится сразу, ссылка входа показывается сразу.
-  ///
-  /// Показать её обязательно и именно здесь: аккаунт из приложения ни к чему не привязан, и
-  /// человек, потерявший ссылку, теряет вход на сайт навсегда. Приложение её не хранит —
-  /// хранить ссылку входа значит хранить пароль.
   Future<void> _createAccount() async {
     setState(() => _busy = true);
-    final result = await request.createAccount();
+    await createAccountFlow(context, ref);
     if (!mounted) return;
     setState(() => _busy = false);
-    if (result.isError) return complainPayment(context, result.message);
-    final account = result.data!;
-    await ref
-        .read(profilesActionProvider.notifier)
-        .addProfileFormURL(account.subUrl);
-    if (!mounted) return;
-    // Не окно со ссылкой, а экран возврата доступа: почта и телеграм вперёд, ссылка последней.
-    // Показать ссылку первой значит предложить как основной способ то, что равно паролю.
-    await BaseNavigator.push(
-      context,
-      RecoveryView(accessKey: account.key, loginUrl: account.loginUrl),
-    );
     await _load();
   }
 
-  /// Есть ли экран выбора: карта (её показываем с акцентом даже одну) или монеты.
-  static bool _hasMethodScreen(AccountStatus status) =>
-      status.cardEnabled || (status.coinsEnabled && status.coins.isNotEmpty);
-
-  /// Чем платить. Карта РФ / СБП и монеты — на экране выбора; старый сервер без монет и без
-  /// карты — прежний путь USDT; не настроено ничего — сайт.
+  /// Статус перечитывается при любом возврате, а не только после зачтённой монеты: карта
+  /// уходит в браузер, и её подтверждение приходит уведомлением платёжки.
   Future<void> _choosePayment(AccountStatus status, Plan plan) async {
     final key = _key;
     if (key == null) return;
-    if (_hasMethodScreen(status)) {
-      // Карта уходит в браузер, и её подтверждение приходит уведомлением платёжки, — поэтому
-      // статус перечитывается при любом возврате, а не только после зачтённой монеты.
-      await BaseNavigator.push<bool>(
-        context,
-        PaymentMethodView(status: status, plan: plan, accessKey: key),
-      );
-      await _load();
-      return;
-    }
-    if (status.usdtEnabled) return _pay(plan);
-    await dialogs.openUrl(accountUrl);
-  }
-
-  Future<void> _pay(Plan plan) async {
-    final key = _key;
-    if (key == null) return;
     setState(() => _busy = true);
-    final result = await request.createUsdtInvoice(key, plan.code);
+    await openPayment(context, status, plan, key);
     if (!mounted) return;
     setState(() => _busy = false);
-    if (result.isError) return complainPayment(context, result.message);
-    await BaseNavigator.push(
-      context,
-      _UsdtPayView(invoice: result.data!, accessKey: key),
-    );
     await _load();
   }
 
@@ -223,13 +244,13 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
               DecorationListItem(
                 title: Text(plan.title),
                 subtitle: TooltipLabel('\$${plan.usd.toStringAsFixed(2)}'),
-                trailing: (status.usdtEnabled || _hasMethodScreen(status))
+                trailing: canPayInApp(status)
                     ? FilledButton(
                         onPressed: _busy
                             ? null
                             : () => _choosePayment(status, plan),
                         child: Text(
-                          _hasMethodScreen(status) ? l.pay : l.payUsdt,
+                          hasPaymentMethodScreen(status) ? l.pay : l.payUsdt,
                         ),
                       )
                     : TextButton(

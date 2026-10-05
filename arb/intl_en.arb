@@ -684,5 +684,9 @@
   "txHashLabel": "Transaction hash (0x…)",
   "checkTransfer": "Check the transfer",
   "errCoinsOff": "Crypto payment is unavailable right now",
-  "errHashNotAccepted": "Transfer not confirmed: check the hash or try again in a minute."
+  "errHashNotAccepted": "Transfer not confirmed: check the hash or try again in a minute.",
+  "networksCount": "{count, plural, =1{1 network} other{{count} networks}}",
+  "daysLeftCount": "{count, plural, =1{1 day left} other{{count} days left}}",
+  "choosePlan": "Choose a period",
+  "subscriptionDetails": "Details"
 }

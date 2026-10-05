@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/action.dart';
+import 'package:fl_clash/views/subscription.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,8 +47,22 @@ class AccessKeyButton extends ConsumerWidget {
 }
 
 /// The whole first screen when there is no profile yet: one field, one action.
-class AccessKeyCard extends StatelessWidget {
+class AccessKeyCard extends ConsumerStatefulWidget {
   const AccessKeyCard({super.key});
+
+  @override
+  ConsumerState<AccessKeyCard> createState() => _AccessKeyCardState();
+}
+
+class _AccessKeyCardState extends ConsumerState<AccessKeyCard> {
+  /// Второе нажатие во время запроса завело бы второй аккаунт.
+  bool _busy = false;
+
+  Future<void> _createAccount() async {
+    setState(() => _busy = true);
+    await createAccountFlow(context, ref);
+    if (mounted) setState(() => _busy = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +91,8 @@ class AccessKeyCard extends StatelessWidget {
             // Приложение выложено публично, и его ставят, ещё не купив доступ. Пока отсюда
             // некуда было пойти, установка кончалась экраном, который просит то, чего у
             // человека нет. Wrap, а не Row: на узком экране строка переносится, а не режется.
+            // С 05-10 аккаунт заводится здесь же, а не на сайте: оплата картой и монетами уже
+            // в приложении, и уход в браузер за ключом был единственным шагом наружу.
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
@@ -86,8 +103,8 @@ class AccessKeyCard extends StatelessWidget {
                   ),
                 ),
                 TextButton(
-                  onPressed: () => dialogs.openUrl(subscriptionSite),
-                  child: Text(appLocalizations.getSubscription),
+                  onPressed: _busy ? null : _createAccount,
+                  child: Text(appLocalizations.createAccount),
                 ),
               ],
             ),

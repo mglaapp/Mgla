@@ -127,7 +127,11 @@ class _PaymentMethodViewState extends ConsumerState<PaymentMethodView> {
     return ExpansionTile(
       leading: CoinIcon(group.icon, size: 32),
       title: Text(group.sym, style: context.textTheme.titleSmall?.toBold),
-      subtitle: Text('${group.name} · ${group.nets.length}'),
+      // «Tether · 6 сетей», а не голое «· 6»: число без слова читалось как цена или курс.
+      subtitle: Text(
+        '${group.name} · '
+        '${context.appLocalizations.networksCount(group.nets.length)}',
+      ),
       shape: const Border(),
       collapsedShape: const Border(),
       childrenPadding: const EdgeInsets.only(left: 16, bottom: 6),
