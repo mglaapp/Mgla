@@ -688,5 +688,9 @@
   "networksCount": "{count} ネットワーク",
   "daysLeftCount": "残り{count}日",
   "choosePlan": "期間を選択",
-  "subscriptionDetails": "詳細"
+  "subscriptionDetails": "詳細",
+  "paySkins": "Steamスキン",
+  "paySkinsDesc": "当社のOmniSkin経由：Steamでログインし、{price}以上のアイテムを選ぶとボットがトレードを送信します。価格を超えた分は残高に入ります。",
+  "paySkinsButton": "スキンを選ぶ",
+  "errSkinsOff": "現在スキンでの支払いはご利用いただけません"
 }

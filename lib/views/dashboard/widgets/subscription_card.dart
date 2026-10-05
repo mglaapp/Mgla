@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/views/profiles/access_key.dart';
@@ -134,23 +133,17 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
     await _load();
   }
 
-  Widget _title(String text) {
+  /// Строка с кнопкой обновления справа: заголовок карточки рисует CommonCard (как у плиток),
+  /// и своей шапки у блока больше нет.
+  Widget _lineWithRefresh(Widget child) {
     return Row(
       children: [
-        Icon(
-          Icons.card_membership,
-          size: 20,
-          color: context.colorScheme.onSurfaceVariant,
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(text, style: context.textTheme.titleMedium?.toBold),
-        ),
+        Expanded(child: child),
         IconButton(
           tooltip: context.appLocalizations.sync,
           visualDensity: VisualDensity.compact,
           onPressed: _busy ? null : _load,
-          icon: const Icon(Icons.refresh, size: 20),
+          icon: const Icon(Icons.refresh, size: 18),
         ),
       ],
     );
@@ -161,8 +154,6 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _title(l.subscription),
-        const SizedBox(height: 4),
         Text(
           l.accessKeyDesc,
           style: context.textTheme.bodyMedium?.copyWith(
@@ -201,15 +192,15 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _title(l.subscription),
-        const SizedBox(height: 4),
-        Text(
-          status.active && expire != null
-              ? '${l.accessPaidUntil} ${expire.show}'
-              : l.accessNotPaid,
-          style: context.textTheme.titleSmall?.copyWith(
-            color: accent,
-            fontWeight: FontWeight.w600,
+        _lineWithRefresh(
+          Text(
+            status.active && expire != null
+                ? '${l.accessPaidUntil} ${expire.show}'
+                : l.accessNotPaid,
+            style: context.textTheme.titleSmall?.copyWith(
+              color: accent,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         if (status.active && days != null)
@@ -259,11 +250,12 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _title(l.subscription),
-        Text(
-          l.errNetwork,
-          style: context.textTheme.bodyMedium?.copyWith(
-            color: context.colorScheme.error,
+        _lineWithRefresh(
+          Text(
+            l.errNetwork,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.error,
+            ),
           ),
         ),
       ],
@@ -286,19 +278,22 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
     } else if (_loaded && _failed) {
       body = _failedFirst();
     } else {
-      body = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _title(context.appLocalizations.subscription),
-          const SizedBox(height: 8),
-          const LinearProgressIndicator(minHeight: 2),
-        ],
+      body = const Padding(
+        padding: EdgeInsets.symmetric(vertical: 12),
+        child: LinearProgressIndicator(minHeight: 2),
       );
     }
+    // Та же карточка, что у плиток главного экрана (обводка, шапка с иконкой, нажатие): блок
+    // заливкой выглядел чужим среди них (скрин владельца 06-10). Нажатие — в подробности.
     return CommonCard(
-      type: CommonCardType.filled,
+      radius: AppCorner.lg,
+      info: Info(
+        label: context.appLocalizations.subscription,
+        iconData: Icons.card_membership,
+      ),
+      onPressed: _busy ? null : _openDetails,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 8, 16),
+        padding: baseInfoEdgeInsets.copyWith(top: 4, right: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

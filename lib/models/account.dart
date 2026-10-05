@@ -63,6 +63,10 @@ class AccountStatus {
   /// Монеты напрямую (сервер с 05-10): весь счёт помещается в приложение, как USDT.
   final bool coinsEnabled;
 
+  /// Скины из Steam через OmniSkin (сервер с 06-10): как карта — страница оплаты чужая
+  /// (там вход через Steam и обмен с ботом), приложение её только открывает.
+  final bool skinsEnabled;
+
   /// Каталог монет: монета -> сети. Пусто у старого сервера — тогда остаётся путь USDT.
   final List<CoinGroup> coins;
 
@@ -79,6 +83,7 @@ class AccountStatus {
     required this.cardEnabled,
     this.coinsEnabled = false,
     this.coins = const [],
+    this.skinsEnabled = false,
   });
 
   static AccountStatus? fromJson(Object? json) {
@@ -99,6 +104,7 @@ class AccountStatus {
       usdtEnabled: methods is Map && methods['usdt'] == true,
       cardEnabled: methods is Map && methods['card'] == true,
       coinsEnabled: methods is Map && methods['coins'] == true,
+      skinsEnabled: methods is Map && methods['skins'] == true,
       coins: CoinGroup.listFrom(json['coins_catalog']),
     );
   }

@@ -260,6 +260,19 @@ void main() {
       expect(status.coins.single.name, 'BTC', reason: 'без имени — символ');
     });
 
+    test('скины (06-10): флаг только по прямому «да» сервера', () {
+      AccountStatus? of(Object? methods) =>
+          AccountStatus.fromJson({'key': 'k', 'methods': methods});
+      expect(of({'skins': true})!.skinsEnabled, isTrue);
+      expect(of({'skins': 'true'})!.skinsEnabled, isFalse);
+      expect(
+        of({'card': true})!.skinsEnabled,
+        isFalse,
+        reason: 'старый сервер',
+      );
+      expect(of(null)!.skinsEnabled, isFalse);
+    });
+
     test('счёт монетой: сумма строкой как есть, без округления', () {
       final invoice = CryptoInvoice.fromJson({
         'id': 7,

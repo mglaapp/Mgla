@@ -31,12 +31,30 @@ class PaymentMethodView extends ConsumerStatefulWidget {
 }
 
 class _PaymentMethodViewState extends ConsumerState<PaymentMethodView> {
+  /// С какой ширины способы встают в ряд, как на сайте (просьба владельца 06-10).
+  static const _rowBreakpoint = 900.0;
+
   bool _busy = false;
+  bool _showRest = false;
 
   /// Карта уходит в браузер целиком: страница оплаты принадлежит платёжной системе.
   Future<void> _payCard() async {
     setState(() => _busy = true);
     final result = await request.createCardPayment(
+      widget.accessKey,
+      widget.plan.code,
+    );
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (result.isError) return complainPayment(context, result.message);
+    await dialogs.openUrl(result.data!);
+  }
+
+  /// Скины — тоже в браузер: страница OmniSkin, там вход через Steam и обмен с ботом. Тариф
+  /// включится, когда обмен примут; статус экран подписки перечитает при возврате.
+  Future<void> _paySkins() async {
+    setState(() => _busy = true);
+    final result = await request.createSkinsPayment(
       widget.accessKey,
       widget.plan.code,
     );
@@ -63,132 +81,214 @@ class _PaymentMethodViewState extends ConsumerState<PaymentMethodView> {
     if (paid == true && mounted) Navigator.of(context).pop(true);
   }
 
-  Widget _cardBlock() {
+  /// Монета с одной сетью — сразу счёт; с несколькими — короткий выбор сети.
+  Future<void> _pickCoin(CoinGroup group) async {
+    if (group.nets.length == 1) return _payCoin(group.nets.first);
+    final net = await showDialog<CoinNet>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        title: Row(
+          children: [
+            CoinIcon(group.icon, size: 26),
+            const SizedBox(width: 10),
+            Text(group.sym),
+          ],
+        ),
+        children: [
+          for (final net in group.nets)
+            SimpleDialogOption(
+              onPressed: () => Navigator.of(dialogContext).pop(net),
+              child: Row(
+                children: [
+                  CoinIcon(net.icon, size: 22),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(net.network)),
+                  const Icon(Icons.chevron_right, size: 18),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+    if (net != null && mounted) await _payCoin(net);
+  }
+
+  /// Одна форма для всех способов: заголовок, значки, пара строк и кнопка обычного размера
+  /// снизу. Растянутая во всю ширину кнопка при двух строках текста выглядела плакатом
+  /// (скрин владельца 06-10). В ряду (fill) кнопки выравниваются по низу.
+  Widget _method({
+    required String title,
+    List<Widget> chips = const [],
+    required String text,
+    required Widget action,
+    Widget? extra,
+    bool accent = false,
+    required bool fill,
+  }) {
+    final scheme = context.colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: accent ? scheme.primary : scheme.outlineVariant,
+          width: accent ? 1.5 : 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: fill ? MainAxisSize.max : MainAxisSize.min,
+        children: [
+          Text(title, style: context.textTheme.titleMedium?.toBold),
+          if (chips.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Wrap(spacing: 6, runSpacing: 6, children: chips),
+          ],
+          const SizedBox(height: 10),
+          Text(
+            text,
+            style: context.textTheme.bodySmall?.copyWith(
+              color: scheme.onSurfaceVariant,
+              height: 1.45,
+            ),
+          ),
+          ?extra,
+          if (fill) const Spacer() else const SizedBox(height: 16),
+          if (fill) const SizedBox(height: 16),
+          action,
+        ],
+      ),
+    );
+  }
+
+  Widget _cardBlock(bool fill) {
+    final l = context.appLocalizations;
+    return _method(
+      title: l.payCardSbp,
+      accent: true,
+      fill: fill,
+      chips: const [
+        _Chip('МИР', background: Color(0xFF0F754E)),
+        _Chip('СБП', background: Color(0xFF5B57A2)),
+        _Chip('Visa'),
+        _Chip('Mastercard'),
+      ],
+      text: l.payCardSbpDesc,
+      action: FilledButton.icon(
+        onPressed: _busy ? null : _payCard,
+        icon: const Icon(Icons.credit_card, size: 18),
+        label: Text(l.payCardSbpButton),
+      ),
+    );
+  }
+
+  Widget _skinsBlock(bool fill) {
+    final l = context.appLocalizations;
+    return _method(
+      title: l.paySkins,
+      fill: fill,
+      chips: const [_Chip('CS2'), _Chip('Dota 2'), _Chip('Rust'), _Chip('TF2')],
+      text: l.paySkinsDesc('\$${widget.plan.usd.toStringAsFixed(2)}'),
+      action: OutlinedButton.icon(
+        onPressed: _busy ? null : _paySkins,
+        icon: const Icon(Icons.inventory_2_outlined, size: 18),
+        label: Text(l.paySkinsButton),
+      ),
+    );
+  }
+
+  /// Плитка монеты: значок, тикер и одна короткая строка — сеть или «6 сетей».
+  Widget _coinTile(CoinGroup group, double width) {
     final l = context.appLocalizations;
     final scheme = context.colorScheme;
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: scheme.primary, width: 1.5),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l.payCardSbp, style: context.textTheme.titleMedium?.toBold),
-            const SizedBox(height: 10),
-            const Wrap(
-              spacing: 6,
-              runSpacing: 6,
+    final single = group.nets.length == 1;
+    return SizedBox(
+      width: width,
+      child: Material(
+        color: scheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: scheme.outlineVariant),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: _busy ? null : () => _pickCoin(group),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Row(
               children: [
-                _Chip('МИР', background: Color(0xFF0F754E)),
-                _Chip('СБП', background: Color(0xFF5B57A2)),
-                _Chip('Visa'),
-                _Chip('Mastercard'),
+                CoinIcon(group.icon, size: 28),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        group.sym,
+                        style: context.textTheme.titleSmall?.toBold,
+                      ),
+                      Text(
+                        single
+                            ? group.nets.first.network
+                            : l.networksCount(group.nets.length),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (!single)
+                  Icon(
+                    Icons.expand_more,
+                    size: 18,
+                    color: scheme.onSurfaceVariant,
+                  ),
               ],
             ),
-            const SizedBox(height: 10),
-            Text(
-              l.payCardSbpDesc,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 14),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: _busy ? null : _payCard,
-                icon: const Icon(Icons.credit_card),
-                label: Text(l.payCardSbpButton),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _coinTile(CoinGroup group) {
-    final single = group.nets.length == 1;
-    if (single) {
-      final net = group.nets.first;
-      return ListTile(
-        leading: CoinIcon(group.icon, size: 32),
-        title: Text(group.sym, style: context.textTheme.titleSmall?.toBold),
-        subtitle: Text(net.network),
-        trailing: const Icon(Icons.chevron_right),
-        enabled: !_busy,
-        onTap: () => _payCoin(net),
-      );
-    }
-    return ExpansionTile(
-      leading: CoinIcon(group.icon, size: 32),
-      title: Text(group.sym, style: context.textTheme.titleSmall?.toBold),
-      // «Tether · 6 сетей», а не голое «· 6»: число без слова читалось как цена или курс.
-      subtitle: Text(
-        '${group.name} · '
-        '${context.appLocalizations.networksCount(group.nets.length)}',
-      ),
-      shape: const Border(),
-      collapsedShape: const Border(),
-      childrenPadding: const EdgeInsets.only(left: 16, bottom: 6),
-      children: [
-        for (final net in group.nets)
-          ListTile(
-            dense: true,
-            leading: CoinIcon(net.icon, size: 22),
-            title: Text(net.network),
-            trailing: const Icon(Icons.chevron_right, size: 20),
-            enabled: !_busy,
-            onTap: () => _payCoin(net),
-          ),
-      ],
-    );
-  }
-
-  Widget _cryptoBlock(List<CoinGroup> coins) {
+  /// [inner] — ширина содержимого карточки: плитки считаются от неё заранее. LayoutBuilder тут
+  /// нельзя — в ряду карточки меряются IntrinsicHeight, а LayoutBuilder своих размеров не отдаёт.
+  Widget _cryptoBlock(List<CoinGroup> coins, bool fill, double inner) {
     final l = context.appLocalizations;
     final top = coins.where((group) => group.popular).toList();
     final rest = coins.where((group) => !group.popular).toList();
-    return Card(
-      elevation: 0,
-      color: context.colorScheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-            child: Text(
-              l.cryptocurrency,
-              style: context.textTheme.titleMedium?.toBold,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Text(
-              l.cryptoDesc,
-              style: context.textTheme.bodySmall?.copyWith(
-                color: context.colorScheme.onSurfaceVariant,
+    final shown = [
+      ...(top.isEmpty ? rest : top),
+      if (_showRest && top.isNotEmpty) ...rest,
+    ];
+    const gap = 8.0;
+    final cols = (inner / 150).floor().clamp(1, 3);
+    final width = ((inner - gap * (cols - 1)) / cols).floorToDouble();
+    final grid = Wrap(
+      spacing: gap,
+      runSpacing: gap,
+      children: [for (final group in shown) _coinTile(group, width)],
+    );
+    return _method(
+      title: l.cryptocurrency,
+      fill: fill,
+      text: l.cryptoDesc,
+      extra: Padding(padding: const EdgeInsets.only(top: 14), child: grid),
+      action: top.isNotEmpty && rest.isNotEmpty
+          ? TextButton.icon(
+              onPressed: () => setState(() => _showRest = !_showRest),
+              icon: Icon(_showRest ? Icons.expand_less : Icons.expand_more),
+              label: Text(
+                _showRest
+                    ? l.moreCoins
+                    : '${l.moreCoins}: ${rest.map((group) => group.sym).join(', ')}',
               ),
-            ),
-          ),
-          for (final group in top.isEmpty ? rest : top) _coinTile(group),
-          if (top.isNotEmpty && rest.isNotEmpty)
-            ExpansionTile(
-              leading: const Icon(Icons.more_horiz),
-              title: Text(l.moreCoins),
-              subtitle: Text(rest.map((group) => group.sym).join(', ')),
-              shape: const Border(),
-              collapsedShape: const Border(),
-              children: [for (final group in rest) _coinTile(group)],
-            ),
-        ],
-      ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 
@@ -198,28 +298,70 @@ class _PaymentMethodViewState extends ConsumerState<PaymentMethodView> {
     final status = widget.status;
     final coins = status.coinsEnabled ? status.coins : const <CoinGroup>[];
     return BaseScaffold(
-      title: '${l.choosePayment} · ${widget.plan.title}',
-      body: Padding(
-        padding: kMaterialListPadding.copyWith(top: 16, bottom: 16),
-        child: ListView(
-          children: [
-            if (_busy)
-              const Padding(
-                padding: EdgeInsets.only(bottom: 12),
-                child: LinearProgressIndicator(minHeight: 2),
+      title: l.choosePayment,
+      body: LayoutBuilder(
+        builder: (_, constraints) {
+          final count = [
+            status.cardEnabled,
+            coins.isNotEmpty,
+            status.skinsEnabled,
+          ].where((on) => on).length;
+          // В ряд — только когда есть что ставить рядом: один способ в «ряду» растягивался бы
+          // под высоту, которой у прокрутки нет (поймано тестом блока подписки 06-10).
+          final row = constraints.maxWidth >= _rowBreakpoint && count > 1;
+          final content = (constraints.maxWidth - 40).clamp(
+            0.0,
+            row ? 1080.0 : 560.0,
+          );
+          final column = row ? (content - 14 * (count - 1)) / count : content;
+          final blocks = [
+            if (status.cardEnabled) _cardBlock(row),
+            if (coins.isNotEmpty) _cryptoBlock(coins, row, column - 38),
+            if (status.skinsEnabled) _skinsBlock(row),
+          ];
+          return SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: row ? 1080 : 560),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (_busy)
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 12),
+                        child: LinearProgressIndicator(minHeight: 2),
+                      ),
+                    Text(
+                      '${widget.plan.title} — '
+                      '\$${widget.plan.usd.toStringAsFixed(2)}',
+                      style: context.textTheme.headlineSmall?.toBold,
+                    ),
+                    const SizedBox(height: 16),
+                    if (row)
+                      // Ряд одной высоты: кнопки по низу, как на сайте.
+                      IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            for (var i = 0; i < blocks.length; i++) ...[
+                              if (i > 0) const SizedBox(width: 14),
+                              Expanded(child: blocks[i]),
+                            ],
+                          ],
+                        ),
+                      )
+                    else
+                      for (var i = 0; i < blocks.length; i++) ...[
+                        if (i > 0) const SizedBox(height: 12),
+                        blocks[i],
+                      ],
+                  ],
+                ),
               ),
-            Text(
-              '${widget.plan.title} — \$${widget.plan.usd.toStringAsFixed(2)}',
-              style: context.textTheme.titleLarge?.toBold,
             ),
-            const SizedBox(height: 12),
-            if (status.cardEnabled) ...[
-              _cardBlock(),
-              const SizedBox(height: 12),
-            ],
-            if (coins.isNotEmpty) _cryptoBlock(coins),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -447,6 +589,7 @@ void complainPayment(BuildContext context, String code) {
     'usdt_off' => l.errUsdtOff,
     'card_off' => l.errCardOff,
     'coins_off' || 'coins_error' || 'bad_coin' => l.errCoinsOff,
+    'skins_off' => l.errSkinsOff,
     'too_many' => l.errTooMany,
     _ => l.errNetwork,
   }, level: MessageLevel.error);

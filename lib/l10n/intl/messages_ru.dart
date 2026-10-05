@@ -85,22 +85,25 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m25(label) => "Значение «${label}» должно быть числом";
 
-  static String m26(label) =>
+  static String m26(price) =>
+      "Через наш сервис OmniSkin: войдёте через Steam, отметите предметы на сумму не меньше ${price}, бот пришлёт обмен. Остаток сверх цены ляжет на баланс.";
+
+  static String m27(label) =>
       "Значение «${label}» должно быть от 1024 до 49151";
 
-  static String m27(count) => "${count} прокси";
-
-  static String m28(count) =>
-      "${Intl.plural(count, one: '${count} правило', few: '${count} правила', many: '${count} правил', other: '${count} правила')}";
+  static String m28(count) => "${count} прокси";
 
   static String m29(count) =>
+      "${Intl.plural(count, one: '${count} правило', few: '${count} правила', many: '${count} правил', other: '${count} правила')}";
+
+  static String m30(count) =>
       "${Intl.plural(count, one: '${count} секунда', few: '${count} секунды', many: '${count} секунд', other: '${count} секунды')}";
 
-  static String m30(count) => "Выбрано: ${count}";
+  static String m31(count) => "Выбрано: ${count}";
 
-  static String m31(label) => "Значение «${label}» должно быть URL";
+  static String m32(label) => "Значение «${label}» должно быть URL";
 
-  static String m32(count) =>
+  static String m33(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -487,6 +490,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "errNetwork": MessageLookupByLibrary.simpleMessage(
       "Не удалось связаться с сервером",
+    ),
+    "errSkinsOff": MessageLookupByLibrary.simpleMessage(
+      "Оплата скинами сейчас недоступна",
     ),
     "errTgOff": MessageLookupByLibrary.simpleMessage(
       "Вход через телеграм сейчас недоступен",
@@ -888,6 +894,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Платите с биржи? Она вычитает комиссию за вывод — на адрес должна ПРИЙТИ ровно эта сумма.",
     ),
     "payOnSite": MessageLookupByLibrary.simpleMessage("Оплатить на сайте"),
+    "paySkins": MessageLookupByLibrary.simpleMessage("Скинами из Steam"),
+    "paySkinsButton": MessageLookupByLibrary.simpleMessage("Выбрать скины"),
+    "paySkinsDesc": m26,
     "payUsdt": MessageLookupByLibrary.simpleMessage("Оплатить USDT"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(
       "Платёж пока не виден в сети. Перевод идёт до нескольких минут — нажмите ещё раз чуть позже.",
@@ -910,7 +919,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Введите другой порт",
     ),
-    "portTip": m26,
+    "portTip": m27,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Предпочитать HTTP/3 для DoH",
     ),
@@ -945,7 +954,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "project": MessageLookupByLibrary.simpleMessage("Проект"),
     "providers": MessageLookupByLibrary.simpleMessage("Внешние ресурсы"),
     "proxies": MessageLookupByLibrary.simpleMessage("Прокси"),
-    "proxiesCount": m27,
+    "proxiesCount": m28,
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("Список прокси пуст"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Цепочка прокси"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
@@ -1188,7 +1197,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleSet": MessageLookupByLibrary.simpleMessage("Набор правил"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Цель правила"),
     "rules": MessageLookupByLibrary.simpleMessage("Правила"),
-    "rulesCount": m28,
+    "rulesCount": m29,
     "save": MessageLookupByLibrary.simpleMessage("Сохранить"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Сохранить изменения?"),
     "savedIt": MessageLookupByLibrary.simpleMessage("Я сохранил"),
@@ -1201,7 +1210,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("Поиск"),
     "seconds": MessageLookupByLibrary.simpleMessage("секунд"),
-    "secondsCount": m29,
+    "secondsCount": m30,
     "selectAll": MessageLookupByLibrary.simpleMessage("Выбрать всё"),
     "selectMatchTarget": MessageLookupByLibrary.simpleMessage(
       "Выбрать MATCH-TARGET",
@@ -1220,7 +1229,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Выберите подправило",
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Выбрано"),
-    "selectedCountTitle": m30,
+    "selectedCountTitle": m31,
     "sendLetter": MessageLookupByLibrary.simpleMessage("Отправить письмо"),
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
@@ -1360,7 +1369,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("Отдача"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("Получить профиль по URL"),
-    "urlTip": m31,
+    "urlTip": m32,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("Адрес"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("Сумма"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("Сеть"),
@@ -1391,7 +1400,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage(
       "Режим белого списка",
     ),
-    "yearsAgo": m32,
+    "yearsAgo": m33,
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
   };
 }

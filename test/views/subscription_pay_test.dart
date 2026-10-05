@@ -14,7 +14,11 @@ import '../helpers/test_app.dart';
 /// Разбор ответов сервера — в test/models/account_test.dart.
 const _plan = Plan(code: '1m', days: 30, usd: 3.49, title: '1 месяц');
 
-AccountStatus _status({bool card = true, bool coins = true}) {
+AccountStatus _status({
+  bool card = true,
+  bool coins = true,
+  bool skins = true,
+}) {
   return AccountStatus(
     key: 'k',
     active: false,
@@ -27,6 +31,7 @@ AccountStatus _status({bool card = true, bool coins = true}) {
     usdtEnabled: true,
     cardEnabled: card,
     coinsEnabled: coins,
+    skinsEnabled: skins,
     coins: CoinGroup.listFrom([
       {
         'sym': 'USDT',
@@ -60,8 +65,12 @@ AccountStatus _status({bool card = true, bool coins = true}) {
   );
 }
 
-Future<void> _pump(WidgetTester tester, AccountStatus status) async {
-  tester.view.physicalSize = const Size(1000, 1600);
+Future<void> _pump(
+  WidgetTester tester,
+  AccountStatus status, {
+  bool keepSize = false,
+}) async {
+  if (!keepSize) tester.view.physicalSize = const Size(1000, 1600);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
@@ -90,9 +99,12 @@ void main() {
     final crypto = find.text(l.cryptocurrency);
     expect(card, findsOneWidget);
     expect(crypto, findsOneWidget);
+    // На широком экране способы стоят в ряд (06-10), на узком — столбиком: «первой» значит
+    // левее в ряду или выше в столбике.
+    final c = tester.getTopLeft(card), k = tester.getTopLeft(crypto);
     expect(
-      tester.getTopLeft(card).dy,
-      lessThan(tester.getTopLeft(crypto).dy),
+      c.dx < k.dx || c.dy < k.dy,
+      isTrue,
       reason: 'акцент на рублёвые карты и СБП — решение владельца 05-10',
     );
     expect(find.text('СБП'), findsOneWidget);
@@ -123,7 +135,7 @@ void main() {
     final l = tester.element(find.byType(PaymentMethodView)).appLocalizations;
 
     // «Tether · 2» читалось как цена или курс (отзыв владельца на 0.9.5-pre.1).
-    expect(find.text('Tether · ${l.networksCount(2)}'), findsOneWidget);
+    expect(find.text(l.networksCount(2)), findsOneWidget);
     expect(find.text('Tether · 2'), findsNothing);
   });
 
@@ -142,9 +154,9 @@ void main() {
     await _pump(tester, _status());
     final l = tester.element(find.byType(PaymentMethodView)).appLocalizations;
 
-    expect(find.text(l.moreCoins), findsOneWidget);
+    expect(find.textContaining(l.moreCoins), findsOneWidget);
     expect(find.text('Dogecoin'), findsNothing);
-    await tester.tap(find.text(l.moreCoins));
+    await tester.tap(find.textContaining(l.moreCoins));
     await tester.pumpAndSettle();
     expect(find.text('Dogecoin'), findsOneWidget);
   });
@@ -161,6 +173,40 @@ void main() {
     l = tester.element(find.byType(PaymentMethodView)).appLocalizations;
     expect(find.text(l.payCardSbp), findsOneWidget);
     expect(find.text(l.cryptocurrency), findsNothing);
+  });
+
+  testWidgets('скины: блок есть по флагу сервера и стоит последним', (
+    tester,
+  ) async {
+    await _pump(tester, _status());
+    final l = tester.element(find.byType(PaymentMethodView)).appLocalizations;
+    final skins = find.text(l.paySkins);
+    expect(skins, findsOneWidget);
+    expect(find.text(l.paySkinsButton), findsOneWidget);
+    expect(find.textContaining('\$3.49'), findsWidgets);
+    final s = tester.getTopLeft(skins),
+        k = tester.getTopLeft(find.text(l.cryptocurrency));
+    expect(
+      s.dx > k.dx || s.dy > k.dy,
+      isTrue,
+      reason: 'скины — после карты и монет',
+    );
+
+    await _pump(tester, _status(skins: false));
+    expect(find.text(l.paySkins), findsNothing);
+  });
+
+  testWidgets('на узком экране способы столбиком, без переполнения', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(400, 1800);
+    await _pump(tester, _status(), keepSize: true);
+    final l = tester.element(find.byType(PaymentMethodView)).appLocalizations;
+    expect(
+      tester.getTopLeft(find.text(l.payCardSbp)).dy,
+      lessThan(tester.getTopLeft(find.text(l.cryptocurrency)).dy),
+    );
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('незнакомая иконка — кружок с буквой, а не падение', (

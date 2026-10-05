@@ -5758,6 +5758,41 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Steam skins`
+  String get paySkins {
+    return Intl.message('Steam skins', name: 'paySkins', desc: '', args: []);
+  }
+
+  /// `Through our OmniSkin service: sign in with Steam, pick items worth at least {price}, and the bot sends a trade. Anything above the price goes to your balance.`
+  String paySkinsDesc(Object price) {
+    return Intl.message(
+      'Through our OmniSkin service: sign in with Steam, pick items worth at least $price, and the bot sends a trade. Anything above the price goes to your balance.',
+      name: 'paySkinsDesc',
+      desc: '',
+      args: [price],
+    );
+  }
+
+  /// `Pick skins`
+  String get paySkinsButton {
+    return Intl.message(
+      'Pick skins',
+      name: 'paySkinsButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paying with skins is unavailable right now`
+  String get errSkinsOff {
+    return Intl.message(
+      'Paying with skins is unavailable right now',
+      name: 'errSkinsOff',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

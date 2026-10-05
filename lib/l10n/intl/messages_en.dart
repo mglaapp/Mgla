@@ -85,22 +85,25 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m25(label) => "${label} must be a number";
 
-  static String m26(label) => "${label} must be between 1024 and 49151";
+  static String m26(price) =>
+      "Through our OmniSkin service: sign in with Steam, pick items worth at least ${price}, and the bot sends a trade. Anything above the price goes to your balance.";
 
-  static String m27(count) =>
-      "${Intl.plural(count, one: '1 proxy', other: '${count} proxies')}";
+  static String m27(label) => "${label} must be between 1024 and 49151";
 
   static String m28(count) =>
-      "${Intl.plural(count, one: '1 rule', other: '${count} rules')}";
+      "${Intl.plural(count, one: '1 proxy', other: '${count} proxies')}";
 
   static String m29(count) =>
+      "${Intl.plural(count, one: '1 rule', other: '${count} rules')}";
+
+  static String m30(count) =>
       "${Intl.plural(count, one: '1 second', other: '${count} seconds')}";
 
-  static String m30(count) => "${count} selected";
+  static String m31(count) => "${count} selected";
 
-  static String m31(label) => "${label} must be a URL";
+  static String m32(label) => "${label} must be a URL";
 
-  static String m32(count) =>
+  static String m33(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -477,6 +480,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "errNetwork": MessageLookupByLibrary.simpleMessage(
       "Could not reach the server",
+    ),
+    "errSkinsOff": MessageLookupByLibrary.simpleMessage(
+      "Paying with skins is unavailable right now",
     ),
     "errTgOff": MessageLookupByLibrary.simpleMessage(
       "Telegram sign-in is unavailable right now",
@@ -866,6 +872,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Paying from an exchange? It deducts a withdrawal fee — exactly this amount must ARRIVE at the address.",
     ),
     "payOnSite": MessageLookupByLibrary.simpleMessage("Pay on the website"),
+    "paySkins": MessageLookupByLibrary.simpleMessage("Steam skins"),
+    "paySkinsButton": MessageLookupByLibrary.simpleMessage("Pick skins"),
+    "paySkinsDesc": m26,
     "payUsdt": MessageLookupByLibrary.simpleMessage("Pay with USDT"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(
       "The payment is not visible on the network yet. A transfer takes up to a few minutes, tap again shortly.",
@@ -886,7 +895,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Please enter a different port",
     ),
-    "portTip": m26,
+    "portTip": m27,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Prefer HTTP/3 for DoH",
     ),
@@ -919,7 +928,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "project": MessageLookupByLibrary.simpleMessage("Project"),
     "providers": MessageLookupByLibrary.simpleMessage("External resources"),
     "proxies": MessageLookupByLibrary.simpleMessage("Proxies"),
-    "proxiesCount": m27,
+    "proxiesCount": m28,
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("Proxies are empty"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Proxy chain"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
@@ -1148,7 +1157,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleSet": MessageLookupByLibrary.simpleMessage("Rule set"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Rule target"),
     "rules": MessageLookupByLibrary.simpleMessage("Rules"),
-    "rulesCount": m28,
+    "rulesCount": m29,
     "save": MessageLookupByLibrary.simpleMessage("Save"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save the changes?"),
     "savedIt": MessageLookupByLibrary.simpleMessage("I have saved it"),
@@ -1161,7 +1170,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "seconds": MessageLookupByLibrary.simpleMessage("seconds"),
-    "secondsCount": m29,
+    "secondsCount": m30,
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selectMatchTarget": MessageLookupByLibrary.simpleMessage(
       "Select MATCH-TARGET",
@@ -1180,7 +1189,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please select a sub-rule",
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m30,
+    "selectedCountTitle": m31,
     "sendLetter": MessageLookupByLibrary.simpleMessage("Send the letter"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
@@ -1314,7 +1323,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain a profile from a URL",
     ),
-    "urlTip": m31,
+    "urlTip": m32,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("Address"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("Amount"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("Network"),
@@ -1339,7 +1348,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "website": MessageLookupByLibrary.simpleMessage("Website"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
-    "yearsAgo": m32,
+    "yearsAgo": m33,
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };
 }

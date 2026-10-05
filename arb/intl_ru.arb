@@ -688,5 +688,9 @@
   "networksCount": "{count, plural, one{{count} сеть} few{{count} сети} many{{count} сетей} other{{count} сети}}",
   "daysLeftCount": "{count, plural, one{остался {count} день} few{осталось {count} дня} many{осталось {count} дней} other{осталось {count} дня}}",
   "choosePlan": "Выберите срок",
-  "subscriptionDetails": "Подробнее"
+  "subscriptionDetails": "Подробнее",
+  "paySkins": "Скинами из Steam",
+  "paySkinsDesc": "Через наш сервис OmniSkin: войдёте через Steam, отметите предметы на сумму не меньше {price}, бот пришлёт обмен. Остаток сверх цены ляжет на баланс.",
+  "paySkinsButton": "Выбрать скины",
+  "errSkinsOff": "Оплата скинами сейчас недоступна"
 }

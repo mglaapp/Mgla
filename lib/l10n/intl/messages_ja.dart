@@ -75,19 +75,22 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m25(label) => "${label}は数値である必要があります";
 
-  static String m26(label) => "${label} は 1024〜49151 の範囲で指定してください";
+  static String m26(price) =>
+      "当社のOmniSkin経由：Steamでログインし、${price}以上のアイテムを選ぶとボットがトレードを送信します。価格を超えた分は残高に入ります。";
 
-  static String m27(count) => "プロキシ ${count} 件";
+  static String m27(label) => "${label} は 1024〜49151 の範囲で指定してください";
 
-  static String m28(count) => "ルール ${count} 件";
+  static String m28(count) => "プロキシ ${count} 件";
 
-  static String m29(count) => "${count} 秒";
+  static String m29(count) => "ルール ${count} 件";
 
-  static String m30(count) => "${count} 件選択中";
+  static String m30(count) => "${count} 秒";
 
-  static String m31(label) => "${label}はURLである必要があります";
+  static String m31(count) => "${count} 件選択中";
 
-  static String m32(count) => "${count} 年前";
+  static String m32(label) => "${label}はURLである必要があります";
+
+  static String m33(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -382,6 +385,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "errMailOff": MessageLookupByLibrary.simpleMessage("現在メールの送信はご利用いただけません"),
     "errNetwork": MessageLookupByLibrary.simpleMessage("サーバーに接続できませんでした"),
+    "errSkinsOff": MessageLookupByLibrary.simpleMessage(
+      "現在スキンでの支払いはご利用いただけません",
+    ),
     "errTgOff": MessageLookupByLibrary.simpleMessage(
       "現在 Telegram ログインはご利用いただけません",
     ),
@@ -709,6 +715,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "取引所から支払う場合、出金手数料が差し引かれます。アドレスにこの金額がそのまま届くようにしてください。",
     ),
     "payOnSite": MessageLookupByLibrary.simpleMessage("サイトで支払う"),
+    "paySkins": MessageLookupByLibrary.simpleMessage("Steamスキン"),
+    "paySkinsButton": MessageLookupByLibrary.simpleMessage("スキンを選ぶ"),
+    "paySkinsDesc": m26,
     "payUsdt": MessageLookupByLibrary.simpleMessage("USDT で支払う"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(
       "送金はまだネットワーク上で確認できません。数分かかることがあります。少し待ってからもう一度お試しください。",
@@ -725,7 +734,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "port": MessageLookupByLibrary.simpleMessage("ポート"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("別のポートを入力してください"),
-    "portTip": m26,
+    "portTip": m27,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage("DoHでHTTP/3を優先します"),
     "prerequisites": MessageLookupByLibrary.simpleMessage("前提条件"),
     "pressKeyboard": MessageLookupByLibrary.simpleMessage("キーを押してください"),
@@ -754,7 +763,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "project": MessageLookupByLibrary.simpleMessage("プロジェクト"),
     "providers": MessageLookupByLibrary.simpleMessage("外部リソース"),
     "proxies": MessageLookupByLibrary.simpleMessage("プロキシ"),
-    "proxiesCount": m27,
+    "proxiesCount": m28,
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("プロキシが空です"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("プロキシチェーン"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
@@ -953,7 +962,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleSet": MessageLookupByLibrary.simpleMessage("ルールセット"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("ルールターゲット"),
     "rules": MessageLookupByLibrary.simpleMessage("ルール"),
-    "rulesCount": m28,
+    "rulesCount": m29,
     "save": MessageLookupByLibrary.simpleMessage("保存"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("変更を保存しますか？"),
     "savedIt": MessageLookupByLibrary.simpleMessage("保存しました"),
@@ -964,7 +973,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "scrollToSelected": MessageLookupByLibrary.simpleMessage("選択項目へスクロール"),
     "search": MessageLookupByLibrary.simpleMessage("検索"),
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
-    "secondsCount": m29,
+    "secondsCount": m30,
     "selectAll": MessageLookupByLibrary.simpleMessage("すべて選択"),
     "selectMatchTarget": MessageLookupByLibrary.simpleMessage(
       "MATCH-TARGET を選択",
@@ -979,7 +988,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "selectSubRule": MessageLookupByLibrary.simpleMessage("サブルールを選択してください"),
     "selected": MessageLookupByLibrary.simpleMessage("選択済み"),
-    "selectedCountTitle": m30,
+    "selectedCountTitle": m31,
     "sendLetter": MessageLookupByLibrary.simpleMessage("メールを送信"),
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("表示"),
@@ -1091,7 +1100,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URLからプロファイルを取得します"),
-    "urlTip": m31,
+    "urlTip": m32,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("アドレス"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("金額"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("ネットワーク"),
@@ -1112,7 +1121,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "website": MessageLookupByLibrary.simpleMessage("ウェブサイト"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
-    "yearsAgo": m32,
+    "yearsAgo": m33,
     "zhCN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
   };
 }

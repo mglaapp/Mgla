@@ -688,5 +688,9 @@
   "networksCount": "{count} 个网络",
   "daysLeftCount": "剩余 {count} 天",
   "choosePlan": "选择时长",
-  "subscriptionDetails": "详情"
+  "subscriptionDetails": "详情",
+  "paySkins": "Steam 皮肤",
+  "paySkinsDesc": "通过我们的 OmniSkin 服务：用 Steam 登录，选择价值不低于 {price} 的物品，机器人会发送交易报价。超出价格的部分计入余额。",
+  "paySkinsButton": "选择皮肤",
+  "errSkinsOff": "皮肤支付暂不可用"
 }

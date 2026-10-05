@@ -75,19 +75,22 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m25(label) => "${label}必须为数字";
 
-  static String m26(label) => "${label} 必须在 1024 到 49151 之间";
+  static String m26(price) =>
+      "通过我们的 OmniSkin 服务：用 Steam 登录，选择价值不低于 ${price} 的物品，机器人会发送交易报价。超出价格的部分计入余额。";
 
-  static String m27(count) => "${count} 个代理";
+  static String m27(label) => "${label} 必须在 1024 到 49151 之间";
 
-  static String m28(count) => "${count} 条规则";
+  static String m28(count) => "${count} 个代理";
 
-  static String m29(count) => "${count} 秒";
+  static String m29(count) => "${count} 条规则";
 
-  static String m30(count) => "已选择 ${count} 项";
+  static String m30(count) => "${count} 秒";
 
-  static String m31(label) => "${label}必须为URL";
+  static String m31(count) => "已选择 ${count} 项";
 
-  static String m32(count) => "${count} 年前";
+  static String m32(label) => "${label}必须为URL";
+
+  static String m33(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -342,6 +345,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "errMailOff": MessageLookupByLibrary.simpleMessage("当前无法发送邮件"),
     "errNetwork": MessageLookupByLibrary.simpleMessage("无法连接到服务器"),
+    "errSkinsOff": MessageLookupByLibrary.simpleMessage("皮肤支付暂不可用"),
     "errTgOff": MessageLookupByLibrary.simpleMessage("当前无法使用 Telegram 登录"),
     "errTooMany": MessageLookupByLibrary.simpleMessage("尝试次数过多，请稍后再试"),
     "errTooSoon": MessageLookupByLibrary.simpleMessage("邮件已发送，请稍等一分钟"),
@@ -609,6 +613,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "从交易所付款？交易所会扣提币手续费——到账金额必须正好是这个数。",
     ),
     "payOnSite": MessageLookupByLibrary.simpleMessage("在网站支付"),
+    "paySkins": MessageLookupByLibrary.simpleMessage("Steam 皮肤"),
+    "paySkinsButton": MessageLookupByLibrary.simpleMessage("选择皮肤"),
+    "paySkinsDesc": m26,
     "payUsdt": MessageLookupByLibrary.simpleMessage("用 USDT 支付"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(
       "网络上暂时还看不到这笔转账。转账最多需要几分钟，请稍后再试。",
@@ -623,7 +630,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "port": MessageLookupByLibrary.simpleMessage("端口"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("请输入不同的端口"),
-    "portTip": m26,
+    "portTip": m27,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage("优先使用DOH的http/3"),
     "prerequisites": MessageLookupByLibrary.simpleMessage("前置条件"),
     "pressKeyboard": MessageLookupByLibrary.simpleMessage("请按下按键"),
@@ -652,7 +659,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "project": MessageLookupByLibrary.simpleMessage("项目"),
     "providers": MessageLookupByLibrary.simpleMessage("外部资源"),
     "proxies": MessageLookupByLibrary.simpleMessage("代理"),
-    "proxiesCount": m27,
+    "proxiesCount": m28,
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("代理为空"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("代理链"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
@@ -815,7 +822,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleSet": MessageLookupByLibrary.simpleMessage("规则集"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("规则目标"),
     "rules": MessageLookupByLibrary.simpleMessage("规则"),
-    "rulesCount": m28,
+    "rulesCount": m29,
     "save": MessageLookupByLibrary.simpleMessage("保存"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("是否保存更改？"),
     "savedIt": MessageLookupByLibrary.simpleMessage("我已保存"),
@@ -826,7 +833,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "scrollToSelected": MessageLookupByLibrary.simpleMessage("滚动到已选"),
     "search": MessageLookupByLibrary.simpleMessage("搜索"),
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
-    "secondsCount": m29,
+    "secondsCount": m30,
     "selectAll": MessageLookupByLibrary.simpleMessage("全选"),
     "selectMatchTarget": MessageLookupByLibrary.simpleMessage(
       "选择 MATCH-TARGET",
@@ -837,7 +844,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "selectSplitStrategy": MessageLookupByLibrary.simpleMessage("请选择分流策略"),
     "selectSubRule": MessageLookupByLibrary.simpleMessage("请选择子规则"),
     "selected": MessageLookupByLibrary.simpleMessage("已选择"),
-    "selectedCountTitle": m30,
+    "selectedCountTitle": m31,
     "sendLetter": MessageLookupByLibrary.simpleMessage("发送邮件"),
     "settings": MessageLookupByLibrary.simpleMessage("设置"),
     "show": MessageLookupByLibrary.simpleMessage("显示"),
@@ -943,7 +950,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m31,
+    "urlTip": m32,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("地址"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("金额"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("网络"),
@@ -964,7 +971,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "website": MessageLookupByLibrary.simpleMessage("官网"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
-    "yearsAgo": m32,
+    "yearsAgo": m33,
     "zhCN": MessageLookupByLibrary.simpleMessage("中文简体"),
   };
 }

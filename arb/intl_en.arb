@@ -688,5 +688,9 @@
   "networksCount": "{count, plural, =1{1 network} other{{count} networks}}",
   "daysLeftCount": "{count, plural, =1{1 day left} other{{count} days left}}",
   "choosePlan": "Choose a period",
-  "subscriptionDetails": "Details"
+  "subscriptionDetails": "Details",
+  "paySkins": "Steam skins",
+  "paySkinsDesc": "Through our OmniSkin service: sign in with Steam, pick items worth at least {price}, and the bot sends a trade. Anything above the price goes to your balance.",
+  "paySkinsButton": "Pick skins",
+  "errSkinsOff": "Paying with skins is unavailable right now"
 }
