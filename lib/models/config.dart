@@ -39,6 +39,7 @@ const defaultThemeProps = ThemeProps(primaryColor: defaultPrimaryColor);
 
 const List<DashboardWidget> defaultDashboardWidgets = [
   DashboardWidget.subscription,
+  DashboardWidget.ruDirectButton,
   DashboardWidget.networkSpeed,
   DashboardWidget.systemProxyButton,
   DashboardWidget.tunButton,
@@ -55,6 +56,22 @@ Config withSubscriptionWidget(Config config) {
   if (widgets.contains(DashboardWidget.subscription)) return config;
   return config.copyWith.appSettingProps(
     dashboardWidgets: [DashboardWidget.subscription, ...widgets],
+  );
+}
+
+/// Плитка «РФ напрямую» (06-10) для раскладки, сохранённой до её появления: вставляется один
+/// раз — сразу после подписки (вместе они занимают ряд), без подписки — первой. Убранная после
+/// этого остаётся убранной ([Preferences.seedRuDirectWidget]).
+Config withRuDirectWidget(Config config) {
+  final widgets = config.appSettingProps.dashboardWidgets;
+  if (widgets.contains(DashboardWidget.ruDirectButton)) return config;
+  final at = widgets.indexOf(DashboardWidget.subscription) + 1;
+  return config.copyWith.appSettingProps(
+    dashboardWidgets: [
+      ...widgets.sublist(0, at),
+      DashboardWidget.ruDirectButton,
+      ...widgets.sublist(at),
+    ],
   );
 }
 
@@ -206,6 +223,8 @@ abstract class NetworkProps with _$NetworkProps {
     @Default(true) bool autoSetSystemDns,
     @Default(false) bool appendSystemDns,
     @Default(defaultAuthenticationProps) AuthenticationProps authentication,
+    // Mgla: российские домены и адреса идут мимо туннеля (переключатель, решение 06-10).
+    @Default(false) bool ruDirect,
   }) = _NetworkProps;
 
   factory NetworkProps.fromJson(Map<String, Object?>? json) =>

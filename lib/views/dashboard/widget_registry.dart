@@ -9,6 +9,10 @@ extension DashboardWidgetView on DashboardWidget {
       crossAxisCellCount: 4,
       child: SubscriptionCard(),
     ),
+    DashboardWidget.ruDirectButton => const GridItem(
+      crossAxisCellCount: 4,
+      child: RuDirectButton(),
+    ),
     DashboardWidget.networkSpeed => const GridItem(
       crossAxisCellCount: 8,
       child: NetworkSpeed(),

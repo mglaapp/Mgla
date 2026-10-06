@@ -355,6 +355,7 @@ abstract class MakeRealProfileState with _$MakeRealProfileState {
     required String defaultUA,
     @Default([]) List<String> authentication,
     String? matchTarget,
+    @Default(false) bool ruDirect,
   }) = _MakeRealProfileState;
 }
 

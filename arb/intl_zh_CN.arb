@@ -696,5 +696,8 @@
   "subscriptionUntilDays": "剩 {days} 天 · 至 {date}",
   "subscriptionUntil": "至 {date}",
   "noAccountShort": "无账户",
-  "offlineShort": "离线"
+  "offlineShort": "离线",
+  "ruDirect": "俄罗斯网站直连",
+  "ruDirectShort": "俄罗斯直连",
+  "ruDirectDesc": "银行、Gosuslugi 等俄罗斯网站走您的普通网络，其余流量走 VPN。检查设备本身的应用仍可能要求您关闭 VPN。"
 }

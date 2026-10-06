@@ -97,6 +97,23 @@ class TUNButton extends StatelessWidget {
   }
 }
 
+/// Плитка «РФ напрямую» (решение владельца 06-10): российские сайты мимо туннеля. Нажатие на
+/// плитку открывает пункт настроек с полным объяснением — что закрывает и чего нет.
+class RuDirectButton extends StatelessWidget {
+  const RuDirectButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return _QuickSwitchCard(
+      label: context.appLocalizations.ruDirectShort,
+      iconData: Icons.alt_route,
+      items: const [RuDirectItem()],
+      selector: networkSettingProvider.select((state) => state.ruDirect),
+      onChanged: setRuDirect,
+    );
+  }
+}
+
 class SystemProxyButton extends StatelessWidget {
   const SystemProxyButton({super.key});
 

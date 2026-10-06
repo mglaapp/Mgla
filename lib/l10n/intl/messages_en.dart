@@ -1048,6 +1048,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routeModeConfig": MessageLookupByLibrary.simpleMessage("Use config"),
     "ru": MessageLookupByLibrary.simpleMessage("Russian"),
+    "ruDirect": MessageLookupByLibrary.simpleMessage("Russian sites directly"),
+    "ruDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "Banks, Gosuslugi and other Russian sites go through your regular connection, everything else through the VPN. Apps that inspect the device itself may still ask you to turn the VPN off.",
+    ),
+    "ruDirectShort": MessageLookupByLibrary.simpleMessage("RU direct"),
     "rule": MessageLookupByLibrary.simpleMessage("Rule"),
     "ruleActionAndDesc": MessageLookupByLibrary.simpleMessage(
       "Logical rule AND",

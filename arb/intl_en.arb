@@ -696,5 +696,8 @@
   "subscriptionUntilDays": "{days} d · until {date}",
   "subscriptionUntil": "until {date}",
   "noAccountShort": "No account",
-  "offlineShort": "Offline"
+  "offlineShort": "Offline",
+  "ruDirect": "Russian sites directly",
+  "ruDirectShort": "RU direct",
+  "ruDirectDesc": "Banks, Gosuslugi and other Russian sites go through your regular connection, everything else through the VPN. Apps that inspect the device itself may still ask you to turn the VPN off."
 }

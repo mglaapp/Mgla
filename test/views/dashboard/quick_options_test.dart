@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/database.dart';
@@ -38,7 +39,23 @@ final _cardCases = <_CardCase>[
     (container) => container.read(vpnSettingProvider).enable,
     initial: true,
   ),
+  _CardCase(
+    'RU direct',
+    const RuDirectButton(),
+    (container) => container.read(networkSettingProvider).ruDirect,
+  ),
 ];
+
+// «РФ напрямую» живёт в правилах профиля: переключение обязано пересобрать профиль,
+// иначе плитка меняет только картинку. Записываем запрос вместо настоящего применения.
+class _RecordingSetupAction extends SetupAction {
+  int applyCalls = 0;
+
+  @override
+  void applyProfileDebounce({bool silence = false, bool force = false}) {
+    applyCalls++;
+  }
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +64,10 @@ void main() {
 
   setUp(() {
     container = ProviderContainer(
-      overrides: [profilesProvider.overrideWith(TestProfiles.new)],
+      overrides: [
+        profilesProvider.overrideWith(TestProfiles.new),
+        setupActionProvider.overrideWith(_RecordingSetupAction.new),
+      ],
     );
     globalState.container = container;
     container.read(viewSizeProvider.notifier).value = const Size(1200, 1000);
@@ -105,6 +125,20 @@ void main() {
         );
       });
     }
+  });
+
+  testWidgets('RU direct re-applies the profile on every flip', (tester) async {
+    await pumpCard(tester, const RuDirectButton());
+    final setup =
+        container.read(setupActionProvider.notifier) as _RecordingSetupAction;
+
+    await tester.tap(find.byType(Switch));
+    await tester.pumpAndSettle();
+    expect(setup.applyCalls, 1);
+
+    await tester.tap(find.byType(Switch));
+    await tester.pumpAndSettle();
+    expect(setup.applyCalls, 2);
   });
 
   testWidgets('the three cards stay visually interchangeable', (tester) async {

@@ -325,6 +325,7 @@ class SetupAction extends _$SetupAction {
           appendSystemDns: state.appendSystemDns,
           routeMode: state.routeMode,
           authentication: state.authentication,
+          ruDirect: state.ruDirect,
         ),
       ),
     );
@@ -366,6 +367,7 @@ class SetupAction extends _$SetupAction {
         defaultUA: defaultUA,
         authentication: networkSetting.authentication.credentials,
         matchTarget: setupState.matchTarget,
+        ruDirect: networkSetting.ruDirect,
       ),
     );
     return res;

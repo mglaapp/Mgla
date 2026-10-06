@@ -5828,6 +5828,31 @@ class AppLocalizations {
   String get offlineShort {
     return Intl.message('Offline', name: 'offlineShort', desc: '', args: []);
   }
+
+  /// `Russian sites directly`
+  String get ruDirect {
+    return Intl.message(
+      'Russian sites directly',
+      name: 'ruDirect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `RU direct`
+  String get ruDirectShort {
+    return Intl.message('RU direct', name: 'ruDirectShort', desc: '', args: []);
+  }
+
+  /// `Banks, Gosuslugi and other Russian sites go through your regular connection, everything else through the VPN. Apps that inspect the device itself may still ask you to turn the VPN off.`
+  String get ruDirectDesc {
+    return Intl.message(
+      'Banks, Gosuslugi and other Russian sites go through your regular connection, everything else through the VPN. Apps that inspect the device itself may still ask you to turn the VPN off.',
+      name: 'ruDirectDesc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

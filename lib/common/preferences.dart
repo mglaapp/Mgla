@@ -151,15 +151,26 @@ class Preferences {
     await sharedPreferencesIns?.setString(bootRecordKey, json.encode(record));
   }
 
-  Future<Config> seedSubscriptionWidget(Config config) async {
+  Future<Config> seedSubscriptionWidget(Config config) =>
+      _seedOnce(config, subscriptionWidgetSeededKey, withSubscriptionWidget);
+
+  Future<Config> seedRuDirectWidget(Config config) =>
+      _seedOnce(config, ruDirectWidgetSeededKey, withRuDirectWidget);
+
+  /// Новая плитка вставляется в сохранённую раскладку ОДИН раз: флаг ставится только после
+  /// удачной записи, а убранная человеком плитка после этого не возвращается.
+  Future<Config> _seedOnce(
+    Config config,
+    String seededKey,
+    Config Function(Config) seed,
+  ) async {
     final store = await sharedPreferencesCompleter.future;
-    if (store == null ||
-        (store.getBool(subscriptionWidgetSeededKey) ?? false)) {
+    if (store == null || (store.getBool(seededKey) ?? false)) {
       return config;
     }
-    final seeded = withSubscriptionWidget(config);
+    final seeded = seed(config);
     if (!identical(seeded, config) && !await saveConfig(seeded)) return config;
-    await store.setBool(subscriptionWidgetSeededKey, true);
+    await store.setBool(seededKey, true);
     return seeded;
   }
 

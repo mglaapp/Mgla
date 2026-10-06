@@ -863,6 +863,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routeModeConfig": MessageLookupByLibrary.simpleMessage("設定を使用"),
     "ru": MessageLookupByLibrary.simpleMessage("ロシア語"),
+    "ruDirect": MessageLookupByLibrary.simpleMessage("ロシアのサイトを直接接続"),
+    "ruDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "銀行や Gosuslugi などのロシアのサイトは通常の回線で接続し、それ以外は VPN を経由します。端末自体を確認するアプリは、引き続き VPN をオフにするよう求める場合があります。",
+    ),
+    "ruDirectShort": MessageLookupByLibrary.simpleMessage("RU 直接"),
     "rule": MessageLookupByLibrary.simpleMessage("ルール"),
     "ruleActionAndDesc": MessageLookupByLibrary.simpleMessage("論理ルール AND"),
     "ruleActionDomainDesc": MessageLookupByLibrary.simpleMessage("完全なドメインにマッチ"),

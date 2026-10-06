@@ -296,7 +296,9 @@ Future<({String yaml, String md5})> _makeRealProfileTask(
   if (data.proxyGroups.isNotEmpty) {
     rawConfig['proxy-groups'] = data.proxyGroups;
   }
-  rawConfig['rules'] = rules;
+  // Mgla: «Российские сайты напрямую» — последним шагом, поверх любого из трёх видов
+  // переопределения правил (стандарт / свой набор / скрипт), перед MATCH.
+  rawConfig['rules'] = data.ruDirect ? withRuDirectRules(rules) : rules;
   final yaml = await _encodeYaml(Map<String, dynamic>.from(rawConfig));
   return (yaml: yaml, md5: yaml.toMd5());
 }

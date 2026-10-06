@@ -1086,6 +1086,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Использовать конфигурацию",
     ),
     "ru": MessageLookupByLibrary.simpleMessage("Русский"),
+    "ruDirect": MessageLookupByLibrary.simpleMessage(
+      "Российские сайты напрямую",
+    ),
+    "ruDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "Банки, Госуслуги и другие российские сайты открываются через ваш обычный интернет, остальное — через VPN. Приложения, которые проверяют сам телефон, могут по-прежнему просить выключить VPN.",
+    ),
+    "ruDirectShort": MessageLookupByLibrary.simpleMessage("РФ напрямую"),
     "rule": MessageLookupByLibrary.simpleMessage("Правило"),
     "ruleActionAndDesc": MessageLookupByLibrary.simpleMessage(
       "Логическое правило AND",

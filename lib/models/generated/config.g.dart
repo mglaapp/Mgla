@@ -75,6 +75,7 @@ const _$RestoreStrategyEnumMap = {
 
 const _$DashboardWidgetEnumMap = {
   DashboardWidget.subscription: 'subscription',
+  DashboardWidget.ruDirectButton: 'ruDirectButton',
   DashboardWidget.networkSpeed: 'networkSpeed',
   DashboardWidget.outboundModeV2: 'outboundModeV2',
   DashboardWidget.outboundMode: 'outboundMode',
@@ -202,6 +203,7 @@ _NetworkProps _$NetworkPropsFromJson(Map<String, dynamic> json) =>
           : AuthenticationProps.fromJson(
               json['authentication'] as Map<String, dynamic>?,
             ),
+      ruDirect: json['ruDirect'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$NetworkPropsToJson(_NetworkProps instance) =>
@@ -212,6 +214,7 @@ Map<String, dynamic> _$NetworkPropsToJson(_NetworkProps instance) =>
       'autoSetSystemDns': instance.autoSetSystemDns,
       'appendSystemDns': instance.appendSystemDns,
       'authentication': instance.authentication,
+      'ruDirect': instance.ruDirect,
     };
 
 const _$RouteModeEnumMap = {

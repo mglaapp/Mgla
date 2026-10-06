@@ -1,7 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
-import 'package:fl_clash/providers/config.dart';
+import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -118,6 +118,30 @@ class VpnSystemProxyItem extends ConsumerWidget {
           : l.systemProxyDesc,
       select: (state) => state.systemProxy,
       update: (state, value) => state.copyWith(systemProxy: value),
+    );
+  }
+}
+
+/// «Российские сайты напрямую»: одна точка записи для плитки панели и пункта настроек.
+/// Правила живут в профиле, который отдаётся ядру, поэтому одной записи настройки мало —
+/// профиль пересобирается сразу (как после правки правил в «Переопределении»).
+void setRuDirect(WidgetRef ref, bool value) {
+  ref
+      .read(networkSettingProvider.notifier)
+      .update((state) => state.copyWith(ruDirect: value));
+  ref.read(setupActionProvider.notifier).applyProfileDebounce(silence: true);
+}
+
+class RuDirectItem extends ConsumerWidget {
+  const RuDirectItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    return ConfigToggleItem(
+      title: (l) => l.ruDirect,
+      subtitle: (l) => l.ruDirectDesc,
+      selector: networkSettingProvider.select((state) => state.ruDirect),
+      onChanged: setRuDirect,
     );
   }
 }
@@ -328,6 +352,7 @@ class NetworkListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
     return generateListView([
+      const RuDirectItem(),
       if (system.isAndroid) const VPNItem(),
       if (system.isAndroid)
         ...generateSection(

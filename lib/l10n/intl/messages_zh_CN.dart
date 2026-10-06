@@ -739,6 +739,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "routeModeBypassPrivate": MessageLookupByLibrary.simpleMessage("绕过私有路由地址"),
     "routeModeConfig": MessageLookupByLibrary.simpleMessage("使用配置"),
     "ru": MessageLookupByLibrary.simpleMessage("俄语"),
+    "ruDirect": MessageLookupByLibrary.simpleMessage("俄罗斯网站直连"),
+    "ruDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "银行、Gosuslugi 等俄罗斯网站走您的普通网络，其余流量走 VPN。检查设备本身的应用仍可能要求您关闭 VPN。",
+    ),
+    "ruDirectShort": MessageLookupByLibrary.simpleMessage("俄罗斯直连"),
     "rule": MessageLookupByLibrary.simpleMessage("规则"),
     "ruleActionAndDesc": MessageLookupByLibrary.simpleMessage("逻辑规则 AND"),
     "ruleActionDomainDesc": MessageLookupByLibrary.simpleMessage("匹配完整域名"),

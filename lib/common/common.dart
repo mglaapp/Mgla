@@ -44,6 +44,7 @@ export 'provider_reader.dart';
 export 'proxy.dart';
 export 'render.dart';
 export 'request.dart';
+export 'ru_direct.dart';
 export 'scroll.dart';
 export 'shape.dart';
 export 'snowflake.dart';
