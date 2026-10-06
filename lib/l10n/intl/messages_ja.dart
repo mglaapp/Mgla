@@ -693,6 +693,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "other": MessageLookupByLibrary.simpleMessage("その他"),
     "otherContributors": MessageLookupByLibrary.simpleMessage("その他の貢献者"),
     "outboundMode": MessageLookupByLibrary.simpleMessage("アウトバウンドモード"),
+    "outboundModeTip": MessageLookupByLibrary.simpleMessage(
+      "ルール — すべて Mgla サーバー経由。「RU 直接」がオンならロシアのサイトは直接接続。ほとんどの場合これで十分です。\n\nグローバル — すべて「プロキシ」で選んだサーバー経由。ルールと「RU 直接」は無視されます。\n\nダイレクト — すべて VPN を通りません。サイトが開かない原因が VPN かを確かめるのに便利です。",
+    ),
     "override": MessageLookupByLibrary.simpleMessage("上書き"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("DNSを上書き"),
     "overrideDnsDesc": MessageLookupByLibrary.simpleMessage(

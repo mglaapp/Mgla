@@ -40,6 +40,9 @@ class Dialogs {
     String? cancelText,
     bool cancelable = true,
     bool? dismissible,
+    // Высота текста до прокрутки. 200 хватает на строку-две; справке из нескольких абзацев
+    // нужно больше — иначе последняя фраза срезана, а прокрутку в окне никто не ищет.
+    double maxHeight = 200,
   }) async {
     return showCommonDialog<bool>(
       context: context,
@@ -66,7 +69,7 @@ class Dialogs {
             ],
             child: Container(
               width: 300,
-              constraints: const BoxConstraints(maxHeight: 200),
+              constraints: BoxConstraints(maxHeight: maxHeight),
               child: SingleChildScrollView(
                 child: SelectableText.rich(
                   TextSpan(

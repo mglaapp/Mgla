@@ -699,5 +699,6 @@
   "offlineShort": "Offline",
   "ruDirect": "Russian sites directly",
   "ruDirectShort": "RU direct",
-  "ruDirectDesc": "Banks, Gosuslugi and other Russian sites go through your regular connection, everything else through the VPN. Apps that inspect the device itself may still ask you to turn the VPN off."
+  "ruDirectDesc": "Banks, Gosuslugi and other Russian sites go through your regular connection, everything else through the VPN. Apps that inspect the device itself may still ask you to turn the VPN off.",
+  "outboundModeTip": "Rule — everything goes through the Mgla server; with \"RU direct\" on, Russian sites go direct. Right for almost everyone.\n\nGlobal — everything goes through the server picked in Proxies; rules and \"RU direct\" are ignored.\n\nDirect — everything bypasses the VPN, as if the app were off. Shows whether the VPN is why a site won't open."
 }

@@ -864,6 +864,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "outboundMode": MessageLookupByLibrary.simpleMessage(
       "Режим исходящего трафика",
     ),
+    "outboundModeTip": MessageLookupByLibrary.simpleMessage(
+      "Правило — всё через сервер Mgla, а с «РФ напрямую» российские сайты идут напрямую. Подходит почти всегда.\n\nГлобальный — всё через сервер из раздела «Прокси»; правила и «РФ напрямую» не действуют.\n\nПрямой — всё мимо VPN, как без приложения. Помогает понять, не из-за VPN ли не открывается сайт.",
+    ),
     "override": MessageLookupByLibrary.simpleMessage("Переопределение"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("Переопределить DNS"),
     "overrideDnsDesc": MessageLookupByLibrary.simpleMessage(

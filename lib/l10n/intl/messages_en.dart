@@ -848,6 +848,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Other contributors",
     ),
     "outboundMode": MessageLookupByLibrary.simpleMessage("Outbound mode"),
+    "outboundModeTip": MessageLookupByLibrary.simpleMessage(
+      "Rule — everything goes through the Mgla server; with \"RU direct\" on, Russian sites go direct. Right for almost everyone.\n\nGlobal — everything goes through the server picked in Proxies; rules and \"RU direct\" are ignored.\n\nDirect — everything bypasses the VPN, as if the app were off. Shows whether the VPN is why a site won\'t open.",
+    ),
     "override": MessageLookupByLibrary.simpleMessage("Override"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("Override DNS"),
     "overrideDnsDesc": MessageLookupByLibrary.simpleMessage(

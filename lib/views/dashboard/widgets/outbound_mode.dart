@@ -17,7 +17,6 @@ class OutboundMode extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appLocalizations = context.appLocalizations;
     final height = getWidgetHeight(2);
     return SizedBox(
       height: height,
@@ -36,30 +35,90 @@ class OutboundMode extends ConsumerWidget {
               radius: AppCorner.lg,
               onPressed: () {},
               skipTraversal: true,
-              info: Info(
-                label: appLocalizations.outboundMode,
-                iconData: Icons.call_split_sharp,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12, bottom: 12),
-                child: RadioGroup<Mode>(
-                  groupValue: mode,
-                  onChanged: (value) {
-                    if (value == null) {
-                      return;
-                    }
-                    _handleChangeMode(value, ref);
-                  },
-                  child: _ModeRadioList(
-                    onSelect: (item) {
-                      _handleChangeMode(item, ref);
-                    },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const _OutboundModeHeader(),
+                  Flexible(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 12, bottom: 12),
+                      child: RadioGroup<Mode>(
+                        groupValue: mode,
+                        onChanged: (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          _handleChangeMode(value, ref);
+                        },
+                        child: _ModeRadioList(
+                          onSelect: (item) {
+                            _handleChangeMode(item, ref);
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+/// Заголовок плитки с маленькой справкой «что это такое» (просьба владельца 06-10): три слова
+/// «Правило / Глобальный / Прямой» человеку без опыта ничего не говорят. Ряд собран как у
+/// «Скорости сети», а не через CommonCard.info: заголовок карточки с кнопками ужимает отступы
+/// на 8 и при нижнем 0 ушёл бы в минус.
+class _OutboundModeHeader extends StatelessWidget {
+  const _OutboundModeHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
+    return Padding(
+      padding: baseInfoEdgeInsets.copyWith(bottom: 0),
+      child: Row(
+        children: [
+          Flexible(
+            child: InfoHeader(
+              padding: EdgeInsets.zero,
+              info: Info(
+                label: appLocalizations.outboundMode,
+                iconData: Icons.call_split_sharp,
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          // Вне обхода клавиатурой: стрелки и Tab по плитке ходят по режимам, как и прежде
+          // (outbound_mode_focus_test); справка — для мыши и пальца.
+          ExcludeFocus(
+            child: SizedBox.square(
+              dimension: globalState.measure.titleSmallHeight,
+              child: IconButton(
+                key: const ValueKey('outbound_mode_help'),
+                tooltip: appLocalizations.tip,
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  dialogs.showMessage(
+                    title: appLocalizations.outboundMode,
+                    message: TextSpan(text: appLocalizations.outboundModeTip),
+                    cancelable: false,
+                    maxHeight: 320,
+                  );
+                },
+                icon: Icon(
+                  Icons.info_outline,
+                  size: 16.ap,
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -595,6 +595,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "other": MessageLookupByLibrary.simpleMessage("其他"),
     "otherContributors": MessageLookupByLibrary.simpleMessage("其他贡献者"),
     "outboundMode": MessageLookupByLibrary.simpleMessage("出站模式"),
+    "outboundModeTip": MessageLookupByLibrary.simpleMessage(
+      "规则 — 全部经 Mgla 服务器；开启「俄罗斯直连」时俄罗斯网站直接访问。几乎所有情况都适用。\n\n全局 — 全部经「代理」中所选服务器；规则和「俄罗斯直连」不生效。\n\n直连 — 全部不经 VPN，相当于关闭应用。可用来判断网站打不开是否与 VPN 有关。",
+    ),
     "override": MessageLookupByLibrary.simpleMessage("覆写"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("覆写DNS"),
     "overrideDnsDesc": MessageLookupByLibrary.simpleMessage("开启后将覆盖配置中的DNS选项"),

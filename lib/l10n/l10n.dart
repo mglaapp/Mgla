@@ -5853,6 +5853,16 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Rule — everything goes through the Mgla server; with "RU direct" on, Russian sites go direct. Right for almost everyone.\n\nGlobal — everything goes through the server picked in Proxies; rules and "RU direct" are ignored.\n\nDirect — everything bypasses the VPN, as if the app were off. Shows whether the VPN is why a site won't open.`
+  String get outboundModeTip {
+    return Intl.message(
+      'Rule — everything goes through the Mgla server; with "RU direct" on, Russian sites go direct. Right for almost everyone.\n\nGlobal — everything goes through the server picked in Proxies; rules and "RU direct" are ignored.\n\nDirect — everything bypasses the VPN, as if the app were off. Shows whether the VPN is why a site won\'t open.',
+      name: 'outboundModeTip',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
