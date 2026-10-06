@@ -692,5 +692,9 @@
   "paySkins": "Steam 皮肤",
   "paySkinsDesc": "通过我们的 OmniSkin 服务：用 Steam 登录，选择价值不低于 {price} 的物品，机器人会发送交易报价。超出价格的部分计入余额。",
   "paySkinsButton": "选择皮肤",
-  "errSkinsOff": "皮肤支付暂不可用"
+  "errSkinsOff": "皮肤支付暂不可用",
+  "subscriptionUntilDays": "剩 {days} 天 · 至 {date}",
+  "subscriptionUntil": "至 {date}",
+  "noAccountShort": "无账户",
+  "offlineShort": "离线"
 }

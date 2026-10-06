@@ -13,7 +13,6 @@ import 'package:fl_clash/views/profiles/access_key.dart';
 import 'widgets/connection_state_pill.dart';
 import 'widgets/core_status_button.dart';
 import 'widgets/start_button.dart';
-import 'widgets/subscription_card.dart';
 
 typedef _IsEditWidgetBuilder = Widget Function(bool isEdit);
 
@@ -241,13 +240,6 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                           child: hasProfile
                               ? const ConnectionStatePill()
                               : const AccessKeyCard(),
-                        ),
-                      // Срок и «Продлить» — не плитка сетки: плитку можно убрать в режиме
-                      // правки, а кончающуюся подписку прятать незачем (решение 05-10).
-                      if (!isEdit && hasProfile)
-                        const Padding(
-                          padding: EdgeInsets.only(bottom: 14),
-                          child: SubscriptionCard(),
                         ),
                       LayoutBuilder(
                         builder: (_, constraints) {

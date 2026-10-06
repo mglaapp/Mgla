@@ -91,7 +91,9 @@ class Bootstrap {
   ) async {
     globalState.packageInfo = await PackageInfo.fromPlatform();
     crashReports.appVersion = globalState.packageInfo.version;
-    var config = await migration.run();
+    var config = await preferences.seedSubscriptionWidget(
+      await migration.run(),
+    );
     _bootDecision = await bootGuard.evaluate(
       profileId: config.currentProfileId,
     );

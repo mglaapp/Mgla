@@ -88,9 +88,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m31(count) => "${count} 件選択中";
 
-  static String m32(label) => "${label}はURLである必要があります";
+  static String m32(date) => "${date}まで";
 
-  static String m33(count) => "${count} 年前";
+  static String m33(days, date) => "残り${days}日 · ${date}まで";
+
+  static String m34(label) => "${label}はURLである必要があります";
+
+  static String m35(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -655,6 +659,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noAccessKeyYet": MessageLookupByLibrary.simpleMessage(
       "アクセスキーをお持ちではありませんか？",
     ),
+    "noAccountShort": MessageLookupByLibrary.simpleMessage("アカウントなし"),
     "noData": MessageLookupByLibrary.simpleMessage("データがありません"),
     "noHotKey": MessageLookupByLibrary.simpleMessage("ホットキーはまだありません"),
     "noInfo": MessageLookupByLibrary.simpleMessage("情報がありません"),
@@ -673,6 +678,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "nullTip": m24,
     "numberTip": m25,
+    "offlineShort": MessageLookupByLibrary.simpleMessage("オフライン"),
     "onDemand": MessageLookupByLibrary.simpleMessage("オンデマンド"),
     "onDemandDesc": MessageLookupByLibrary.simpleMessage(
       "特定のシナリオでのアプリの実行状態を設定します",
@@ -1037,6 +1043,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "subscription": MessageLookupByLibrary.simpleMessage("サブスクリプション"),
     "subscriptionDetails": MessageLookupByLibrary.simpleMessage("詳細"),
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage("サブスクリプション情報"),
+    "subscriptionUntil": m32,
+    "subscriptionUntilDays": m33,
     "suspended": MessageLookupByLibrary.simpleMessage("一時停止中..."),
     "sync": MessageLookupByLibrary.simpleMessage("同期"),
     "system": MessageLookupByLibrary.simpleMessage("システム"),
@@ -1100,7 +1108,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URLからプロファイルを取得します"),
-    "urlTip": m32,
+    "urlTip": m34,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("アドレス"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("金額"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("ネットワーク"),
@@ -1121,7 +1129,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "website": MessageLookupByLibrary.simpleMessage("ウェブサイト"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
-    "yearsAgo": m33,
+    "yearsAgo": m35,
     "zhCN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
   };
 }

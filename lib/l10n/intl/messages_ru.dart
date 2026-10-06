@@ -101,9 +101,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m31(count) => "Выбрано: ${count}";
 
-  static String m32(label) => "Значение «${label}» должно быть URL";
+  static String m32(date) => "до ${date}";
 
-  static String m33(count) =>
+  static String m33(days, date) => "${days} дн. · до ${date}";
+
+  static String m34(label) => "Значение «${label}» должно быть URL";
+
+  static String m35(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -816,6 +820,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Нейтральная"),
     "nextMatch": MessageLookupByLibrary.simpleMessage("Следующее совпадение"),
     "noAccessKeyYet": MessageLookupByLibrary.simpleMessage("Ключа ещё нет?"),
+    "noAccountShort": MessageLookupByLibrary.simpleMessage("Нет аккаунта"),
     "noData": MessageLookupByLibrary.simpleMessage("Нет данных"),
     "noHotKey": MessageLookupByLibrary.simpleMessage("Горячих клавиш пока нет"),
     "noInfo": MessageLookupByLibrary.simpleMessage("Нет информации"),
@@ -838,6 +843,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "nullTip": m24,
     "numberTip": m25,
+    "offlineShort": MessageLookupByLibrary.simpleMessage("Нет связи"),
     "onDemand": MessageLookupByLibrary.simpleMessage("По условию"),
     "onDemandDesc": MessageLookupByLibrary.simpleMessage(
       "Настройте состояние работы приложения для определённых сценариев",
@@ -1290,6 +1296,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage(
       "Информация о подписке",
     ),
+    "subscriptionUntil": m32,
+    "subscriptionUntilDays": m33,
     "suspended": MessageLookupByLibrary.simpleMessage("Приостановлено..."),
     "sync": MessageLookupByLibrary.simpleMessage("Синхронизация"),
     "system": MessageLookupByLibrary.simpleMessage("Система"),
@@ -1369,7 +1377,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("Отдача"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("Получить профиль по URL"),
-    "urlTip": m32,
+    "urlTip": m34,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("Адрес"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("Сумма"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("Сеть"),
@@ -1400,7 +1408,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage(
       "Режим белого списка",
     ),
-    "yearsAgo": m33,
+    "yearsAgo": m35,
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
   };
 }

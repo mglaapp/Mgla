@@ -692,5 +692,9 @@
   "paySkins": "Steamスキン",
   "paySkinsDesc": "当社のOmniSkin経由：Steamでログインし、{price}以上のアイテムを選ぶとボットがトレードを送信します。価格を超えた分は残高に入ります。",
   "paySkinsButton": "スキンを選ぶ",
-  "errSkinsOff": "現在スキンでの支払いはご利用いただけません"
+  "errSkinsOff": "現在スキンでの支払いはご利用いただけません",
+  "subscriptionUntilDays": "残り{days}日 · {date}まで",
+  "subscriptionUntil": "{date}まで",
+  "noAccountShort": "アカウントなし",
+  "offlineShort": "オフライン"
 }

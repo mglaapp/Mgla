@@ -5793,6 +5793,41 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `{days} d · until {date}`
+  String subscriptionUntilDays(Object days, Object date) {
+    return Intl.message(
+      '$days d · until $date',
+      name: 'subscriptionUntilDays',
+      desc: '',
+      args: [days, date],
+    );
+  }
+
+  /// `until {date}`
+  String subscriptionUntil(Object date) {
+    return Intl.message(
+      'until $date',
+      name: 'subscriptionUntil',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `No account`
+  String get noAccountShort {
+    return Intl.message(
+      'No account',
+      name: 'noAccountShort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offline`
+  String get offlineShort {
+    return Intl.message('Offline', name: 'offlineShort', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

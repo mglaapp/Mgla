@@ -101,9 +101,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m31(count) => "${count} selected";
 
-  static String m32(label) => "${label} must be a URL";
+  static String m32(date) => "until ${date}";
 
-  static String m33(count) =>
+  static String m33(days, date) => "${days} d · until ${date}";
+
+  static String m34(label) => "${label} must be a URL";
+
+  static String m35(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -802,6 +806,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noAccessKeyYet": MessageLookupByLibrary.simpleMessage(
       "No access key yet?",
     ),
+    "noAccountShort": MessageLookupByLibrary.simpleMessage("No account"),
     "noData": MessageLookupByLibrary.simpleMessage("No data"),
     "noHotKey": MessageLookupByLibrary.simpleMessage("No hotkeys yet"),
     "noInfo": MessageLookupByLibrary.simpleMessage("No info"),
@@ -824,6 +829,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "nullTip": m24,
     "numberTip": m25,
+    "offlineShort": MessageLookupByLibrary.simpleMessage("Offline"),
     "onDemand": MessageLookupByLibrary.simpleMessage("On demand"),
     "onDemandDesc": MessageLookupByLibrary.simpleMessage(
       "Configure the app\'s running state for specific scenarios",
@@ -1246,6 +1252,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage(
       "Subscription info",
     ),
+    "subscriptionUntil": m32,
+    "subscriptionUntilDays": m33,
     "suspended": MessageLookupByLibrary.simpleMessage("Suspended..."),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
     "system": MessageLookupByLibrary.simpleMessage("System"),
@@ -1323,7 +1331,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain a profile from a URL",
     ),
-    "urlTip": m32,
+    "urlTip": m34,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("Address"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("Amount"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("Network"),
@@ -1348,7 +1356,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "website": MessageLookupByLibrary.simpleMessage("Website"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
-    "yearsAgo": m33,
+    "yearsAgo": m35,
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };
 }

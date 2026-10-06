@@ -88,9 +88,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m31(count) => "已选择 ${count} 项";
 
-  static String m32(label) => "${label}必须为URL";
+  static String m32(date) => "至 ${date}";
 
-  static String m33(count) => "${count} 年前";
+  static String m33(days, date) => "剩 ${days} 天 · 至 ${date}";
+
+  static String m34(label) => "${label}必须为URL";
+
+  static String m35(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -563,6 +567,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "neutralScheme": MessageLookupByLibrary.simpleMessage("中性"),
     "nextMatch": MessageLookupByLibrary.simpleMessage("下一个匹配"),
     "noAccessKeyYet": MessageLookupByLibrary.simpleMessage("还没有访问密钥？"),
+    "noAccountShort": MessageLookupByLibrary.simpleMessage("无账户"),
     "noData": MessageLookupByLibrary.simpleMessage("暂无数据"),
     "noHotKey": MessageLookupByLibrary.simpleMessage("暂无快捷键"),
     "noInfo": MessageLookupByLibrary.simpleMessage("暂无信息"),
@@ -577,6 +582,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage("没有配置文件,请先添加配置文件"),
     "nullTip": m24,
     "numberTip": m25,
+    "offlineShort": MessageLookupByLibrary.simpleMessage("离线"),
     "onDemand": MessageLookupByLibrary.simpleMessage("按需运行"),
     "onDemandDesc": MessageLookupByLibrary.simpleMessage("配置程序特定场景运行状态"),
     "onlyIcon": MessageLookupByLibrary.simpleMessage("仅图标"),
@@ -891,6 +897,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "subscription": MessageLookupByLibrary.simpleMessage("订阅"),
     "subscriptionDetails": MessageLookupByLibrary.simpleMessage("详情"),
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage("订阅信息"),
+    "subscriptionUntil": m32,
+    "subscriptionUntilDays": m33,
     "suspended": MessageLookupByLibrary.simpleMessage("挂起中..."),
     "sync": MessageLookupByLibrary.simpleMessage("同步"),
     "system": MessageLookupByLibrary.simpleMessage("系统"),
@@ -950,7 +958,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m32,
+    "urlTip": m34,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("地址"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("金额"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("网络"),
@@ -971,7 +979,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "website": MessageLookupByLibrary.simpleMessage("官网"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
-    "yearsAgo": m33,
+    "yearsAgo": m35,
     "zhCN": MessageLookupByLibrary.simpleMessage("中文简体"),
   };
 }

@@ -692,5 +692,9 @@
   "paySkins": "Скинами из Steam",
   "paySkinsDesc": "Через наш сервис OmniSkin: войдёте через Steam, отметите предметы на сумму не меньше {price}, бот пришлёт обмен. Остаток сверх цены ляжет на баланс.",
   "paySkinsButton": "Выбрать скины",
-  "errSkinsOff": "Оплата скинами сейчас недоступна"
+  "errSkinsOff": "Оплата скинами сейчас недоступна",
+  "subscriptionUntilDays": "{days} дн. · до {date}",
+  "subscriptionUntil": "до {date}",
+  "noAccountShort": "Нет аккаунта",
+  "offlineShort": "Нет связи"
 }

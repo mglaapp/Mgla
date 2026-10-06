@@ -151,6 +151,18 @@ class Preferences {
     await sharedPreferencesIns?.setString(bootRecordKey, json.encode(record));
   }
 
+  Future<Config> seedSubscriptionWidget(Config config) async {
+    final store = await sharedPreferencesCompleter.future;
+    if (store == null ||
+        (store.getBool(subscriptionWidgetSeededKey) ?? false)) {
+      return config;
+    }
+    final seeded = withSubscriptionWidget(config);
+    if (!identical(seeded, config) && !await saveConfig(seeded)) return config;
+    await store.setBool(subscriptionWidgetSeededKey, true);
+    return seeded;
+  }
+
   Future<void> clearPreferences() async {
     final sharedPreferencesIns = await sharedPreferencesCompleter.future;
     await sharedPreferencesIns?.clear();

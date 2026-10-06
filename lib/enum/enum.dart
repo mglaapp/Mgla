@@ -280,6 +280,7 @@ enum FunctionTag {
 }
 
 enum DashboardWidget {
+  subscription,
   networkSpeed,
   outboundModeV2,
   outboundMode,

@@ -38,6 +38,7 @@ const defaultAccessControlProps = AccessControlProps();
 const defaultThemeProps = ThemeProps(primaryColor: defaultPrimaryColor);
 
 const List<DashboardWidget> defaultDashboardWidgets = [
+  DashboardWidget.subscription,
   DashboardWidget.networkSpeed,
   DashboardWidget.systemProxyButton,
   DashboardWidget.tunButton,
@@ -46,6 +47,16 @@ const List<DashboardWidget> defaultDashboardWidgets = [
   DashboardWidget.trafficUsage,
   DashboardWidget.intranetIp,
 ];
+
+/// Раскладка, сохранённая до 0.9.5, плитки подписки не знает: её вставляют один раз, и
+/// убранная после этого остаётся убранной ([Preferences.seedSubscriptionWidget]).
+Config withSubscriptionWidget(Config config) {
+  final widgets = config.appSettingProps.dashboardWidgets;
+  if (widgets.contains(DashboardWidget.subscription)) return config;
+  return config.copyWith.appSettingProps(
+    dashboardWidgets: [DashboardWidget.subscription, ...widgets],
+  );
+}
 
 List<DashboardWidget> dashboardWidgetsSafeFormJson(
   List<dynamic>? dashboardWidgets,

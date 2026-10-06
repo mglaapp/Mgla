@@ -3,30 +3,21 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
-import 'package:fl_clash/views/profiles/access_key.dart';
 import 'package:fl_clash/views/subscription.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// Сколько дней до конца срока блок подсвечивает как «пора продлевать».
+/// Сколько дней до конца срока плитка подсвечивает как «пора продлевать».
 const subscriptionWarnDays = 3;
 
-/// Подписка на главном экране: до какого числа оплачено и кнопка «Продлить» (05-10).
+/// Плитка подписки на панели: срок одной строкой и компактная «Продлить» (решение 06-10).
 ///
-/// ЗАЧЕМ НА ГЛАВНОМ. Экран подписки лежит в «Инструментах», и человек, у которого кончается
-/// срок, узнавал об этом только по отключившемуся VPN. Решение владельца: срок и продление —
-/// там, куда смотрят каждый день, рядом с кнопкой подключения.
-///
-/// «ПРОДЛИТЬ» ведёт сразу к оплате: выбор срока (если тарифов больше одного) -> тот же экран
-/// выбора способа, что и на экране подписки ([openPayment]). Своей дороги к оплате у блока
-/// нет — вторая разошлась бы с первой на следующем способе оплаты.
-///
-/// Без нашего ключа (профиль чужой) — «Создать аккаунт» и «Ключ доступа»: блок про подписку,
-/// который при отсутствии подписки молчит, прячет единственное место, где её можно завести.
+/// Обычная плитка сетки ([DashboardWidget.subscription]): добавляется и убирается в режиме
+/// правки, как соседние. «Продлить» ведёт сразу к оплате тем же путём, что экран подписки
+/// ([openPayment]); нажатие на плитку открывает подробности.
 class SubscriptionCard extends ConsumerStatefulWidget {
-  /// Откуда брать статус; по умолчанию — наш сервер. Подменяется в тестах: срок, кнопка и
-  /// подсветка — это разметка, и без подмены её проверили бы только глазами.
+  /// Откуда брать статус; по умолчанию — наш сервер. Подменяется в тестах.
   final Future<Result<AccountStatus>> Function(String key)? fetchStatus;
 
   const SubscriptionCard({super.key, this.fetchStatus});
@@ -75,7 +66,6 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
     });
   }
 
-  /// Тариф: один — без вопроса, несколько — короткий выбор срока.
   Future<Plan?> _pickPlan(List<Plan> plans) async {
     if (plans.length == 1) return plans.first;
     final l = context.appLocalizations;
@@ -121,6 +111,7 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
   }
 
   Future<void> _openDetails() async {
+    if (_busy) return;
     await BaseNavigator.push(context, const SubscriptionView());
     if (mounted) await _load();
   }
@@ -133,132 +124,96 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
     await _load();
   }
 
-  /// Строка с кнопкой обновления справа: заголовок карточки рисует CommonCard (как у плиток),
-  /// и своей шапки у блока больше нет.
-  Widget _lineWithRefresh(Widget child) {
-    return Row(
-      children: [
-        Expanded(child: child),
-        IconButton(
-          tooltip: context.appLocalizations.sync,
-          visualDensity: VisualDensity.compact,
-          onPressed: _busy ? null : _load,
-          icon: const Icon(Icons.refresh, size: 18),
-        ),
-      ],
+  Widget _action({
+    required IconData icon,
+    required String tooltip,
+    required VoidCallback onPressed,
+    Color? accent,
+  }) {
+    return SizedBox(
+      width: 32,
+      height: 32,
+      child: IconButton.filledTonal(
+        tooltip: tooltip,
+        iconSize: 18,
+        padding: EdgeInsets.zero,
+        style: accent == null
+            ? null
+            : IconButton.styleFrom(
+                backgroundColor: accent,
+                foregroundColor: accent == MglaPalette.warn
+                    ? MglaPalette.warnOn
+                    : context.colorScheme.onError,
+              ),
+        onPressed: _busy ? null : onPressed,
+        icon: Icon(icon),
+      ),
     );
   }
 
-  Widget _noAccount() {
-    final l = context.appLocalizations;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l.accessKeyDesc,
-          style: context.textTheme.bodyMedium?.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            FilledButton.icon(
-              onPressed: _busy ? null : _createAccount,
-              icon: const Icon(Icons.person_add_alt),
-              label: Text(l.createAccount),
-            ),
-            const AccessKeyButton(),
-          ],
-        ),
-      ],
-    );
+  Widget get _spinner => const SizedBox(
+    width: 32,
+    height: 32,
+    child: Padding(
+      padding: EdgeInsets.all(8),
+      child: CircularProgressIndicator(strokeWidth: 2),
+    ),
+  );
+
+  bool _isSoon(AccountStatus status) {
+    final days = status.daysLeft;
+    return status.active && days != null && days <= subscriptionWarnDays;
   }
 
-  Widget _withStatus(AccountStatus status) {
+  (String, Color, Widget) _content() {
     final l = context.appLocalizations;
     final scheme = context.colorScheme;
+    final status = _status;
+    if (_loadedKey == null && _loaded) {
+      return (
+        l.noAccountShort,
+        scheme.onSurfaceVariant,
+        _action(
+          icon: Icons.person_add_alt,
+          tooltip: l.createAccount,
+          onPressed: _createAccount,
+        ),
+      );
+    }
+    if (status == null) {
+      if (_loaded && _failed) {
+        return (
+          l.offlineShort,
+          scheme.error,
+          _action(icon: Icons.refresh, tooltip: l.sync, onPressed: _load),
+        );
+      }
+      return ('…', scheme.onSurfaceVariant, _spinner);
+    }
+    final action = _busy
+        ? _spinner
+        : _action(
+            icon: status.active ? Icons.autorenew : Icons.payments_outlined,
+            tooltip: status.active ? l.renewSubscription : l.getSubscription,
+            onPressed: () => _renew(status),
+            accent: !status.active
+                ? context.colorScheme.error
+                : _isSoon(status)
+                ? MglaPalette.warn
+                : null,
+          );
     final expire = status.expiresAt;
+    if (!status.active || expire == null) {
+      return (l.accessNotPaid, scheme.error, action);
+    }
     final days = status.daysLeft;
-    final quota = status.quotaGb;
-    final soon = status.active && days != null && days <= subscriptionWarnDays;
-    final accent = !status.active
-        ? scheme.error
-        : soon
-        ? MglaPalette.warn
-        : scheme.onSurface;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _lineWithRefresh(
-          Text(
-            status.active && expire != null
-                ? '${l.accessPaidUntil} ${expire.show}'
-                : l.accessNotPaid,
-            style: context.textTheme.titleSmall?.copyWith(
-              color: accent,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        if (status.active && days != null)
-          Text(
-            l.daysLeftCount(days),
-            style: context.textTheme.bodyMedium?.copyWith(
-              color: soon ? MglaPalette.warn : scheme.onSurfaceVariant,
-            ),
-          ),
-        if (quota != null)
-          Text(
-            '${status.usedGb ?? 0} / $quota GB',
-            style: context.textTheme.bodySmall?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
-          ),
-        if (_failed)
-          Text(
-            l.errNetwork,
-            style: context.textTheme.bodySmall?.copyWith(color: scheme.error),
-          ),
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            FilledButton.icon(
-              onPressed: _busy ? null : () => _renew(status),
-              icon: const Icon(Icons.autorenew),
-              label: Text(
-                status.active ? l.renewSubscription : l.getSubscription,
-              ),
-            ),
-            TextButton(
-              onPressed: _busy ? null : _openDetails,
-              child: Text(l.subscriptionDetails),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _failedFirst() {
-    final l = context.appLocalizations;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _lineWithRefresh(
-          Text(
-            l.errNetwork,
-            style: context.textTheme.bodyMedium?.copyWith(
-              color: context.colorScheme.error,
-            ),
-          ),
-        ),
-      ],
+    final line = days == null
+        ? l.subscriptionUntil(expire.show)
+        : l.subscriptionUntilDays('$days', expire.show);
+    return (
+      line,
+      _isSoon(status) ? MglaPalette.warn : scheme.onSurface,
+      action,
     );
   }
 
@@ -269,38 +224,36 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
     ref.listen(profilesStateProvider, (_, next) {
       if (ourAccessKey(next) != _loadedKey) unawaited(_load());
     });
-    final status = _status;
-    final Widget body;
-    if (_loadedKey == null && _loaded) {
-      body = _noAccount();
-    } else if (status != null) {
-      body = _withStatus(status);
-    } else if (_loaded && _failed) {
-      body = _failedFirst();
-    } else {
-      body = const Padding(
-        padding: EdgeInsets.symmetric(vertical: 12),
-        child: LinearProgressIndicator(minHeight: 2),
-      );
-    }
-    // Та же карточка, что у плиток главного экрана (обводка, шапка с иконкой, нажатие): блок
-    // заливкой выглядел чужим среди них (скрин владельца 06-10). Нажатие — в подробности.
-    return CommonCard(
-      radius: AppCorner.lg,
-      info: Info(
-        label: context.appLocalizations.subscription,
-        iconData: Icons.card_membership,
-      ),
-      onPressed: _busy ? null : _openDetails,
-      child: Padding(
-        padding: baseInfoEdgeInsets.copyWith(top: 4, right: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_busy && status != null)
-              const LinearProgressIndicator(minHeight: 2),
-            body,
-          ],
+    final (line, color, action) = _content();
+    return SizedBox(
+      height: getWidgetHeight(1),
+      child: CommonCard(
+        radius: AppCorner.lg,
+        info: Info(
+          label: context.appLocalizations.subscription,
+          iconData: Icons.card_membership,
+        ),
+        onPressed: _openDetails,
+        child: Container(
+          padding: baseInfoEdgeInsets.copyWith(top: 4, bottom: 8, right: 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: TooltipText(
+                  text: Text(
+                    line,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textTheme.titleSmall
+                        ?.adjustSize(-2)
+                        .copyWith(color: color, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              action,
+            ],
+          ),
         ),
       ),
     );

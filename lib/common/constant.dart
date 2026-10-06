@@ -81,6 +81,7 @@ const localhost = '127.0.0.1';
 const clashConfigKey = 'clash_config';
 const configKey = 'config';
 const systemDnsRecordKey = 'system_dns_record';
+const subscriptionWidgetSeededKey = 'mgla_subscription_widget_seeded';
 const bootRecordKey = 'boot_record';
 const defaultSystemDnsFallback = '223.5.5.5';
 const double dialogCommonWidth = 300;

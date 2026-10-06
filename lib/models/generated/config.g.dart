@@ -74,6 +74,7 @@ const _$RestoreStrategyEnumMap = {
 };
 
 const _$DashboardWidgetEnumMap = {
+  DashboardWidget.subscription: 'subscription',
   DashboardWidget.networkSpeed: 'networkSpeed',
   DashboardWidget.outboundModeV2: 'outboundModeV2',
   DashboardWidget.outboundMode: 'outboundMode',

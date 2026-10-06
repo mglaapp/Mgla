@@ -12,9 +12,9 @@ import 'package:material_ui/material_ui.dart';
 import '../../helpers/test_app.dart';
 import '../../helpers/test_profiles.dart';
 
-/// Блок подписки на главном экране (решение владельца 05-10): срок и «Продлить» там, куда
-/// смотрят каждый день. Сервер подменён: здесь проверяется разметка и дорога к оплате, а
-/// разбор ответа сервера — в test/models/account_test.dart.
+/// Плитка подписки на панели (решение владельца 06-10): срок одной строкой и компактная
+/// «Продлить». Сервер подменён: здесь разметка и дорога к оплате, разбор ответа сервера — в
+/// test/models/account_test.dart.
 const _key = '9ac0394dfc2f68b5846e7ac4';
 const _ourUrl = '$subscriptionSite$subscriptionPath$_key';
 
@@ -58,6 +58,7 @@ Future<void> _pump(
   WidgetTester tester, {
   required String url,
   required _Server server,
+  double width = 1000,
 }) async {
   tester.view.physicalSize = const Size(1000, 1400);
   tester.view.devicePixelRatio = 1;
@@ -76,8 +77,12 @@ Future<void> _pump(
       container: container,
       child: TestApp(
         child: Scaffold(
-          body: SingleChildScrollView(
-            child: SubscriptionCard(fetchStatus: server.call),
+          body: Align(
+            alignment: Alignment.topLeft,
+            child: SizedBox(
+              width: width,
+              child: SubscriptionCard(fetchStatus: server.call),
+            ),
           ),
         ),
       ),
@@ -89,8 +94,11 @@ Future<void> _pump(
 AppLocalizations _l(WidgetTester tester) =>
     tester.element(find.byType(SubscriptionCard)).appLocalizations;
 
+Color? _lineColor(WidgetTester tester, String text) =>
+    tester.widget<Text>(find.text(text)).style?.color;
+
 void main() {
-  testWidgets('оплачено: дата, остаток дней и «Продлить подписку»', (
+  testWidgets('оплачено: срок одной строкой и компактная «Продлить»', (
     tester,
   ) async {
     final server = _Server(Result.success(_status()));
@@ -98,11 +106,59 @@ void main() {
     final l = _l(tester);
 
     expect(server.asked, [_key]);
-    expect(find.text('${l.accessPaidUntil} 2026-11-12'), findsOneWidget);
-    expect(find.text(l.daysLeftCount(20)), findsOneWidget);
-    expect(find.text(l.renewSubscription), findsOneWidget);
-    expect(find.text(l.subscriptionDetails), findsOneWidget);
+    expect(find.text(l.subscription), findsOneWidget);
+    expect(
+      find.text(l.subscriptionUntilDays('20', '2026-11-12')),
+      findsOneWidget,
+    );
+    expect(find.byTooltip(l.renewSubscription), findsOneWidget);
+    expect(find.byType(IconButton), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('высота как у соседних плиток — одна строка сетки', (
+    tester,
+  ) async {
+    final server = _Server(Result.success(_status()));
+    await _pump(tester, url: _ourUrl, server: server);
+
+    expect(
+      tester.getSize(find.byType(SubscriptionCard)).height,
+      getWidgetHeight(1),
+    );
+  });
+
+  testWidgets('узкая плитка (телефон, 4 клетки из 8): без переполнения', (
+    tester,
+  ) async {
+    final server = _Server(Result.success(_status(daysLeft: 342)));
+    await _pump(tester, url: _ourUrl, server: server, width: 150);
+
+    expect(tester.takeException(), isNull);
+    expect(find.byTooltip(_l(tester).renewSubscription), findsOneWidget);
+  });
+
+  testWidgets('срок кончается: строка и кнопка цвета предупреждения', (
+    tester,
+  ) async {
+    final server = _Server(Result.success(_status(daysLeft: 2)));
+    await _pump(tester, url: _ourUrl, server: server);
+    final l = _l(tester);
+
+    expect(
+      _lineColor(tester, l.subscriptionUntilDays('2', '2026-11-12')),
+      MglaPalette.warn,
+    );
+    final button = tester.widget<IconButton>(find.byType(IconButton));
+    expect(button.tooltip, l.renewSubscription);
+    expect(button.style?.backgroundColor?.resolve(const {}), MglaPalette.warn);
+    expect(
+      find.descendant(
+        of: find.byType(IconButton),
+        matching: find.byIcon(Icons.autorenew),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('«Продлить»: выбор срока, потом экран выбора способа оплаты', (
@@ -112,9 +168,8 @@ void main() {
     await _pump(tester, url: _ourUrl, server: server);
     final l = _l(tester);
 
-    await tester.tap(find.text(l.renewSubscription));
+    await tester.tap(find.byTooltip(l.renewSubscription));
     await tester.pumpAndSettle();
-    // Тарифов два — сначала срок; ни один экран оплаты ещё не открыт.
     expect(find.text(l.choosePlan), findsOneWidget);
     expect(find.byType(PaymentMethodView), findsNothing);
 
@@ -123,7 +178,6 @@ void main() {
     final view = tester.widget<PaymentMethodView>(
       find.byType(PaymentMethodView),
     );
-    // Та же дорога, что с экрана подписки: выбранный тариф и наш ключ, а не первый попавшийся.
     expect(view.plan.code, '3m');
     expect(view.accessKey, _key);
   });
@@ -141,7 +195,7 @@ void main() {
     await _pump(tester, url: _ourUrl, server: server);
     final l = _l(tester);
 
-    await tester.tap(find.text(l.renewSubscription));
+    await tester.tap(find.byTooltip(l.renewSubscription));
     await tester.pumpAndSettle();
     expect(find.text(l.choosePlan), findsNothing);
     expect(find.byType(PaymentMethodView), findsOneWidget);
@@ -155,34 +209,36 @@ void main() {
     final l = _l(tester);
 
     expect(find.text(l.accessNotPaid), findsOneWidget);
-    expect(find.text(l.getSubscription), findsOneWidget);
-    expect(find.text(l.renewSubscription), findsNothing);
+    expect(find.byTooltip(l.getSubscription), findsOneWidget);
+    expect(find.byTooltip(l.renewSubscription), findsNothing);
   });
 
-  testWidgets(
-    'чужой профиль: сервер не спрашивается, есть «Создать аккаунт» и ключ',
-    (tester) async {
-      final server = _Server(Result.success(_status()));
-      await _pump(tester, url: 'https://example.com/sub/$_key', server: server);
-      final l = _l(tester);
+  testWidgets('чужой профиль: сервер не спрашивается, есть «Создать аккаунт»', (
+    tester,
+  ) async {
+    final server = _Server(Result.success(_status()));
+    await _pump(tester, url: 'https://example.com/sub/$_key', server: server);
+    final l = _l(tester);
 
-      // Чужой ключ на наш сервер не уходит: про чужие подписки он ничего не знает.
-      expect(server.asked, isEmpty);
-      expect(find.text(l.createAccount), findsOneWidget);
-      expect(find.text(l.accessKey), findsOneWidget);
-      expect(find.text(l.renewSubscription), findsNothing);
-    },
-  );
+    expect(server.asked, isEmpty);
+    expect(find.text(l.noAccountShort), findsOneWidget);
+    expect(find.byTooltip(l.createAccount), findsOneWidget);
+    expect(find.byTooltip(l.renewSubscription), findsNothing);
+  });
 
-  testWidgets('сервер недоступен: слово об ошибке, без падения', (
+  testWidgets('сервер недоступен: «Нет связи» и «Обновить», без падения', (
     tester,
   ) async {
     final server = _Server(Result.error('network'));
     await _pump(tester, url: _ourUrl, server: server);
     final l = _l(tester);
 
-    expect(find.text(l.errNetwork), findsOneWidget);
-    expect(find.text(l.renewSubscription), findsNothing);
+    expect(find.text(l.offlineShort), findsOneWidget);
+    expect(find.byTooltip(l.renewSubscription), findsNothing);
+
+    await tester.tap(find.byTooltip(l.sync));
+    await tester.pumpAndSettle();
+    expect(server.asked, [_key, _key]);
     expect(tester.takeException(), isNull);
   });
 }

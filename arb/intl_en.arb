@@ -692,5 +692,9 @@
   "paySkins": "Steam skins",
   "paySkinsDesc": "Through our OmniSkin service: sign in with Steam, pick items worth at least {price}, and the bot sends a trade. Anything above the price goes to your balance.",
   "paySkinsButton": "Pick skins",
-  "errSkinsOff": "Paying with skins is unavailable right now"
+  "errSkinsOff": "Paying with skins is unavailable right now",
+  "subscriptionUntilDays": "{days} d · until {date}",
+  "subscriptionUntil": "until {date}",
+  "noAccountShort": "No account",
+  "offlineShort": "Offline"
 }
