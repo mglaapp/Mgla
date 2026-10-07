@@ -69,6 +69,26 @@ Future<void> openPayment(
   );
 }
 
+/// Пробный: страница платёжки в браузере, а без телеграма — сперва бот привязки (сервер продаёт
+/// пробный один на телеграм). Вызывающий перечитывает статус после возврата.
+Future<void> openTrial(
+  BuildContext context,
+  TrialOffer trial,
+  String accessKey,
+) async {
+  final result = trial.needTelegram
+      ? await request.bindTelegram(accessKey)
+      : await request.createTrialPayment(accessKey);
+  if (!context.mounted) return;
+  if (result.isError) return complainPayment(context, result.message);
+  await dialogs.openUrl(result.data!);
+}
+
+String trialOfferText(BuildContext context, TrialOffer trial) {
+  final l = context.appLocalizations;
+  return l.trialOffer(l.daysCount(trial.days), trial.price);
+}
+
 /// Завести аккаунт: профиль ставится сразу, ссылка входа показывается сразу.
 ///
 /// Показать её обязательно и именно здесь: аккаунт из приложения ни к чему не привязан, и
@@ -106,7 +126,9 @@ Future<void> createAccountFlow(BuildContext context, WidgetRef ref) async {
 /// принадлежит платёжной системе и открывается у неё), ниже монеты напрямую со счётом внутри
 /// приложения. Старый сервер без монет — прежний путь USDT.
 class SubscriptionView extends ConsumerStatefulWidget {
-  const SubscriptionView({super.key});
+  final Future<Result<AccountStatus>> Function(String key)? fetchStatus;
+
+  const SubscriptionView({super.key, this.fetchStatus});
 
   @override
   ConsumerState<SubscriptionView> createState() => _SubscriptionViewState();
@@ -132,7 +154,7 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
       return;
     }
     setState(() => _busy = true);
-    final result = await request.accountStatus(key);
+    final result = await (widget.fetchStatus ?? request.accountStatus)(key);
     if (!mounted) return;
     setState(() {
       _busy = false;
@@ -159,6 +181,45 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     if (!mounted) return;
     setState(() => _busy = false);
     await _load();
+  }
+
+  Future<void> _startTrial(TrialOffer trial) async {
+    final key = _key;
+    if (key == null) return;
+    setState(() => _busy = true);
+    await openTrial(context, trial, key);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    await _load();
+  }
+
+  Widget _buildTrial(TrialOffer trial) {
+    final l = context.appLocalizations;
+    final promo = trial.promo;
+    final offer = trialOfferText(context, trial);
+    return generateSectionV3(
+      title: l.trialPeriod,
+      items: [
+        DecorationListItem(
+          title: Text(
+            promo == null ? offer : '$offer · ${l.trialPromo(promo)}',
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(trial.needTelegram ? l.trialNeedTelegram : l.trialDesc),
+              const SizedBox(height: 12),
+              FilledButton(
+                onPressed: _busy ? null : () => _startTrial(trial),
+                child: Text(
+                  trial.needTelegram ? l.bindTelegram : l.trialButton,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildNoAccount() {
@@ -202,6 +263,7 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     final expire = status.expiresAt;
     final quota = status.quotaGb;
     final used = status.usedGb;
+    final trial = status.trial;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -219,6 +281,7 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
             ),
           ],
         ),
+        if (trial != null) ...[const SizedBox(height: 12), _buildTrial(trial)],
         const SizedBox(height: 12),
         generateSectionV3(
           title: l.recoverAccess,

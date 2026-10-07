@@ -700,5 +700,15 @@
   "ruDirect": "Russian sites directly",
   "ruDirectShort": "RU direct",
   "ruDirectDesc": "Banks, Gosuslugi and other Russian sites go through your regular connection, everything else through the VPN. Apps that inspect the device itself may still ask you to turn the VPN off.",
-  "outboundModeTip": "Rule — everything goes through the Mgla server; with \"RU direct\" on, Russian sites go direct. Right for almost everyone.\n\nGlobal — everything goes through the server picked in Proxies; rules and \"RU direct\" are ignored.\n\nDirect — everything bypasses the VPN, as if the app were off. Shows whether the VPN is why a site won't open."
+  "outboundModeTip": "Rule — everything goes through the Mgla server; with \"RU direct\" on, Russian sites go direct. Right for almost everyone.\n\nGlobal — everything goes through the server picked in Proxies; rules and \"RU direct\" are ignored.\n\nDirect — everything bypasses the VPN, as if the app were off. Shows whether the VPN is why a site won't open.",
+  "trialPeriod": "Trial",
+  "daysCount": "{count, plural, one{{count} day} other{{count} days}}",
+  "trialOffer": "{days} for {price} ₽",
+  "trialPromo": "with promo code {code}",
+  "trialDesc": "Pay with a Russian card or SBP. One trial per account, Telegram and card.",
+  "trialNeedTelegram": "Link Telegram first: that is how the trial stays one per person.",
+  "trialButton": "Try it",
+  "errTrialOff": "The trial is unavailable right now",
+  "errTrialUsed": "The trial is no longer available for this account",
+  "errTrialNeedTelegram": "Link Telegram first"
 }

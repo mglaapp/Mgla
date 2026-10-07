@@ -110,9 +110,23 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
     await _load();
   }
 
+  Future<void> _tryTrial(TrialOffer trial) async {
+    final key = _loadedKey;
+    if (key == null) return;
+    if (trial.needTelegram) return _openDetails();
+    setState(() => _busy = true);
+    await openTrial(context, trial, key);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    await _load();
+  }
+
   Future<void> _openDetails() async {
     if (_busy) return;
-    await BaseNavigator.push(context, const SubscriptionView());
+    await BaseNavigator.push(
+      context,
+      SubscriptionView(fetchStatus: widget.fetchStatus),
+    );
     if (mounted) await _load();
   }
 
@@ -189,6 +203,20 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
         );
       }
       return ('…', scheme.onSurfaceVariant, _spinner);
+    }
+    final trial = status.trial;
+    if (!status.active && trial != null) {
+      return (
+        trialOfferText(context, trial),
+        scheme.primary,
+        _busy
+            ? _spinner
+            : _action(
+                icon: Icons.bolt,
+                tooltip: l.trialButton,
+                onPressed: () => _tryTrial(trial),
+              ),
+      );
     }
     final action = _busy
         ? _spinner

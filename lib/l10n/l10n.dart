@@ -5863,6 +5863,98 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Trial`
+  String get trialPeriod {
+    return Intl.message('Trial', name: 'trialPeriod', desc: '', args: []);
+  }
+
+  /// `{count, plural, one{{count} day} other{{count} days}}`
+  String daysCount(num count) {
+    return Intl.plural(
+      count,
+      one: '$count day',
+      other: '$count days',
+      name: 'daysCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{days} for {price} ₽`
+  String trialOffer(Object days, Object price) {
+    return Intl.message(
+      '$days for $price ₽',
+      name: 'trialOffer',
+      desc: '',
+      args: [days, price],
+    );
+  }
+
+  /// `with promo code {code}`
+  String trialPromo(Object code) {
+    return Intl.message(
+      'with promo code $code',
+      name: 'trialPromo',
+      desc: '',
+      args: [code],
+    );
+  }
+
+  /// `Pay with a Russian card or SBP. One trial per account, Telegram and card.`
+  String get trialDesc {
+    return Intl.message(
+      'Pay with a Russian card or SBP. One trial per account, Telegram and card.',
+      name: 'trialDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Link Telegram first: that is how the trial stays one per person.`
+  String get trialNeedTelegram {
+    return Intl.message(
+      'Link Telegram first: that is how the trial stays one per person.',
+      name: 'trialNeedTelegram',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try it`
+  String get trialButton {
+    return Intl.message('Try it', name: 'trialButton', desc: '', args: []);
+  }
+
+  /// `The trial is unavailable right now`
+  String get errTrialOff {
+    return Intl.message(
+      'The trial is unavailable right now',
+      name: 'errTrialOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The trial is no longer available for this account`
+  String get errTrialUsed {
+    return Intl.message(
+      'The trial is no longer available for this account',
+      name: 'errTrialUsed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Link Telegram first`
+  String get errTrialNeedTelegram {
+    return Intl.message(
+      'Link Telegram first',
+      name: 'errTrialNeedTelegram',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

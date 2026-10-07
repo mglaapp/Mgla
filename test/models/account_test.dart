@@ -326,4 +326,57 @@ void main() {
       expect(no.status, isNull, reason: 'без ключа статус не выдумывается');
     });
   });
+
+  group('пробный (06-10)', () {
+    test('предложение сервера разбирается целиком', () {
+      final trial = TrialOffer.fromJson({
+        'rub': '19',
+        'days': 7,
+        'days_text': '7 дней',
+        'promo': 'ANNA',
+        'promo_days_text': '7 дней',
+        'need_tg': true,
+      });
+      expect(trial, isNotNull);
+      expect(trial!.price, '19');
+      expect(trial.days, 7);
+      expect(trial.promo, 'ANNA');
+      expect(trial.needTelegram, isTrue);
+    });
+
+    test('цена числом пишется без «.0», пустой промокод = без промокода', () {
+      final trial = TrialOffer.fromJson({'rub': 19.0, 'days': 3, 'promo': ''});
+      expect(trial!.price, '19');
+      expect(trial.promo, isNull);
+      expect(trial.needTelegram, isFalse);
+      expect(TrialOffer.fromJson({'rub': 19.5, 'days': 3})!.price, '19.5');
+    });
+
+    test('без цены или дней пробного нет, мусор не роняет', () {
+      expect(TrialOffer.fromJson({'days': 3}), isNull);
+      expect(TrialOffer.fromJson({'rub': '', 'days': 3}), isNull);
+      expect(TrialOffer.fromJson({'rub': 0, 'days': 3}), isNull);
+      expect(TrialOffer.fromJson({'rub': '19'}), isNull);
+      expect(TrialOffer.fromJson({'rub': '19', 'days': 0}), isNull);
+      expect(TrialOffer.fromJson({'rub': '19', 'days': '3'}), isNull);
+      expect(TrialOffer.fromJson('строка'), isNull);
+      expect(TrialOffer.fromJson(null), isNull);
+    });
+
+    test('статус несёт trial_offer; null и старый сервер — без пробного', () {
+      final base = {'key': 'k', 'active': false};
+      expect(
+        AccountStatus.fromJson({
+          ...base,
+          'trial_offer': {'rub': '19', 'days': 3, 'need_tg': false},
+        })!.trial?.days,
+        3,
+      );
+      expect(
+        AccountStatus.fromJson({...base, 'trial_offer': null})!.trial,
+        isNull,
+      );
+      expect(AccountStatus.fromJson(base)!.trial, isNull);
+    });
+  });
 }

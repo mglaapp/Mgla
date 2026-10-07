@@ -700,5 +700,15 @@
   "ruDirect": "俄罗斯网站直连",
   "ruDirectShort": "俄罗斯直连",
   "ruDirectDesc": "银行、Gosuslugi 等俄罗斯网站走您的普通网络，其余流量走 VPN。检查设备本身的应用仍可能要求您关闭 VPN。",
-  "outboundModeTip": "规则 — 全部经 Mgla 服务器；开启「俄罗斯直连」时俄罗斯网站直接访问。几乎所有情况都适用。\n\n全局 — 全部经「代理」中所选服务器；规则和「俄罗斯直连」不生效。\n\n直连 — 全部不经 VPN，相当于关闭应用。可用来判断网站打不开是否与 VPN 有关。"
+  "outboundModeTip": "规则 — 全部经 Mgla 服务器；开启「俄罗斯直连」时俄罗斯网站直接访问。几乎所有情况都适用。\n\n全局 — 全部经「代理」中所选服务器；规则和「俄罗斯直连」不生效。\n\n直连 — 全部不经 VPN，相当于关闭应用。可用来判断网站打不开是否与 VPN 有关。",
+  "trialPeriod": "试用期",
+  "daysCount": "{count, plural, other{{count} 天}}",
+  "trialOffer": "{days} · {price} ₽",
+  "trialPromo": "优惠码 {code}",
+  "trialDesc": "使用俄罗斯银行卡或 SBP 支付。每个账户、Telegram 和银行卡仅限试用一次。",
+  "trialNeedTelegram": "请先绑定 Telegram：我们据此确保每人仅试用一次。",
+  "trialButton": "试用",
+  "errTrialOff": "试用暂不可用",
+  "errTrialUsed": "此账户已无法试用",
+  "errTrialNeedTelegram": "请先绑定 Telegram"
 }

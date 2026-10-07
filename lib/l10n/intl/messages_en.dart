@@ -32,82 +32,89 @@ class MessageLookup extends MessageLookupByLibrary {
       "${Intl.plural(count, one: '1 day ago', other: '${count} days ago')}";
 
   static String m4(count) =>
+      "${Intl.plural(count, one: '${count} day', other: '${count} days')}";
+
+  static String m5(count) =>
       "${Intl.plural(count, one: '1 day left', other: '${count} days left')}";
 
-  static String m5(label) =>
+  static String m6(label) =>
       "Are you sure you want to delete the selected ${label}?";
 
-  static String m6(label) => "Are you sure you want to delete this ${label}?";
+  static String m7(label) => "Are you sure you want to delete this ${label}?";
 
-  static String m7(label) => "${label} details";
+  static String m8(label) => "${label} details";
 
-  static String m8(label) => "${label} cannot be empty";
+  static String m9(label) => "${label} cannot be empty";
 
-  static String m9(count) =>
+  static String m10(count) =>
       "${Intl.plural(count, one: '1 entry', other: '${count} entries')}";
 
-  static String m10(label) => "${label} already exists";
+  static String m11(label) => "${label} already exists";
 
-  static String m11(name) => "${name} is already up to date";
+  static String m12(name) => "${name} is already up to date";
 
-  static String m12(name) => "${name} updated";
-
-  static String m13(count) =>
-      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
+  static String m13(name) => "${name} updated";
 
   static String m14(count) =>
+      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
+
+  static String m15(count) =>
       "${Intl.plural(count, one: '1 hour', other: '${count} hours')}";
 
-  static String m15(target) => "${target} is an invalid policy";
+  static String m16(target) => "${target} is an invalid policy";
 
-  static String m16(proxyName) => "${proxyName} is an invalid proxy";
+  static String m17(proxyName) => "${proxyName} is an invalid proxy";
 
-  static String m17(providerName) =>
+  static String m18(providerName) =>
       "${providerName} is an invalid proxy provider";
 
-  static String m18(subRule) => "${subRule} is an invalid SUB_RULE";
+  static String m19(subRule) => "${subRule} is an invalid SUB_RULE";
 
-  static String m19(appName) =>
+  static String m20(appName) =>
       "1. Open System Settings > Privacy & Security\n2. Choose Location Services\n3. Find and check ${appName} in the list\n\nWhen you are done, return to the app to continue. Thank you for your cooperation.";
 
-  static String m20(label, max) => "${label} must be at most ${max} characters";
-
-  static String m21(count) =>
-      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
+  static String m21(label, max) => "${label} must be at most ${max} characters";
 
   static String m22(count) =>
-      "${Intl.plural(count, one: '1 month ago', other: '${count} months ago')}";
+      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
 
   static String m23(count) =>
+      "${Intl.plural(count, one: '1 month ago', other: '${count} months ago')}";
+
+  static String m24(count) =>
       "${Intl.plural(count, one: '1 network', other: '${count} networks')}";
 
-  static String m24(label) => "No ${label} yet";
+  static String m25(label) => "No ${label} yet";
 
-  static String m25(label) => "${label} must be a number";
+  static String m26(label) => "${label} must be a number";
 
-  static String m26(price) =>
+  static String m27(price) =>
       "Through our OmniSkin service: sign in with Steam, pick items worth at least ${price}, and the bot sends a trade. Anything above the price goes to your balance.";
 
-  static String m27(label) => "${label} must be between 1024 and 49151";
-
-  static String m28(count) =>
-      "${Intl.plural(count, one: '1 proxy', other: '${count} proxies')}";
+  static String m28(label) => "${label} must be between 1024 and 49151";
 
   static String m29(count) =>
-      "${Intl.plural(count, one: '1 rule', other: '${count} rules')}";
+      "${Intl.plural(count, one: '1 proxy', other: '${count} proxies')}";
 
   static String m30(count) =>
+      "${Intl.plural(count, one: '1 rule', other: '${count} rules')}";
+
+  static String m31(count) =>
       "${Intl.plural(count, one: '1 second', other: '${count} seconds')}";
 
-  static String m31(count) => "${count} selected";
+  static String m32(count) => "${count} selected";
 
-  static String m32(date) => "until ${date}";
+  static String m33(date) => "until ${date}";
 
-  static String m33(days, date) => "${days} d · until ${date}";
+  static String m34(days, date) => "${days} d · until ${date}";
 
-  static String m34(label) => "${label} must be a URL";
+  static String m35(days, price) => "${days} for ${price} ₽";
 
-  static String m35(count) =>
+  static String m36(code) => "with promo code ${code}";
+
+  static String m37(label) => "${label} must be a URL";
+
+  static String m38(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -403,7 +410,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Failed to save the change; it has been rolled back",
     ),
     "daysAgo": m3,
-    "daysLeftCount": m4,
+    "daysCount": m4,
+    "daysLeftCount": m5,
     "defaultNameserver": MessageLookupByLibrary.simpleMessage(
       "Default nameserver",
     ),
@@ -414,8 +422,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "delay": MessageLookupByLibrary.simpleMessage("Delay"),
     "delayTest": MessageLookupByLibrary.simpleMessage("Delay test"),
     "delete": MessageLookupByLibrary.simpleMessage("Delete"),
-    "deleteMultipTip": m5,
-    "deleteTip": m6,
+    "deleteMultipTip": m6,
+    "deleteTip": m7,
     "desc": MessageLookupByLibrary.simpleMessage(
       "Mgla is the app for the mgla.app service. Open source, no ads; nothing leaves the device on its own. ClashMeta core.",
     ),
@@ -426,7 +434,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "destinationIPASN": MessageLookupByLibrary.simpleMessage(
       "Destination IP ASN",
     ),
-    "details": m7,
+    "details": m8,
     "detectionTip": MessageLookupByLibrary.simpleMessage(
       "Relies on a third-party API; for reference only",
     ),
@@ -463,10 +471,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "editRule": MessageLookupByLibrary.simpleMessage("Edit rule"),
     "editSsid": MessageLookupByLibrary.simpleMessage("Edit SSID"),
     "emailAddress": MessageLookupByLibrary.simpleMessage("Email address"),
-    "emptyTip": m8,
+    "emptyTip": m9,
     "en": MessageLookupByLibrary.simpleMessage("English"),
     "entries": MessageLookupByLibrary.simpleMessage(" entries"),
-    "entriesCount": m9,
+    "entriesCount": m10,
     "errBadEmail": MessageLookupByLibrary.simpleMessage(
       "That does not look like an email address",
     ),
@@ -497,6 +505,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "errTooSoon": MessageLookupByLibrary.simpleMessage(
       "A letter has already been sent, wait a minute",
     ),
+    "errTrialNeedTelegram": MessageLookupByLibrary.simpleMessage(
+      "Link Telegram first",
+    ),
+    "errTrialOff": MessageLookupByLibrary.simpleMessage(
+      "The trial is unavailable right now",
+    ),
+    "errTrialUsed": MessageLookupByLibrary.simpleMessage(
+      "The trial is no longer available for this account",
+    ),
     "errUnknownKey": MessageLookupByLibrary.simpleMessage("Key not found"),
     "errUsdtOff": MessageLookupByLibrary.simpleMessage(
       "USDT payment is unavailable right now",
@@ -513,7 +530,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "When connected to Wi-Fi with an excluded SSID, the app\'s running state switches automatically",
     ),
     "excludeType": MessageLookupByLibrary.simpleMessage("Exclude type"),
-    "existsTip": m10,
+    "existsTip": m11,
     "exit": MessageLookupByLibrary.simpleMessage("Exit"),
     "exitFullScreen": MessageLookupByLibrary.simpleMessage("Exit full screen"),
     "expand": MessageLookupByLibrary.simpleMessage("Standard"),
@@ -566,8 +583,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "geoOptions": MessageLookupByLibrary.simpleMessage("Geo options"),
     "geoResources": MessageLookupByLibrary.simpleMessage("Geo resources"),
-    "geoSkipped": m11,
-    "geoUpdated": m12,
+    "geoSkipped": m12,
+    "geoUpdated": m13,
     "geodataLoader": MessageLookupByLibrary.simpleMessage(
       "Geo low-memory mode",
     ),
@@ -602,8 +619,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Control the app with the keyboard",
     ),
     "hours": MessageLookupByLibrary.simpleMessage("hours"),
-    "hoursAgo": m13,
-    "hoursCount": m14,
+    "hoursAgo": m14,
+    "hoursCount": m15,
     "iPaid": MessageLookupByLibrary.simpleMessage("I have paid"),
     "icon": MessageLookupByLibrary.simpleMessage("Icon"),
     "iconRecords": MessageLookupByLibrary.simpleMessage("Icon records"),
@@ -676,10 +693,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidBackupFile": MessageLookupByLibrary.simpleMessage(
       "Invalid backup file",
     ),
-    "invalidPolicy": m15,
-    "invalidProxy": m16,
-    "invalidProxyProvider": m17,
-    "invalidSubRule": m18,
+    "invalidPolicy": m16,
+    "invalidProxy": m17,
+    "invalidProxyProvider": m18,
+    "invalidSubRule": m19,
     "ipcidr": MessageLookupByLibrary.simpleMessage("IP/CIDR"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage(
       "When enabled, IPv6 traffic can be received",
@@ -719,7 +736,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "locationPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "The system requires location permission to read the Wi-Fi name. On Android choose \"Allow all the time\", otherwise the Wi-Fi name cannot be read while the app is in the background.",
     ),
-    "locationPermissionGuide": m19,
+    "locationPermissionGuide": m20,
     "locationPermissionRequired": MessageLookupByLibrary.simpleMessage(
       "Location permission required",
     ),
@@ -748,7 +765,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "matchTargetTitle": MessageLookupByLibrary.simpleMessage("Match target"),
     "maxFailedTimes": MessageLookupByLibrary.simpleMessage("Max failures"),
-    "maxLengthTip": m20,
+    "maxLengthTip": m21,
     "maximize": MessageLookupByLibrary.simpleMessage("Maximize"),
     "memoryInfo": MessageLookupByLibrary.simpleMessage("Memory info"),
     "messageTest": MessageLookupByLibrary.simpleMessage("Message test"),
@@ -761,14 +778,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
       "Override the default system exit behavior",
     ),
-    "minutesAgo": m21,
+    "minutesAgo": m22,
     "minutesLeftLabel": MessageLookupByLibrary.simpleMessage(
       "Invoice valid, minutes",
     ),
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixed port"),
     "mode": MessageLookupByLibrary.simpleMessage("Mode"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monochrome"),
-    "monthsAgo": m22,
+    "monthsAgo": m23,
     "more": MessageLookupByLibrary.simpleMessage("More"),
     "moreCoins": MessageLookupByLibrary.simpleMessage("More coins"),
     "multipleValuesTip": MessageLookupByLibrary.simpleMessage(
@@ -800,7 +817,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
     "networkType": MessageLookupByLibrary.simpleMessage("Network type"),
-    "networksCount": m23,
+    "networksCount": m24,
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Neutral"),
     "nextMatch": MessageLookupByLibrary.simpleMessage("Next match"),
     "noAccessKeyYet": MessageLookupByLibrary.simpleMessage(
@@ -827,8 +844,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "No profiles yet, please add one first",
     ),
-    "nullTip": m24,
-    "numberTip": m25,
+    "nullTip": m25,
+    "numberTip": m26,
     "offlineShort": MessageLookupByLibrary.simpleMessage("Offline"),
     "onDemand": MessageLookupByLibrary.simpleMessage("On demand"),
     "onDemandDesc": MessageLookupByLibrary.simpleMessage(
@@ -883,7 +900,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "payOnSite": MessageLookupByLibrary.simpleMessage("Pay on the website"),
     "paySkins": MessageLookupByLibrary.simpleMessage("Steam skins"),
     "paySkinsButton": MessageLookupByLibrary.simpleMessage("Pick skins"),
-    "paySkinsDesc": m26,
+    "paySkinsDesc": m27,
     "payUsdt": MessageLookupByLibrary.simpleMessage("Pay with USDT"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(
       "The payment is not visible on the network yet. A transfer takes up to a few minutes, tap again shortly.",
@@ -904,7 +921,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Please enter a different port",
     ),
-    "portTip": m27,
+    "portTip": m28,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Prefer HTTP/3 for DoH",
     ),
@@ -937,7 +954,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "project": MessageLookupByLibrary.simpleMessage("Project"),
     "providers": MessageLookupByLibrary.simpleMessage("External resources"),
     "proxies": MessageLookupByLibrary.simpleMessage("Proxies"),
-    "proxiesCount": m28,
+    "proxiesCount": m29,
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("Proxies are empty"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Proxy chain"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
@@ -1171,7 +1188,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleSet": MessageLookupByLibrary.simpleMessage("Rule set"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Rule target"),
     "rules": MessageLookupByLibrary.simpleMessage("Rules"),
-    "rulesCount": m29,
+    "rulesCount": m30,
     "save": MessageLookupByLibrary.simpleMessage("Save"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save the changes?"),
     "savedIt": MessageLookupByLibrary.simpleMessage("I have saved it"),
@@ -1184,7 +1201,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "seconds": MessageLookupByLibrary.simpleMessage("seconds"),
-    "secondsCount": m30,
+    "secondsCount": m31,
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selectMatchTarget": MessageLookupByLibrary.simpleMessage(
       "Select MATCH-TARGET",
@@ -1203,7 +1220,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please select a sub-rule",
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m31,
+    "selectedCountTitle": m32,
     "sendLetter": MessageLookupByLibrary.simpleMessage("Send the letter"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
@@ -1260,8 +1277,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage(
       "Subscription info",
     ),
-    "subscriptionUntil": m32,
-    "subscriptionUntilDays": m33,
+    "subscriptionUntil": m33,
+    "subscriptionUntilDays": m34,
     "suspended": MessageLookupByLibrary.simpleMessage("Suspended..."),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
     "system": MessageLookupByLibrary.simpleMessage("System"),
@@ -1302,6 +1319,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "totalTraffic": MessageLookupByLibrary.simpleMessage("Total traffic"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("TProxy port"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Traffic usage"),
+    "trialButton": MessageLookupByLibrary.simpleMessage("Try it"),
+    "trialDesc": MessageLookupByLibrary.simpleMessage(
+      "Pay with a Russian card or SBP. One trial per account, Telegram and card.",
+    ),
+    "trialNeedTelegram": MessageLookupByLibrary.simpleMessage(
+      "Link Telegram first: that is how the trial stays one per person.",
+    ),
+    "trialOffer": m35,
+    "trialPeriod": MessageLookupByLibrary.simpleMessage("Trial"),
+    "trialPromo": m36,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage(
       "Only effective in administrator mode",
@@ -1339,7 +1366,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain a profile from a URL",
     ),
-    "urlTip": m34,
+    "urlTip": m37,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("Address"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("Amount"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("Network"),
@@ -1364,7 +1391,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "website": MessageLookupByLibrary.simpleMessage("Website"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
-    "yearsAgo": m35,
+    "yearsAgo": m38,
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };
 }

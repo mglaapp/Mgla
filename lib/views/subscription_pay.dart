@@ -590,6 +590,10 @@ void complainPayment(BuildContext context, String code) {
     'card_off' => l.errCardOff,
     'coins_off' || 'coins_error' || 'bad_coin' => l.errCoinsOff,
     'skins_off' => l.errSkinsOff,
+    'trial_off' => l.errTrialOff,
+    'trial_used' => l.errTrialUsed,
+    'trial_need_tg' => l.errTrialNeedTelegram,
+    'tg_off' => l.errTgOff,
     'too_many' => l.errTooMany,
     _ => l.errNetwork,
   }, level: MessageLevel.error);

@@ -70,6 +70,8 @@ class AccountStatus {
   /// Каталог монет: монета -> сети. Пусто у старого сервера — тогда остаётся путь USDT.
   final List<CoinGroup> coins;
 
+  final TrialOffer? trial;
+
   const AccountStatus({
     required this.key,
     required this.active,
@@ -84,6 +86,7 @@ class AccountStatus {
     this.coinsEnabled = false,
     this.coins = const [],
     this.skinsEnabled = false,
+    this.trial,
   });
 
   static AccountStatus? fromJson(Object? json) {
@@ -106,6 +109,42 @@ class AccountStatus {
       coinsEnabled: methods is Map && methods['coins'] == true,
       skinsEnabled: methods is Map && methods['skins'] == true,
       coins: CoinGroup.listFrom(json['coins_catalog']),
+      trial: TrialOffer.fromJson(json['trial_offer']),
+    );
+  }
+}
+
+/// Пробный, который сервер продаёт ЭТОМУ аккаунту: без телеграма — только после привязки.
+@immutable
+class TrialOffer {
+  final String price;
+  final int days;
+  final String? promo;
+  final bool needTelegram;
+
+  const TrialOffer({
+    required this.price,
+    required this.days,
+    this.promo,
+    this.needTelegram = false,
+  });
+
+  static TrialOffer? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final price = switch (json['rub']) {
+      final String text when text.isNotEmpty => text,
+      final num value when value > 0 =>
+        value == value.roundToDouble() ? '${value.round()}' : '$value',
+      _ => null,
+    };
+    final days = json['days'];
+    if (price == null || days is! int || days <= 0) return null;
+    final promo = json['promo'];
+    return TrialOffer(
+      price: price,
+      days: days,
+      promo: promo is String && promo.isNotEmpty ? promo : null,
+      needTelegram: json['need_tg'] == true,
     );
   }
 }

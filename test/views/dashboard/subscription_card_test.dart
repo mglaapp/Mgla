@@ -4,6 +4,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/dashboard/widgets/subscription_card.dart';
+import 'package:fl_clash/views/subscription.dart';
 import 'package:fl_clash/views/subscription_pay.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +28,7 @@ AccountStatus _status({
   bool active = true,
   int? daysLeft = 20,
   List<Plan> plans = _plans,
+  TrialOffer? trial,
 }) {
   return AccountStatus(
     key: _key,
@@ -39,8 +41,11 @@ AccountStatus _status({
     plans: plans,
     usdtEnabled: true,
     cardEnabled: true,
+    trial: trial,
   );
 }
+
+const _trial = TrialOffer(price: '19', days: 3);
 
 class _Server {
   final Result<AccountStatus> answer;
@@ -96,6 +101,13 @@ AppLocalizations _l(WidgetTester tester) =>
 
 Color? _lineColor(WidgetTester tester, String text) =>
     tester.widget<Text>(find.text(text)).style?.color;
+
+Finder _button(String label) => find.byWidgetPredicate(
+  (widget) =>
+      widget is FilledButton &&
+      widget.child is Text &&
+      (widget.child! as Text).data == label,
+);
 
 void main() {
   testWidgets('оплачено: срок одной строкой и компактная «Продлить»', (
@@ -211,6 +223,112 @@ void main() {
     expect(find.text(l.accessNotPaid), findsOneWidget);
     expect(find.byTooltip(l.getSubscription), findsOneWidget);
     expect(find.byTooltip(l.renewSubscription), findsNothing);
+  });
+
+  testWidgets(
+    'не оплачено, пробный доступен: «3 дня за 19 ₽» и «Попробовать»',
+    (tester) async {
+      final server = _Server(
+        Result.success(_status(active: false, trial: _trial)),
+      );
+      await _pump(tester, url: _ourUrl, server: server);
+      final l = _l(tester);
+      final line = l.trialOffer(l.daysCount(3), '19');
+
+      expect(line, contains('19 ₽'));
+      expect(find.text(line), findsOneWidget);
+      expect(find.text(l.accessNotPaid), findsNothing);
+      expect(find.byTooltip(l.trialButton), findsOneWidget);
+      expect(find.byTooltip(l.getSubscription), findsNothing);
+      final context = tester.element(find.byType(SubscriptionCard));
+      expect(_lineColor(tester, line), context.colorScheme.primary);
+    },
+  );
+
+  testWidgets('пробный на узкой плитке: без переполнения', (tester) async {
+    final server = _Server(
+      Result.success(_status(active: false, trial: _trial)),
+    );
+    await _pump(tester, url: _ourUrl, server: server, width: 150);
+
+    expect(tester.takeException(), isNull);
+    expect(find.byTooltip(_l(tester).trialButton), findsOneWidget);
+  });
+
+  testWidgets('оплачено: предложение пробного на плитке не показывается', (
+    tester,
+  ) async {
+    final server = _Server(Result.success(_status(trial: _trial)));
+    await _pump(tester, url: _ourUrl, server: server);
+    final l = _l(tester);
+
+    expect(find.byTooltip(l.trialButton), findsNothing);
+    expect(find.byTooltip(l.renewSubscription), findsOneWidget);
+  });
+
+  testWidgets('пробный без телеграма: плитка ведёт в подписку с объяснением', (
+    tester,
+  ) async {
+    final server = _Server(
+      Result.success(
+        _status(
+          active: false,
+          trial: const TrialOffer(
+            price: '19',
+            days: 7,
+            promo: 'ANNA',
+            needTelegram: true,
+          ),
+        ),
+      ),
+    );
+    await _pump(tester, url: _ourUrl, server: server);
+    final l = _l(tester);
+
+    await tester.tap(find.byTooltip(l.trialButton));
+    await tester.pumpAndSettle();
+    expect(find.byType(SubscriptionView), findsOneWidget);
+    expect(find.text(l.trialPeriod), findsOneWidget);
+    expect(
+      find.text(
+        '${l.trialOffer(l.daysCount(7), '19')} · ${l.trialPromo('ANNA')}',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text(l.trialNeedTelegram), findsOneWidget);
+    expect(_button(l.bindTelegram), findsOneWidget);
+    expect(_button(l.trialButton), findsNothing);
+    expect(server.asked, [_key, _key]);
+  });
+
+  testWidgets(
+    'подписка с пробным, телеграм есть: «Попробовать», без промокода',
+    (tester) async {
+      final server = _Server(
+        Result.success(_status(active: false, trial: _trial)),
+      );
+      await _pump(tester, url: _ourUrl, server: server);
+      final l = _l(tester);
+
+      await tester.tap(find.text(l.trialOffer(l.daysCount(3), '19')));
+      await tester.pumpAndSettle();
+      expect(find.byType(SubscriptionView), findsOneWidget);
+      expect(find.text(l.trialDesc), findsOneWidget);
+      expect(_button(l.trialButton), findsOneWidget);
+      expect(find.text(l.trialNeedTelegram), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('подписка без пробного: раздела пробного нет', (tester) async {
+    final server = _Server(Result.success(_status(active: false)));
+    await _pump(tester, url: _ourUrl, server: server);
+    final l = _l(tester);
+
+    await tester.tap(find.text(l.accessNotPaid));
+    await tester.pumpAndSettle();
+    expect(find.byType(SubscriptionView), findsOneWidget);
+    expect(find.text(l.trialPeriod), findsNothing);
   });
 
   testWidgets('чужой профиль: сервер не спрашивается, есть «Создать аккаунт»', (

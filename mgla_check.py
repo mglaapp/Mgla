@@ -398,8 +398,9 @@ def main() -> int:
     check("кабинет собирается из адреса сайта, а не вписан второй раз",
           "const accountUrl = '$subscriptionSite/cab';" in c)
     ak = read("lib/views/profiles/access_key.dart")
-    check("первый экран предлагает оформить подписку, а не только ввести ключ",
-          "appLocalizations.getSubscription" in ak and "subscriptionSite" in ak)
+    # С 16-09 аккаунт заводится прямо в приложении (createAccountFlow), ссылки на сайт тут нет.
+    check("первый экран предлагает завести аккаунт, а не только ввести ключ",
+          "createAccountFlow(context, ref)" in ak and "appLocalizations.createAccount" in ak)
     sv = read("lib/widgets/subscription_info_view.dart")
     check("продление стоит там, где показан срок",
           "appLocalizations.renewSubscription" in sv and "accountUrl" in sv)
@@ -453,8 +454,13 @@ def main() -> int:
     # Решение владельца 16-09, то же, что на сайте 13-09: почта и телеграм вперёд, ссылка
     # последней. Пока ссылка стояла первой, она читалась как основной способ — а она равна
     # паролю и теряется вместе с устройством.
+    # Порядок — внутри экрана возврата: выше по файлу «Привязать телеграм» есть и у пробного
+    # (07-10), и поиск по всему файлу находил его, а не кнопку возврата.
+    rv = sub[sub.index("class RecoveryView"):] if "class RecoveryView" in sub else ""
     check("почта идёт раньше телеграма, телеграм раньше ссылки входа",
-          sub.index("l.bindEmail") < sub.index("l.bindTelegram") < sub.index("l.loginLinkTitle"))
+          "l.bindEmail" in rv and "l.bindTelegram" in rv and "l.loginLinkTitle" in rv
+          and rv.index("l.bindEmail") < rv.index("l.bindTelegram") < rv.index("l.loginLinkTitle"),
+          len(rv))
     # Кнопка, доступная сразу, нажимается ДО чтения: человек подтверждает, что понял про
     # пароль, не прочитав про пароль. Отсчёт — цена одного прочтения.
     check("подтверждение недоступно, пока идёт отсчёт",
@@ -479,15 +485,24 @@ def main() -> int:
     # сломан. Поэтому оба способа показываются, только когда сервер сказал, что они настроены.
     check("карта показывается по ответу сервера, а не всегда",
           "status.cardEnabled" in sub and "methods['card'] == true" in api_dart)
+    # С 05-10 способы живут на экране выбора (subscription_pay.dart): карта первой и с
+    # акцентом даже одна (решение владельца), без карты и монет — сразу счёт USDT.
+    pay = read("lib/views/subscription_pay.dart")
+    pay_card = pay[pay.index("Future<void> _payCard"):][:600] if "Future<void> _payCard" in pay else ""
     check("оплата картой уходит в браузер, а не рисуется внутри",
-          "_payCard" in sub and "dialogs.openUrl(result.data!)" in sub)
+          "request.createCardPayment" in pay_card and "dialogs.openUrl(result.data!)" in pay_card,
+          len(pay_card))
+    check("пробный уходит в браузер той же дорогой, без телеграма — сперва привязка",
+          "request.createTrialPayment(accessKey)" in sub and "request.bindTelegram(accessKey)" in sub
+          and "trial.needTelegram" in sub)
     # Лишний экран между человеком и оплатой — это люди, которые не доходят.
-    check("выбор способа спрашивается ТОЛЬКО когда способов два",
-          "if (status.usdtEnabled && !status.cardEnabled) return _pay(plan);" in sub
-          and "if (status.cardEnabled && !status.usdtEnabled) return _payCard(plan);" in sub)
+    check("экран выбора — только когда есть карта или монеты, иначе сразу счёт USDT",
+          "status.cardEnabled || (status.coinsEnabled && status.coins.isNotEmpty)" in sub
+          and "request.createUsdtInvoice(accessKey, plan.code)" in sub)
     check("когда не настроено ничего — честная ссылка на сайт, а не мёртвая кнопка",
           "l.payOnSite" in sub and "dialogs.openUrl(accountUrl)" in sub)
-    for code in ("payCard", "choosePayment", "errCardOff"):
+    for code in ("payCard", "choosePayment", "errCardOff", "trialPeriod", "trialOffer",
+                 "trialNeedTelegram", "trialButton", "errTrialUsed", "errTrialNeedTelegram"):
         check(f"надпись {code} переведена на все четыре языка",
               all(f'"{code}"' in read(f"arb/intl_{lang}.arb")
                   for lang in ("en", "ru", "ja", "zh_CN")))
