@@ -710,5 +710,18 @@
   "trialButton": "试用",
   "errTrialOff": "试用暂不可用",
   "errTrialUsed": "此账户已无法试用",
-  "errTrialNeedTelegram": "请先绑定 Telegram"
+  "errTrialNeedTelegram": "请先绑定 Telegram",
+  "serverTitle": "服务器",
+  "serversTitle": "选择服务器",
+  "serverBusy": "繁忙",
+  "serverBusyTip": "该服务器繁忙，请选择其他服务器",
+  "serversLoadError": "无法加载服务器列表",
+  "havePromoCode": "我有优惠码",
+  "promoCode": "优惠码",
+  "promoApply": "使用",
+  "promoApplied": "已使用优惠码 {code}",
+  "promoErrUnknown": "没有这个优惠码，请检查拼写",
+  "promoErrUsed": "此账户或 Telegram 已使用过优惠码",
+  "promoErrPaid": "优惠码仅限新用户：此账户已付过款",
+  "promoErrOff": "此优惠码已失效"
 }

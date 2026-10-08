@@ -710,5 +710,18 @@
   "trialButton": "Try it",
   "errTrialOff": "The trial is unavailable right now",
   "errTrialUsed": "The trial is no longer available for this account",
-  "errTrialNeedTelegram": "Link Telegram first"
+  "errTrialNeedTelegram": "Link Telegram first",
+  "serverTitle": "Server",
+  "serversTitle": "Choose a server",
+  "serverBusy": "Busy",
+  "serverBusyTip": "This server is busy — choose another",
+  "serversLoadError": "Could not load the server list",
+  "havePromoCode": "I have a promo code",
+  "promoCode": "Promo code",
+  "promoApply": "Apply",
+  "promoApplied": "Promo code {code} applied",
+  "promoErrUnknown": "No such promo code — check the spelling",
+  "promoErrUsed": "A promo code was already used on this account or Telegram",
+  "promoErrPaid": "Promo codes are for new users: this account has already paid",
+  "promoErrOff": "This promo code is no longer valid"
 }

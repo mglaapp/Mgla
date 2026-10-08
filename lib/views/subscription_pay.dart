@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/services.dart';
@@ -582,19 +583,27 @@ class _Chip extends StatelessWidget {
 }
 
 /// Отказ сервера кодом -> текст на языке приложения (код один, языков четыре).
+String serverErrorText(AppLocalizations l, String code) => switch (code) {
+  'unknown_key' => l.errUnknownKey,
+  'usdt_off' => l.errUsdtOff,
+  'card_off' => l.errCardOff,
+  'coins_off' || 'coins_error' || 'bad_coin' => l.errCoinsOff,
+  'skins_off' => l.errSkinsOff,
+  'trial_off' => l.errTrialOff,
+  'trial_used' || 'promo_trial_used' => l.errTrialUsed,
+  'trial_need_tg' => l.errTrialNeedTelegram,
+  'tg_off' => l.errTgOff,
+  'too_many' => l.errTooMany,
+  'promo_unknown' => l.promoErrUnknown,
+  'promo_used' || 'promo_used_tg' => l.promoErrUsed,
+  'promo_paid' => l.promoErrPaid,
+  'promo_off' || 'promo_refused' => l.promoErrOff,
+  _ => l.errNetwork,
+};
+
 void complainPayment(BuildContext context, String code) {
-  final l = context.appLocalizations;
-  dialogs.showNotifier(switch (code) {
-    'unknown_key' => l.errUnknownKey,
-    'usdt_off' => l.errUsdtOff,
-    'card_off' => l.errCardOff,
-    'coins_off' || 'coins_error' || 'bad_coin' => l.errCoinsOff,
-    'skins_off' => l.errSkinsOff,
-    'trial_off' => l.errTrialOff,
-    'trial_used' => l.errTrialUsed,
-    'trial_need_tg' => l.errTrialNeedTelegram,
-    'tg_off' => l.errTgOff,
-    'too_many' => l.errTooMany,
-    _ => l.errNetwork,
-  }, level: MessageLevel.error);
+  dialogs.showNotifier(
+    serverErrorText(context.appLocalizations, code),
+    level: MessageLevel.error,
+  );
 }

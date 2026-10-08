@@ -507,6 +507,22 @@ def main() -> int:
               all(f'"{code}"' in read(f"arb/intl_{lang}.arb")
                   for lang in ("en", "ru", "ja", "zh_CN")))
 
+    # Выбор сервера и промокод (08-10): заглушки — «Загружен», выбрать их нельзя (решение владельца).
+    srv = read("lib/views/servers.dart")
+    check("заглушка сервера не выбирается: нажатие только объясняет «Загружен»",
+          "onTap: server.available" in srv and "l.serverBusyTip" in srv)
+    check("список серверов приходит с сервера, а не вшит в приложение",
+          "'/servers'" in read("lib/common/request.dart") and "request.servers" in srv)
+    check("промокод из приложения идёт в /api/v1/promo, отказ показывается по коду",
+          "'/promo'" in read("lib/common/request.dart") and "serverErrorText(" in sub
+          and "'promo_unknown' => l.promoErrUnknown" in read("lib/views/subscription_pay.dart"))
+    for code in ("serverTitle", "serversTitle", "serverBusy", "serverBusyTip", "havePromoCode",
+                 "promoCode", "promoApply", "promoApplied", "promoErrUnknown", "promoErrUsed",
+                 "promoErrPaid", "promoErrOff"):
+        check(f"надпись {code} переведена на все четыре языка",
+              all(f'"{code}"' in read(f"arb/intl_{lang}.arb")
+                  for lang in ("en", "ru", "ja", "zh_CN")))
+
     check("КОНТРОЛЬ: заведомо отсутствующая надпись НЕ находится во всех четырёх",
           not all('"ЗаведомоНетТакогоКлюча"' in read(f"arb/intl_{lang}.arb")
                   for lang in ("en", "ru", "ja", "zh_CN")))

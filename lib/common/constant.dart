@@ -83,6 +83,7 @@ const configKey = 'config';
 const systemDnsRecordKey = 'system_dns_record';
 const subscriptionWidgetSeededKey = 'mgla_subscription_widget_seeded';
 const ruDirectWidgetSeededKey = 'mgla_ru_direct_widget_seeded';
+const serverWidgetSeededKey = 'mgla_server_widget_seeded';
 const bootRecordKey = 'boot_record';
 const defaultSystemDnsFallback = '223.5.5.5';
 const double dialogCommonWidth = 300;

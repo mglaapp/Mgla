@@ -149,6 +149,57 @@ class TrialOffer {
   }
 }
 
+/// Сервер из GET /api/v1/servers; [available] = false — «Загружен», выбрать нельзя (08-10).
+@immutable
+class ServerInfo {
+  final String id;
+  final String cc;
+  final Map<String, String> names;
+  final bool available;
+
+  const ServerInfo({
+    required this.id,
+    required this.cc,
+    required this.names,
+    required this.available,
+  });
+
+  String nameFor(String languageCode) =>
+      names[languageCode] ?? names['en'] ?? cc.toUpperCase();
+
+  static List<ServerInfo> listFrom(Object? json) {
+    if (json is! List) return const [];
+    final out = <ServerInfo>[];
+    for (final item in json) {
+      if (item is! Map) continue;
+      final id = item['id'];
+      final cc = item['cc'];
+      if (id is! String || id.isEmpty || cc is! String || cc.length != 2) {
+        continue;
+      }
+      final names = <String, String>{};
+      final raw = item['name'];
+      if (raw is Map) {
+        for (final entry in raw.entries) {
+          final value = entry.value;
+          if (entry.key is String && value is String && value.isNotEmpty) {
+            names[entry.key as String] = value;
+          }
+        }
+      }
+      out.add(
+        ServerInfo(
+          id: id,
+          cc: cc.toLowerCase(),
+          names: names,
+          available: item['status'] == 'ok',
+        ),
+      );
+    }
+    return out;
+  }
+}
+
 /// Только что заведённый аккаунт.
 @immutable
 class NewAccount {

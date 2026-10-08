@@ -144,4 +144,73 @@ void main() {
     expect(find.text(l.loginLinkTitle), findsNothing);
     expect(find.text(l.showLink), findsNothing);
   });
+
+  testWidgets('промокод: отказ словами в окне, принятый — неделя по коду', (
+    tester,
+  ) async {
+    const key = '9ac0394dfc2f68b5846e7ac4';
+    final container = _containerFor(
+      tester,
+      profiles: [
+        Profile.normal(
+          label: 'p',
+          url: '$subscriptionSite$subscriptionPath$key',
+        ),
+      ],
+    );
+    AccountStatus status(TrialOffer trial) => AccountStatus(
+      key: key,
+      active: false,
+      blocked: false,
+      expiresAt: null,
+      daysLeft: null,
+      usedGb: null,
+      quotaGb: null,
+      plans: const [],
+      usdtEnabled: false,
+      cardEnabled: true,
+      trial: trial,
+    );
+    final asked = <String>[];
+    Future<Result<AccountStatus>> redeem(String k, String code) async {
+      asked.add(code);
+      return code == 'OMNI'
+          ? Result.success(
+              status(const TrialOffer(price: '19', days: 7, promo: 'OMNI')),
+            )
+          : Result.error('promo_unknown');
+    }
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TestApp(
+          child: SubscriptionView(
+            fetchStatus: (_) async =>
+                Result.success(status(const TrialOffer(price: '19', days: 3))),
+            redeemPromo: redeem,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final l = tester.element(find.byType(SubscriptionView)).appLocalizations;
+
+    await tester.tap(find.text(l.havePromoCode));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('promo-field')), 'NOPE');
+    await tester.tap(find.text(l.promoApply));
+    await tester.pumpAndSettle();
+    expect(find.text(l.promoErrUnknown), findsOneWidget);
+    expect(find.byType(PromoDialog), findsOneWidget);
+
+    await tester.enterText(find.byKey(const ValueKey('promo-field')), 'OMNI');
+    await tester.tap(find.text(l.promoApply));
+    await tester.pumpAndSettle();
+    expect(find.byType(PromoDialog), findsNothing);
+    expect(asked, ['NOPE', 'OMNI']);
+    expect(find.textContaining(l.trialPromo('OMNI')), findsOneWidget);
+    expect(find.text(l.havePromoCode), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 }

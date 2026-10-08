@@ -157,6 +157,13 @@ class Preferences {
   Future<Config> seedRuDirectWidget(Config config) =>
       _seedOnce(config, ruDirectWidgetSeededKey, withRuDirectWidget);
 
+  Future<Config> seedServerWidget(Config config) =>
+      _seedOnce(config, serverWidgetSeededKey, withServerWidget);
+
+  Future<Config> seedDashboardWidgets(Config config) async => seedServerWidget(
+    await seedRuDirectWidget(await seedSubscriptionWidget(config)),
+  );
+
   /// Новая плитка вставляется в сохранённую раскладку ОДИН раз: флаг ставится только после
   /// удачной записи, а убранная человеком плитка после этого не возвращается.
   Future<Config> _seedOnce(

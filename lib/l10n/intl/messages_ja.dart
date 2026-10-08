@@ -82,25 +82,27 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m28(label) => "${label} は 1024〜49151 の範囲で指定してください";
 
-  static String m29(count) => "プロキシ ${count} 件";
+  static String m29(code) => "プロモコード ${code} を適用しました";
 
-  static String m30(count) => "ルール ${count} 件";
+  static String m30(count) => "プロキシ ${count} 件";
 
-  static String m31(count) => "${count} 秒";
+  static String m31(count) => "ルール ${count} 件";
 
-  static String m32(count) => "${count} 件選択中";
+  static String m32(count) => "${count} 秒";
 
-  static String m33(date) => "${date}まで";
+  static String m33(count) => "${count} 件選択中";
 
-  static String m34(days, date) => "残り${days}日 · ${date}まで";
+  static String m34(date) => "${date}まで";
 
-  static String m35(days, price) => "${days}・${price} ₽";
+  static String m35(days, date) => "残り${days}日 · ${date}まで";
 
-  static String m36(code) => "プロモコード ${code}";
+  static String m36(days, price) => "${days}・${price} ₽";
 
-  static String m37(label) => "${label}はURLである必要があります";
+  static String m37(code) => "プロモコード ${code}";
 
-  static String m38(count) => "${count} 年前";
+  static String m38(label) => "${label}はURLである必要があります";
+
+  static String m39(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -487,6 +489,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "goDownload": MessageLookupByLibrary.simpleMessage("ダウンロードへ"),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage("スクリプト設定へ移動"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("変更をキャッシュしますか？"),
+    "havePromoCode": MessageLookupByLibrary.simpleMessage("プロモコードを持っています"),
     "helperCorruptTip": MessageLookupByLibrary.simpleMessage(
       "Helper サービスが利用できないため、TUN モードを有効にできません。Mgla を再インストールしてください。",
     ),
@@ -784,9 +787,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "profiles": MessageLookupByLibrary.simpleMessage("プロファイル"),
     "profilesSort": MessageLookupByLibrary.simpleMessage("プロファイルの並べ替え"),
     "project": MessageLookupByLibrary.simpleMessage("プロジェクト"),
+    "promoApplied": m29,
+    "promoApply": MessageLookupByLibrary.simpleMessage("適用"),
+    "promoCode": MessageLookupByLibrary.simpleMessage("プロモコード"),
+    "promoErrOff": MessageLookupByLibrary.simpleMessage("このプロモコードは無効になりました"),
+    "promoErrPaid": MessageLookupByLibrary.simpleMessage(
+      "プロモコードは新規ユーザー向けです。このアカウントは支払い済みです",
+    ),
+    "promoErrUnknown": MessageLookupByLibrary.simpleMessage(
+      "そのプロモコードは存在しません。綴りを確認してください",
+    ),
+    "promoErrUsed": MessageLookupByLibrary.simpleMessage(
+      "このアカウントまたは Telegram ではすでにプロモコードが使用されています",
+    ),
     "providers": MessageLookupByLibrary.simpleMessage("外部リソース"),
     "proxies": MessageLookupByLibrary.simpleMessage("プロキシ"),
-    "proxiesCount": m29,
+    "proxiesCount": m30,
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("プロキシが空です"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("プロキシチェーン"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
@@ -990,7 +1006,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleSet": MessageLookupByLibrary.simpleMessage("ルールセット"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("ルールターゲット"),
     "rules": MessageLookupByLibrary.simpleMessage("ルール"),
-    "rulesCount": m30,
+    "rulesCount": m31,
     "save": MessageLookupByLibrary.simpleMessage("保存"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("変更を保存しますか？"),
     "savedIt": MessageLookupByLibrary.simpleMessage("保存しました"),
@@ -1001,7 +1017,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "scrollToSelected": MessageLookupByLibrary.simpleMessage("選択項目へスクロール"),
     "search": MessageLookupByLibrary.simpleMessage("検索"),
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
-    "secondsCount": m31,
+    "secondsCount": m32,
     "selectAll": MessageLookupByLibrary.simpleMessage("すべて選択"),
     "selectMatchTarget": MessageLookupByLibrary.simpleMessage(
       "MATCH-TARGET を選択",
@@ -1016,8 +1032,17 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "selectSubRule": MessageLookupByLibrary.simpleMessage("サブルールを選択してください"),
     "selected": MessageLookupByLibrary.simpleMessage("選択済み"),
-    "selectedCountTitle": m32,
+    "selectedCountTitle": m33,
     "sendLetter": MessageLookupByLibrary.simpleMessage("メールを送信"),
+    "serverBusy": MessageLookupByLibrary.simpleMessage("混雑中"),
+    "serverBusyTip": MessageLookupByLibrary.simpleMessage(
+      "このサーバーは混雑しています。別のサーバーを選んでください",
+    ),
+    "serverTitle": MessageLookupByLibrary.simpleMessage("サーバー"),
+    "serversLoadError": MessageLookupByLibrary.simpleMessage(
+      "サーバー一覧を読み込めませんでした",
+    ),
+    "serversTitle": MessageLookupByLibrary.simpleMessage("サーバーを選択"),
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("表示"),
     "showLess": MessageLookupByLibrary.simpleMessage("折りたたむ"),
@@ -1065,8 +1090,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "subscription": MessageLookupByLibrary.simpleMessage("サブスクリプション"),
     "subscriptionDetails": MessageLookupByLibrary.simpleMessage("詳細"),
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage("サブスクリプション情報"),
-    "subscriptionUntil": m33,
-    "subscriptionUntilDays": m34,
+    "subscriptionUntil": m34,
+    "subscriptionUntilDays": m35,
     "suspended": MessageLookupByLibrary.simpleMessage("一時停止中..."),
     "sync": MessageLookupByLibrary.simpleMessage("同期"),
     "system": MessageLookupByLibrary.simpleMessage("システム"),
@@ -1108,9 +1133,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "trialNeedTelegram": MessageLookupByLibrary.simpleMessage(
       "先に Telegram を連携してください。お試しを1人1回にするために使います。",
     ),
-    "trialOffer": m35,
+    "trialOffer": m36,
     "trialPeriod": MessageLookupByLibrary.simpleMessage("お試し期間"),
-    "trialPromo": m36,
+    "trialPromo": m37,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage("管理者モードでのみ有効"),
     "turnOff": MessageLookupByLibrary.simpleMessage("オフにする"),
@@ -1140,7 +1165,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URLからプロファイルを取得します"),
-    "urlTip": m37,
+    "urlTip": m38,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("アドレス"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("金額"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("ネットワーク"),
@@ -1161,7 +1186,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "website": MessageLookupByLibrary.simpleMessage("ウェブサイト"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
-    "yearsAgo": m38,
+    "yearsAgo": m39,
     "zhCN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
   };
 }

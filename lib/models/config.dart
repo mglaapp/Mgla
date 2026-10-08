@@ -40,6 +40,7 @@ const defaultThemeProps = ThemeProps(primaryColor: defaultPrimaryColor);
 const List<DashboardWidget> defaultDashboardWidgets = [
   DashboardWidget.subscription,
   DashboardWidget.ruDirectButton,
+  DashboardWidget.server,
   DashboardWidget.networkSpeed,
   DashboardWidget.systemProxyButton,
   DashboardWidget.tunButton,
@@ -70,6 +71,23 @@ Config withRuDirectWidget(Config config) {
     dashboardWidgets: [
       ...widgets.sublist(0, at),
       DashboardWidget.ruDirectButton,
+      ...widgets.sublist(at),
+    ],
+  );
+}
+
+/// Вставляется в сохранённую раскладку один раз, после «РФ напрямую»; убранная не вернётся.
+Config withServerWidget(Config config) {
+  final widgets = config.appSettingProps.dashboardWidgets;
+  if (widgets.contains(DashboardWidget.server)) return config;
+  final after = widgets.contains(DashboardWidget.ruDirectButton)
+      ? DashboardWidget.ruDirectButton
+      : DashboardWidget.subscription;
+  final at = widgets.indexOf(after) + 1;
+  return config.copyWith.appSettingProps(
+    dashboardWidgets: [
+      ...widgets.sublist(0, at),
+      DashboardWidget.server,
       ...widgets.sublist(at),
     ],
   );

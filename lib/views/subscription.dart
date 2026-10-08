@@ -127,8 +127,10 @@ Future<void> createAccountFlow(BuildContext context, WidgetRef ref) async {
 /// приложения. Старый сервер без монет — прежний путь USDT.
 class SubscriptionView extends ConsumerStatefulWidget {
   final Future<Result<AccountStatus>> Function(String key)? fetchStatus;
+  final Future<Result<AccountStatus>> Function(String key, String code)?
+  redeemPromo;
 
-  const SubscriptionView({super.key, this.fetchStatus});
+  const SubscriptionView({super.key, this.fetchStatus, this.redeemPromo});
 
   @override
   ConsumerState<SubscriptionView> createState() => _SubscriptionViewState();
@@ -193,6 +195,27 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     await _load();
   }
 
+  Future<void> _enterPromo() async {
+    final key = _key;
+    if (key == null) return;
+    final status = await showDialog<AccountStatus>(
+      context: context,
+      builder: (_) => PromoDialog(
+        accessKey: key,
+        redeem: widget.redeemPromo ?? request.redeemPromo,
+      ),
+    );
+    if (status == null || !mounted) return;
+    setState(() => _status = status);
+    final promo = status.trial?.promo;
+    if (promo != null) {
+      dialogs.showNotifier(
+        context.appLocalizations.promoApplied(promo),
+        level: MessageLevel.success,
+      );
+    }
+  }
+
   Widget _buildTrial(TrialOffer trial) {
     final l = context.appLocalizations;
     final promo = trial.promo;
@@ -215,6 +238,11 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
                   trial.needTelegram ? l.bindTelegram : l.trialButton,
                 ),
               ),
+              if (promo == null)
+                TextButton(
+                  onPressed: _busy ? null : _enterPromo,
+                  child: Text(l.havePromoCode),
+                ),
             ],
           ),
         ),
@@ -688,6 +716,80 @@ class _RecoveryViewState extends ConsumerState<RecoveryView> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Promo code entry (08-10): same rules as the site form; the answer is a fresh status with the
+/// week-long trial. Refusals stay inside the dialog, in the app's language.
+class PromoDialog extends StatefulWidget {
+  final String accessKey;
+  final Future<Result<AccountStatus>> Function(String key, String code) redeem;
+
+  const PromoDialog({super.key, required this.accessKey, required this.redeem});
+
+  @override
+  State<PromoDialog> createState() => _PromoDialogState();
+}
+
+class _PromoDialogState extends State<PromoDialog> {
+  final _controller = TextEditingController();
+  String? _error;
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _apply() async {
+    final code = _controller.text.trim();
+    if (code.isEmpty || _busy) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final result = await widget.redeem(widget.accessKey, code);
+    if (!mounted) return;
+    if (result.isSuccess) {
+      Navigator.of(context).pop(result.data);
+      return;
+    }
+    setState(() {
+      _busy = false;
+      _error = serverErrorText(context.appLocalizations, result.message);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.appLocalizations;
+    return AlertDialog(
+      title: Text(l.promoCode),
+      content: TextField(
+        key: const ValueKey('promo-field'),
+        controller: _controller,
+        autofocus: true,
+        enabled: !_busy,
+        textCapitalization: TextCapitalization.characters,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9_-]')),
+          LengthLimitingTextInputFormatter(20),
+        ],
+        decoration: InputDecoration(hintText: 'MGLA2026', errorText: _error),
+        onSubmitted: (_) => _apply(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _busy ? null : () => Navigator.of(context).pop(),
+          child: Text(l.cancel),
+        ),
+        FilledButton(
+          onPressed: _busy ? null : _apply,
+          child: Text(l.promoApply),
+        ),
+      ],
     );
   }
 }

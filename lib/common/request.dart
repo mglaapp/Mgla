@@ -316,6 +316,22 @@ class Request {
     },
   );
 
+  /// Серверы на выбор: без ключа, адресов прокси в ответе нет.
+  Future<Result<List<ServerInfo>>> servers() => _api(
+    '/servers',
+    parse: (data) {
+      final list = ServerInfo.listFrom(data['servers']);
+      return list.isEmpty ? null : list;
+    },
+  );
+
+  /// Промокод. В ответе свежий статус: пробный уже с неделей и кодом.
+  Future<Result<AccountStatus>> redeemPromo(String key, String code) => _api(
+    '/promo',
+    form: {'key': key, 'code': code},
+    parse: AccountStatus.fromJson,
+  );
+
   Future<Result<String>> createTrialPayment(String key) => _api(
     '/pay/trial',
     form: {'key': key},

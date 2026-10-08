@@ -282,6 +282,7 @@ enum FunctionTag {
 enum DashboardWidget {
   subscription,
   ruDirectButton,
+  server,
   networkSpeed,
   outboundModeV2,
   outboundMode,

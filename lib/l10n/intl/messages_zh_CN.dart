@@ -82,25 +82,27 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m28(label) => "${label} 必须在 1024 到 49151 之间";
 
-  static String m29(count) => "${count} 个代理";
+  static String m29(code) => "已使用优惠码 ${code}";
 
-  static String m30(count) => "${count} 条规则";
+  static String m30(count) => "${count} 个代理";
 
-  static String m31(count) => "${count} 秒";
+  static String m31(count) => "${count} 条规则";
 
-  static String m32(count) => "已选择 ${count} 项";
+  static String m32(count) => "${count} 秒";
 
-  static String m33(date) => "至 ${date}";
+  static String m33(count) => "已选择 ${count} 项";
 
-  static String m34(days, date) => "剩 ${days} 天 · 至 ${date}";
+  static String m34(date) => "至 ${date}";
 
-  static String m35(days, price) => "${days} · ${price} ₽";
+  static String m35(days, date) => "剩 ${days} 天 · 至 ${date}";
 
-  static String m36(code) => "优惠码 ${code}";
+  static String m36(days, price) => "${days} · ${price} ₽";
 
-  static String m37(label) => "${label}必须为URL";
+  static String m37(code) => "优惠码 ${code}";
 
-  static String m38(count) => "${count} 年前";
+  static String m38(label) => "${label}必须为URL";
+
+  static String m39(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -425,6 +427,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "goDownload": MessageLookupByLibrary.simpleMessage("前往下载"),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage("前往配置脚本"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("是否缓存修改"),
+    "havePromoCode": MessageLookupByLibrary.simpleMessage("我有优惠码"),
     "helperCorruptTip": MessageLookupByLibrary.simpleMessage(
       "Helper 服务不可用，无法启用 TUN 模式，请重新安装 Mgla。",
     ),
@@ -678,9 +681,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "profiles": MessageLookupByLibrary.simpleMessage("配置"),
     "profilesSort": MessageLookupByLibrary.simpleMessage("配置排序"),
     "project": MessageLookupByLibrary.simpleMessage("项目"),
+    "promoApplied": m29,
+    "promoApply": MessageLookupByLibrary.simpleMessage("使用"),
+    "promoCode": MessageLookupByLibrary.simpleMessage("优惠码"),
+    "promoErrOff": MessageLookupByLibrary.simpleMessage("此优惠码已失效"),
+    "promoErrPaid": MessageLookupByLibrary.simpleMessage("优惠码仅限新用户：此账户已付过款"),
+    "promoErrUnknown": MessageLookupByLibrary.simpleMessage("没有这个优惠码，请检查拼写"),
+    "promoErrUsed": MessageLookupByLibrary.simpleMessage(
+      "此账户或 Telegram 已使用过优惠码",
+    ),
     "providers": MessageLookupByLibrary.simpleMessage("外部资源"),
     "proxies": MessageLookupByLibrary.simpleMessage("代理"),
-    "proxiesCount": m29,
+    "proxiesCount": m30,
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("代理为空"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("代理链"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
@@ -848,7 +860,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleSet": MessageLookupByLibrary.simpleMessage("规则集"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("规则目标"),
     "rules": MessageLookupByLibrary.simpleMessage("规则"),
-    "rulesCount": m30,
+    "rulesCount": m31,
     "save": MessageLookupByLibrary.simpleMessage("保存"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("是否保存更改？"),
     "savedIt": MessageLookupByLibrary.simpleMessage("我已保存"),
@@ -859,7 +871,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "scrollToSelected": MessageLookupByLibrary.simpleMessage("滚动到已选"),
     "search": MessageLookupByLibrary.simpleMessage("搜索"),
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
-    "secondsCount": m31,
+    "secondsCount": m32,
     "selectAll": MessageLookupByLibrary.simpleMessage("全选"),
     "selectMatchTarget": MessageLookupByLibrary.simpleMessage(
       "选择 MATCH-TARGET",
@@ -870,8 +882,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "selectSplitStrategy": MessageLookupByLibrary.simpleMessage("请选择分流策略"),
     "selectSubRule": MessageLookupByLibrary.simpleMessage("请选择子规则"),
     "selected": MessageLookupByLibrary.simpleMessage("已选择"),
-    "selectedCountTitle": m32,
+    "selectedCountTitle": m33,
     "sendLetter": MessageLookupByLibrary.simpleMessage("发送邮件"),
+    "serverBusy": MessageLookupByLibrary.simpleMessage("繁忙"),
+    "serverBusyTip": MessageLookupByLibrary.simpleMessage("该服务器繁忙，请选择其他服务器"),
+    "serverTitle": MessageLookupByLibrary.simpleMessage("服务器"),
+    "serversLoadError": MessageLookupByLibrary.simpleMessage("无法加载服务器列表"),
+    "serversTitle": MessageLookupByLibrary.simpleMessage("选择服务器"),
     "settings": MessageLookupByLibrary.simpleMessage("设置"),
     "show": MessageLookupByLibrary.simpleMessage("显示"),
     "showLess": MessageLookupByLibrary.simpleMessage("收起"),
@@ -917,8 +934,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "subscription": MessageLookupByLibrary.simpleMessage("订阅"),
     "subscriptionDetails": MessageLookupByLibrary.simpleMessage("详情"),
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage("订阅信息"),
-    "subscriptionUntil": m33,
-    "subscriptionUntilDays": m34,
+    "subscriptionUntil": m34,
+    "subscriptionUntilDays": m35,
     "suspended": MessageLookupByLibrary.simpleMessage("挂起中..."),
     "sync": MessageLookupByLibrary.simpleMessage("同步"),
     "system": MessageLookupByLibrary.simpleMessage("系统"),
@@ -958,9 +975,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "trialNeedTelegram": MessageLookupByLibrary.simpleMessage(
       "请先绑定 Telegram：我们据此确保每人仅试用一次。",
     ),
-    "trialOffer": m35,
+    "trialOffer": m36,
     "trialPeriod": MessageLookupByLibrary.simpleMessage("试用期"),
-    "trialPromo": m36,
+    "trialPromo": m37,
     "tun": MessageLookupByLibrary.simpleMessage("虚拟网卡"),
     "tunDesc": MessageLookupByLibrary.simpleMessage("仅在管理员模式生效"),
     "turnOff": MessageLookupByLibrary.simpleMessage("关闭"),
@@ -988,7 +1005,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m37,
+    "urlTip": m38,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("地址"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("金额"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("网络"),
@@ -1009,7 +1026,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "website": MessageLookupByLibrary.simpleMessage("官网"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
-    "yearsAgo": m38,
+    "yearsAgo": m39,
     "zhCN": MessageLookupByLibrary.simpleMessage("中文简体"),
   };
 }

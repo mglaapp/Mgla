@@ -93,28 +93,30 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m28(label) => "${label} must be between 1024 and 49151";
 
-  static String m29(count) =>
-      "${Intl.plural(count, one: '1 proxy', other: '${count} proxies')}";
+  static String m29(code) => "Promo code ${code} applied";
 
   static String m30(count) =>
-      "${Intl.plural(count, one: '1 rule', other: '${count} rules')}";
+      "${Intl.plural(count, one: '1 proxy', other: '${count} proxies')}";
 
   static String m31(count) =>
+      "${Intl.plural(count, one: '1 rule', other: '${count} rules')}";
+
+  static String m32(count) =>
       "${Intl.plural(count, one: '1 second', other: '${count} seconds')}";
 
-  static String m32(count) => "${count} selected";
+  static String m33(count) => "${count} selected";
 
-  static String m33(date) => "until ${date}";
+  static String m34(date) => "until ${date}";
 
-  static String m34(days, date) => "${days} d · until ${date}";
+  static String m35(days, date) => "${days} d · until ${date}";
 
-  static String m35(days, price) => "${days} for ${price} ₽";
+  static String m36(days, price) => "${days} for ${price} ₽";
 
-  static String m36(code) => "with promo code ${code}";
+  static String m37(code) => "with promo code ${code}";
 
-  static String m37(label) => "${label} must be a URL";
+  static String m38(label) => "${label} must be a URL";
 
-  static String m38(count) =>
+  static String m39(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -604,6 +606,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "Cache the changes?",
     ),
+    "havePromoCode": MessageLookupByLibrary.simpleMessage(
+      "I have a promo code",
+    ),
     "helperCorruptTip": MessageLookupByLibrary.simpleMessage(
       "Helper service unavailable; TUN mode cannot be enabled. Reinstall Mgla to restore it.",
     ),
@@ -952,9 +957,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "profiles": MessageLookupByLibrary.simpleMessage("Profiles"),
     "profilesSort": MessageLookupByLibrary.simpleMessage("Sort profiles"),
     "project": MessageLookupByLibrary.simpleMessage("Project"),
+    "promoApplied": m29,
+    "promoApply": MessageLookupByLibrary.simpleMessage("Apply"),
+    "promoCode": MessageLookupByLibrary.simpleMessage("Promo code"),
+    "promoErrOff": MessageLookupByLibrary.simpleMessage(
+      "This promo code is no longer valid",
+    ),
+    "promoErrPaid": MessageLookupByLibrary.simpleMessage(
+      "Promo codes are for new users: this account has already paid",
+    ),
+    "promoErrUnknown": MessageLookupByLibrary.simpleMessage(
+      "No such promo code — check the spelling",
+    ),
+    "promoErrUsed": MessageLookupByLibrary.simpleMessage(
+      "A promo code was already used on this account or Telegram",
+    ),
     "providers": MessageLookupByLibrary.simpleMessage("External resources"),
     "proxies": MessageLookupByLibrary.simpleMessage("Proxies"),
-    "proxiesCount": m29,
+    "proxiesCount": m30,
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("Proxies are empty"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Proxy chain"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
@@ -1188,7 +1208,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleSet": MessageLookupByLibrary.simpleMessage("Rule set"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Rule target"),
     "rules": MessageLookupByLibrary.simpleMessage("Rules"),
-    "rulesCount": m30,
+    "rulesCount": m31,
     "save": MessageLookupByLibrary.simpleMessage("Save"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save the changes?"),
     "savedIt": MessageLookupByLibrary.simpleMessage("I have saved it"),
@@ -1201,7 +1221,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "seconds": MessageLookupByLibrary.simpleMessage("seconds"),
-    "secondsCount": m31,
+    "secondsCount": m32,
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selectMatchTarget": MessageLookupByLibrary.simpleMessage(
       "Select MATCH-TARGET",
@@ -1220,8 +1240,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please select a sub-rule",
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m32,
+    "selectedCountTitle": m33,
     "sendLetter": MessageLookupByLibrary.simpleMessage("Send the letter"),
+    "serverBusy": MessageLookupByLibrary.simpleMessage("Busy"),
+    "serverBusyTip": MessageLookupByLibrary.simpleMessage(
+      "This server is busy — choose another",
+    ),
+    "serverTitle": MessageLookupByLibrary.simpleMessage("Server"),
+    "serversLoadError": MessageLookupByLibrary.simpleMessage(
+      "Could not load the server list",
+    ),
+    "serversTitle": MessageLookupByLibrary.simpleMessage("Choose a server"),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "showLess": MessageLookupByLibrary.simpleMessage("Collapse"),
@@ -1277,8 +1306,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage(
       "Subscription info",
     ),
-    "subscriptionUntil": m33,
-    "subscriptionUntilDays": m34,
+    "subscriptionUntil": m34,
+    "subscriptionUntilDays": m35,
     "suspended": MessageLookupByLibrary.simpleMessage("Suspended..."),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
     "system": MessageLookupByLibrary.simpleMessage("System"),
@@ -1326,9 +1355,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "trialNeedTelegram": MessageLookupByLibrary.simpleMessage(
       "Link Telegram first: that is how the trial stays one per person.",
     ),
-    "trialOffer": m35,
+    "trialOffer": m36,
     "trialPeriod": MessageLookupByLibrary.simpleMessage("Trial"),
-    "trialPromo": m36,
+    "trialPromo": m37,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage(
       "Only effective in administrator mode",
@@ -1366,7 +1395,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain a profile from a URL",
     ),
-    "urlTip": m37,
+    "urlTip": m38,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("Address"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("Amount"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("Network"),
@@ -1391,7 +1420,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "website": MessageLookupByLibrary.simpleMessage("Website"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
-    "yearsAgo": m38,
+    "yearsAgo": m39,
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };
 }

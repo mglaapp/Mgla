@@ -710,5 +710,18 @@
   "trialButton": "試す",
   "errTrialOff": "現在お試しはご利用いただけません",
   "errTrialUsed": "このアカウントではお試しをご利用いただけません",
-  "errTrialNeedTelegram": "先に Telegram を連携してください"
+  "errTrialNeedTelegram": "先に Telegram を連携してください",
+  "serverTitle": "サーバー",
+  "serversTitle": "サーバーを選択",
+  "serverBusy": "混雑中",
+  "serverBusyTip": "このサーバーは混雑しています。別のサーバーを選んでください",
+  "serversLoadError": "サーバー一覧を読み込めませんでした",
+  "havePromoCode": "プロモコードを持っています",
+  "promoCode": "プロモコード",
+  "promoApply": "適用",
+  "promoApplied": "プロモコード {code} を適用しました",
+  "promoErrUnknown": "そのプロモコードは存在しません。綴りを確認してください",
+  "promoErrUsed": "このアカウントまたは Telegram ではすでにプロモコードが使用されています",
+  "promoErrPaid": "プロモコードは新規ユーザー向けです。このアカウントは支払い済みです",
+  "promoErrOff": "このプロモコードは無効になりました"
 }

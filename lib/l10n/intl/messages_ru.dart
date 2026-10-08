@@ -94,27 +94,29 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m28(label) =>
       "Значение «${label}» должно быть от 1024 до 49151";
 
-  static String m29(count) => "${count} прокси";
+  static String m29(code) => "Промокод ${code} принят";
 
-  static String m30(count) =>
-      "${Intl.plural(count, one: '${count} правило', few: '${count} правила', many: '${count} правил', other: '${count} правила')}";
+  static String m30(count) => "${count} прокси";
 
   static String m31(count) =>
+      "${Intl.plural(count, one: '${count} правило', few: '${count} правила', many: '${count} правил', other: '${count} правила')}";
+
+  static String m32(count) =>
       "${Intl.plural(count, one: '${count} секунда', few: '${count} секунды', many: '${count} секунд', other: '${count} секунды')}";
 
-  static String m32(count) => "Выбрано: ${count}";
+  static String m33(count) => "Выбрано: ${count}";
 
-  static String m33(date) => "до ${date}";
+  static String m34(date) => "до ${date}";
 
-  static String m34(days, date) => "${days} дн. · до ${date}";
+  static String m35(days, date) => "${days} дн. · до ${date}";
 
-  static String m35(days, price) => "${days} за ${price} ₽";
+  static String m36(days, price) => "${days} за ${price} ₽";
 
-  static String m36(code) => "по промокоду ${code}";
+  static String m37(code) => "по промокоду ${code}";
 
-  static String m37(label) => "Значение «${label}» должно быть URL";
+  static String m38(label) => "Значение «${label}» должно быть URL";
 
-  static String m38(count) =>
+  static String m39(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -616,6 +618,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "Кэшировать изменения?",
     ),
+    "havePromoCode": MessageLookupByLibrary.simpleMessage(
+      "У меня есть промокод",
+    ),
     "helperCorruptTip": MessageLookupByLibrary.simpleMessage(
       "Служба Helper недоступна, поэтому TUN-режим включить нельзя. Переустановите Mgla.",
     ),
@@ -978,9 +983,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "profiles": MessageLookupByLibrary.simpleMessage("Профили"),
     "profilesSort": MessageLookupByLibrary.simpleMessage("Сортировка профилей"),
     "project": MessageLookupByLibrary.simpleMessage("Проект"),
+    "promoApplied": m29,
+    "promoApply": MessageLookupByLibrary.simpleMessage("Применить"),
+    "promoCode": MessageLookupByLibrary.simpleMessage("Промокод"),
+    "promoErrOff": MessageLookupByLibrary.simpleMessage(
+      "Промокод больше не действует",
+    ),
+    "promoErrPaid": MessageLookupByLibrary.simpleMessage(
+      "Промокод — для новых: на этом аккаунте уже была оплата",
+    ),
+    "promoErrUnknown": MessageLookupByLibrary.simpleMessage(
+      "Такого промокода нет — проверьте, как он записан",
+    ),
+    "promoErrUsed": MessageLookupByLibrary.simpleMessage(
+      "На этом аккаунте или телеграме промокод уже применяли",
+    ),
     "providers": MessageLookupByLibrary.simpleMessage("Внешние ресурсы"),
     "proxies": MessageLookupByLibrary.simpleMessage("Прокси"),
-    "proxiesCount": m29,
+    "proxiesCount": m30,
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("Список прокси пуст"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Цепочка прокси"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
@@ -1230,7 +1250,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleSet": MessageLookupByLibrary.simpleMessage("Набор правил"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Цель правила"),
     "rules": MessageLookupByLibrary.simpleMessage("Правила"),
-    "rulesCount": m30,
+    "rulesCount": m31,
     "save": MessageLookupByLibrary.simpleMessage("Сохранить"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Сохранить изменения?"),
     "savedIt": MessageLookupByLibrary.simpleMessage("Я сохранил"),
@@ -1243,7 +1263,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("Поиск"),
     "seconds": MessageLookupByLibrary.simpleMessage("секунд"),
-    "secondsCount": m31,
+    "secondsCount": m32,
     "selectAll": MessageLookupByLibrary.simpleMessage("Выбрать всё"),
     "selectMatchTarget": MessageLookupByLibrary.simpleMessage(
       "Выбрать MATCH-TARGET",
@@ -1262,8 +1282,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "Выберите подправило",
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Выбрано"),
-    "selectedCountTitle": m32,
+    "selectedCountTitle": m33,
     "sendLetter": MessageLookupByLibrary.simpleMessage("Отправить письмо"),
+    "serverBusy": MessageLookupByLibrary.simpleMessage("Загружен"),
+    "serverBusyTip": MessageLookupByLibrary.simpleMessage(
+      "Сервер загружен — выберите другой",
+    ),
+    "serverTitle": MessageLookupByLibrary.simpleMessage("Сервер"),
+    "serversLoadError": MessageLookupByLibrary.simpleMessage(
+      "Список серверов не загрузился",
+    ),
+    "serversTitle": MessageLookupByLibrary.simpleMessage("Выбор сервера"),
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
     "showLess": MessageLookupByLibrary.simpleMessage("Свернуть"),
@@ -1323,8 +1352,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage(
       "Информация о подписке",
     ),
-    "subscriptionUntil": m33,
-    "subscriptionUntilDays": m34,
+    "subscriptionUntil": m34,
+    "subscriptionUntilDays": m35,
     "suspended": MessageLookupByLibrary.simpleMessage("Приостановлено..."),
     "sync": MessageLookupByLibrary.simpleMessage("Синхронизация"),
     "system": MessageLookupByLibrary.simpleMessage("Система"),
@@ -1378,9 +1407,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "trialNeedTelegram": MessageLookupByLibrary.simpleMessage(
       "Сначала привяжите телеграм: по нему пробный даётся один раз на человека.",
     ),
-    "trialOffer": m35,
+    "trialOffer": m36,
     "trialPeriod": MessageLookupByLibrary.simpleMessage("Пробный период"),
-    "trialPromo": m36,
+    "trialPromo": m37,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage(
       "Работает только в режиме администратора",
@@ -1414,7 +1443,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("Отдача"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("Получить профиль по URL"),
-    "urlTip": m37,
+    "urlTip": m38,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("Адрес"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("Сумма"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("Сеть"),
@@ -1445,7 +1474,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage(
       "Режим белого списка",
     ),
-    "yearsAgo": m38,
+    "yearsAgo": m39,
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
   };
 }

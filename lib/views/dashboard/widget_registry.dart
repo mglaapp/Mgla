@@ -1,4 +1,5 @@
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/views/dashboard/widgets/server_card.dart';
 import 'package:fl_clash/views/dashboard/widgets/subscription_card.dart';
 import 'package:fl_clash/views/dashboard/widgets/widgets.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -12,6 +13,10 @@ extension DashboardWidgetView on DashboardWidget {
     DashboardWidget.ruDirectButton => const GridItem(
       crossAxisCellCount: 4,
       child: RuDirectButton(),
+    ),
+    DashboardWidget.server => const GridItem(
+      crossAxisCellCount: 8,
+      child: ServerCard(),
     ),
     DashboardWidget.networkSpeed => const GridItem(
       crossAxisCellCount: 8,

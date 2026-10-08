@@ -5955,6 +5955,116 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Server`
+  String get serverTitle {
+    return Intl.message('Server', name: 'serverTitle', desc: '', args: []);
+  }
+
+  /// `Choose a server`
+  String get serversTitle {
+    return Intl.message(
+      'Choose a server',
+      name: 'serversTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Busy`
+  String get serverBusy {
+    return Intl.message('Busy', name: 'serverBusy', desc: '', args: []);
+  }
+
+  /// `This server is busy — choose another`
+  String get serverBusyTip {
+    return Intl.message(
+      'This server is busy — choose another',
+      name: 'serverBusyTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load the server list`
+  String get serversLoadError {
+    return Intl.message(
+      'Could not load the server list',
+      name: 'serversLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I have a promo code`
+  String get havePromoCode {
+    return Intl.message(
+      'I have a promo code',
+      name: 'havePromoCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Promo code`
+  String get promoCode {
+    return Intl.message('Promo code', name: 'promoCode', desc: '', args: []);
+  }
+
+  /// `Apply`
+  String get promoApply {
+    return Intl.message('Apply', name: 'promoApply', desc: '', args: []);
+  }
+
+  /// `Promo code {code} applied`
+  String promoApplied(Object code) {
+    return Intl.message(
+      'Promo code $code applied',
+      name: 'promoApplied',
+      desc: '',
+      args: [code],
+    );
+  }
+
+  /// `No such promo code — check the spelling`
+  String get promoErrUnknown {
+    return Intl.message(
+      'No such promo code — check the spelling',
+      name: 'promoErrUnknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A promo code was already used on this account or Telegram`
+  String get promoErrUsed {
+    return Intl.message(
+      'A promo code was already used on this account or Telegram',
+      name: 'promoErrUsed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Promo codes are for new users: this account has already paid`
+  String get promoErrPaid {
+    return Intl.message(
+      'Promo codes are for new users: this account has already paid',
+      name: 'promoErrPaid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This promo code is no longer valid`
+  String get promoErrOff {
+    return Intl.message(
+      'This promo code is no longer valid',
+      name: 'promoErrOff',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
