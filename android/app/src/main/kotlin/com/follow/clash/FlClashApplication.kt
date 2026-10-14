@@ -8,5 +8,6 @@ class FlClashApplication : Application() {
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         GlobalState.init(this)
+        CrashTrace.install(filesDir)
     }
 }

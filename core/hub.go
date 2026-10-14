@@ -44,6 +44,7 @@ func handleInitClash(params *InitParams) bool {
 	sdkVersion.Store(int32(params.Version))
 	constant.SetHomeDir(params.HomeDir)
 	initOwnership(params.HomeDir)
+	initCrashOutput(params.HomeDir)
 	isInit.Store(true)
 	return true
 }

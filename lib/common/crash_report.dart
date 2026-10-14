@@ -17,6 +17,15 @@ class CrashReports {
     : _startedAt = startedAt ?? DateTime.now();
 
   static const int keepReports = 5;
+
+  /// Crash text the native side leaves in this directory before the process dies: the Go
+  /// core's runtime output (core/crash_output.go) and an uncaught JVM exception (Android,
+  /// CrashTrace.kt). For both the system itself tells us only "crash".
+  static const Map<String, String> sideTraceFiles = {
+    'core-crash.log': 'core',
+    'java-crash.log': 'java',
+  };
+  static const int sideTraceLimit = 12000;
   static const int uploadPerLaunch = 5;
   static const String _prefix = 'crash-';
   static const String _suffix = '.log';
@@ -60,7 +69,8 @@ class CrashReports {
   }
 
   /// A crash only the system saw: a native crash or an ANR never reaches a Dart handler.
-  void recordExit(String reason, String? description) {
+  /// [trace] is what the native side wrote before dying ([takeSideTrace]).
+  void recordExit(String reason, String? description, {String? trace}) {
     final kind = switch (reason) {
       'anr' => 'anr',
       'initializationFailure' => 'init',
@@ -69,7 +79,58 @@ class CrashReports {
     final detail = description == null || description.isEmpty
         ? ''
         : ': $description';
-    record('$reason$detail', null, kind: kind);
+    final headline = trace == null ? null : sideTraceHeadline(trace);
+    record(
+      '$reason$detail${headline == null ? '' : ' — $headline'}',
+      trace == null ? null : StackTrace.fromString(trace),
+      kind: kind,
+    );
+  }
+
+  /// Reads the native crash text and empties the files; null when there is none.
+  ///
+  /// Emptied, not deleted: the core keeps its crash file open for appending from start-up,
+  /// and a deleted file would swallow the next crash.
+  String? takeSideTrace() {
+    final directory = _directory;
+    if (directory == null) {
+      return null;
+    }
+    final parts = <String>[];
+    for (final entry in sideTraceFiles.entries) {
+      final file = File(join(directory.path, entry.key));
+      try {
+        if (!file.existsSync()) {
+          continue;
+        }
+        var text = file.readAsStringSync().trim();
+        file.writeAsStringSync('', flush: true);
+        if (text.isEmpty) {
+          continue;
+        }
+        if (text.length > sideTraceLimit) {
+          text = text.substring(text.length - sideTraceLimit);
+        }
+        parts.add('== ${entry.value} ==\n$text');
+      } catch (_) {
+        continue;
+      }
+    }
+    return parts.isEmpty ? null : parts.join('\n');
+  }
+
+  /// Native crash text no system exit record claimed: the desktop core is a process of its
+  /// own, and Android before 11 has no exit reasons. It becomes a report of its own.
+  void recordLeftoverTrace() {
+    final trace = takeSideTrace();
+    if (trace == null) {
+      return;
+    }
+    record(
+      'native crash: ${sideTraceHeadline(trace) ?? 'no headline'}',
+      StackTrace.fromString(trace),
+      kind: 'native',
+    );
   }
 
   /// Whether a report is left over from an earlier run of the app.
@@ -211,6 +272,24 @@ class CrashReports {
     }
     return buffer.toString();
   }
+}
+
+/// The line that names a native failure: Go's «panic: …» or «fatal error: …», otherwise the
+/// JVM exception line that follows CrashTrace's «thread: …» header.
+String? sideTraceHeadline(String trace) {
+  final lines = const LineSplitter().convert(trace);
+  for (final line in lines) {
+    final text = line.trim();
+    if (text.startsWith('panic: ') || text.startsWith('fatal error: ')) {
+      return text;
+    }
+  }
+  final thread = lines.indexWhere((line) => line.startsWith('thread: '));
+  if (thread >= 0 && thread + 1 < lines.length) {
+    final text = lines[thread + 1].trim();
+    return text.isEmpty ? null : text;
+  }
+  return null;
 }
 
 Map<String, String>? parseCrashReport(

@@ -95,6 +95,7 @@ class Bootstrap {
     _bootDecision = await bootGuard.evaluate(
       profileId: config.currentProfileId,
     );
+    crashReports.recordLeftoverTrace();
     if (_bootDecision.recovery == BootRecovery.clearProfile) {
       config = config.copyWith(currentProfileId: null);
       await preferences.saveConfig(config);

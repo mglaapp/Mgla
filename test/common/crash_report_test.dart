@@ -312,4 +312,116 @@ void main() {
       expect(report['error'], 'crashNative');
     });
   });
+
+  // 13-10: four crashNative and one crash from 0.9.6 arrived with no stack at all — the system
+  // reports only "crash". The core and the JVM now leave their own text behind.
+  group('side traces', () {
+    const goPanic =
+        'fatal error: concurrent map writes\n\n'
+        'goroutine 42 [running]:\n'
+        'main.handleUpdateConfig(0x4000a1c0e0)\n'
+        '\t/home/runner/work/Mgla/Mgla/core/hub.go:120 +0x1d4\n';
+    const javaTrace =
+        'thread: main\n'
+        'java.lang.IllegalStateException: service not bound\n'
+        '\tat com.follow.clash.MainActivity.onStart(MainActivity.kt:31)\n';
+
+    File side(String name) =>
+        File('${directory.path}${Platform.pathSeparator}$name');
+
+    test('a native exit carries the core trace and its headline', () {
+      final instance = reports()..appVersion = '0.9.7';
+      side('core-crash.log').writeAsStringSync(goPanic);
+
+      instance.recordExit(
+        'crashNative',
+        'crash',
+        trace: instance.takeSideTrace(),
+      );
+
+      final report = parseCrashReport(instance.latest()!)!;
+      expect(report['kind'], 'native');
+      expect(
+        report['error'],
+        'crashNative: crash — fatal error: concurrent map writes',
+      );
+      expect(report['stack'], contains('== core =='));
+      expect(report['stack'], contains('main.handleUpdateConfig'));
+      // emptied, not deleted: the core keeps the file open for appending
+      expect(side('core-crash.log').existsSync(), isTrue);
+      expect(side('core-crash.log').lengthSync(), 0);
+    });
+
+    test('a JVM crash is headed by its exception line', () {
+      final instance = reports()..appVersion = '0.9.7';
+      side('java-crash.log').writeAsStringSync(javaTrace);
+
+      instance.recordExit('crash', 'crash', trace: instance.takeSideTrace());
+
+      final report = parseCrashReport(instance.latest()!)!;
+      expect(
+        report['error'],
+        'crash: crash — java.lang.IllegalStateException: service not bound',
+      );
+      expect(report['stack'], contains('MainActivity.onStart'));
+    });
+
+    test('nothing left behind gives no trace and an unchanged report', () {
+      final instance = reports()..appVersion = '0.9.7';
+      side('core-crash.log').writeAsStringSync('   \n');
+
+      expect(instance.takeSideTrace(), isNull);
+      instance.recordExit(
+        'crashNative',
+        'crash',
+        trace: instance.takeSideTrace(),
+      );
+      final report = parseCrashReport(instance.latest()!)!;
+      expect(report['error'], 'crashNative: crash');
+      expect(report['stack'], isEmpty);
+    });
+
+    test('a trace is taken once; a later crash is read afresh', () {
+      final instance = reports();
+      side('core-crash.log').writeAsStringSync(goPanic);
+      expect(instance.takeSideTrace(), contains('concurrent map writes'));
+      expect(instance.takeSideTrace(), isNull);
+
+      side(
+        'core-crash.log',
+      ).writeAsStringSync('panic: second\n', mode: FileMode.append);
+      expect(instance.takeSideTrace(), contains('panic: second'));
+    });
+
+    test('an unclaimed trace becomes a native report of its own, once', () {
+      final instance = reports()..appVersion = '0.9.7';
+      side('core-crash.log').writeAsStringSync(goPanic);
+
+      instance.recordLeftoverTrace();
+      final report = parseCrashReport(instance.latest()!)!;
+      expect(report['kind'], 'native');
+      expect(
+        report['error'],
+        'native crash: fatal error: concurrent map writes',
+      );
+
+      final before = instance.latest();
+      instance.recordLeftoverTrace();
+      expect(instance.latest(), before);
+    });
+
+    test(
+      'a huge trace keeps its tail, where Go puts the crashing goroutine',
+      () {
+        final instance = reports();
+        side('core-crash.log').writeAsStringSync(
+          '${'x' * (CrashReports.sideTraceLimit * 2)}\npanic: at the end\n',
+        );
+
+        final trace = instance.takeSideTrace()!;
+        expect(trace.length, lessThan(CrashReports.sideTraceLimit + 20));
+        expect(trace, contains('panic: at the end'));
+      },
+    );
+  });
 }

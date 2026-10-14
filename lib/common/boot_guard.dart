@@ -39,8 +39,11 @@ class BootGuard {
   static Future<bool> _localCrashReport() async =>
       crashReports.recordedBeforeThisRun();
 
-  static void _recordExit(AppExitInfo exit) =>
-      crashReports.recordExit(exit.reason.name, exit.description);
+  static void _recordExit(AppExitInfo exit) => crashReports.recordExit(
+    exit.reason.name,
+    exit.description,
+    trace: crashReports.takeSideTrace(),
+  );
 
   BootDecision get decision => _decision;
 
