@@ -36,6 +36,56 @@ void main() {
       expect(Plan.fromJson({'code': '12m', 'days': 365})?.title, '12m');
     });
 
+    // Русская версия в рублях (14-10): сервер на cur=rub отдаёт price в рублях и cur.
+    const nb = ' ';
+    test('рублёвый тариф показывается в рублях, а не долларами учёта', () {
+      final plan = Plan.fromJson({
+        'code': '1m',
+        'days': 30,
+        'usd': 2.96428571,
+        'price': 249,
+        'cur': 'rub',
+      })!;
+      expect(plan.priceText, '249$nb₽');
+      expect(plan.skinsPriceText, '249$nb₽ (\$2.96)');
+    });
+
+    test('тысячи и копейки — как money.fmt_rub на сервере', () {
+      expect(formatRub(1990), '1${nb}990$nb₽');
+      expect(formatRub(24.9), '24,90$nb₽');
+      expect(formatRub(1234567), '1${nb}234${nb}567$nb₽');
+      expect(formatRub(0.5), '0,50$nb₽');
+      expect(formatRub(99.999), '100$nb₽');
+    });
+
+    test('КОНТРОЛЬ: старый сервер без price — доллары, как раньше', () {
+      final plan = Plan.fromJson({'code': '1m', 'days': 30, 'usd': 3.49})!;
+      expect(plan.isRub, isFalse);
+      expect(plan.priceText, '\$3.49');
+      expect(plan.skinsPriceText, '\$3.49');
+    });
+
+    test('cur=rub без цены не выдумывает рубли из долларов', () {
+      final plan = Plan.fromJson({
+        'code': '1m',
+        'days': 30,
+        'usd': 3.49,
+        'cur': 'rub',
+      })!;
+      expect(plan.priceText, '\$3.49');
+    });
+
+    test('долларовый тариф с price показывает price', () {
+      final plan = Plan.fromJson({
+        'code': '1m',
+        'days': 30,
+        'usd': 3.49,
+        'price': 3.49,
+        'cur': 'usd',
+      })!;
+      expect(plan.priceText, '\$3.49');
+    });
+
     test('мусор внутри списка выбрасывается, остальное остаётся', () {
       final plans = Plan.listFrom([
         {'code': '1m', 'days': 30, 'usd': 3.49},

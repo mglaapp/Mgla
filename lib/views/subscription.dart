@@ -334,7 +334,7 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
             for (final plan in status.plans)
               DecorationListItem(
                 title: Text(plan.title),
-                subtitle: TooltipLabel('\$${plan.usd.toStringAsFixed(2)}'),
+                subtitle: TooltipLabel(plan.priceText),
                 trailing: canPayInApp(status)
                     ? FilledButton(
                         onPressed: _busy

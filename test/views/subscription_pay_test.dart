@@ -69,6 +69,7 @@ Future<void> _pump(
   WidgetTester tester,
   AccountStatus status, {
   bool keepSize = false,
+  Plan plan = _plan,
 }) async {
   if (!keepSize) tester.view.physicalSize = const Size(1000, 1600);
   tester.view.devicePixelRatio = 1;
@@ -81,7 +82,7 @@ Future<void> _pump(
     UncontrolledProviderScope(
       container: container,
       child: TestApp(
-        child: PaymentMethodView(status: status, plan: _plan, accessKey: 'k'),
+        child: PaymentMethodView(status: status, plan: plan, accessKey: 'k'),
       ),
     ),
   );
@@ -195,6 +196,24 @@ void main() {
     await _pump(tester, _status(skins: false));
     expect(find.text(l.paySkins), findsNothing);
   });
+
+  testWidgets(
+    'тариф в рублях (приложение на русском, 14-10): цена рублями, у скинов — и доллары',
+    (tester) async {
+      const rubPlan = Plan(
+        code: '1m',
+        days: 30,
+        usd: 2.96428571,
+        title: '1 месяц',
+        price: 249,
+        cur: 'rub',
+      );
+      await _pump(tester, _status(), plan: rubPlan);
+      expect(find.text('1 месяц — 249 ₽'), findsOneWidget);
+      expect(find.textContaining('249 ₽ (\$2.96)'), findsOneWidget);
+      expect(find.textContaining('\$3.49'), findsNothing);
+    },
+  );
 
   testWidgets('на узком экране способы столбиком, без переполнения', (
     tester,

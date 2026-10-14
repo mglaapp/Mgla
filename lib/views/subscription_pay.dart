@@ -190,7 +190,7 @@ class _PaymentMethodViewState extends ConsumerState<PaymentMethodView> {
       title: l.paySkins,
       fill: fill,
       chips: const [_Chip('CS2'), _Chip('Dota 2'), _Chip('Rust'), _Chip('TF2')],
-      text: l.paySkinsDesc('\$${widget.plan.usd.toStringAsFixed(2)}'),
+      text: l.paySkinsDesc(widget.plan.skinsPriceText),
       action: OutlinedButton.icon(
         onPressed: _busy ? null : _paySkins,
         icon: const Icon(Icons.inventory_2_outlined, size: 18),
@@ -334,8 +334,7 @@ class _PaymentMethodViewState extends ConsumerState<PaymentMethodView> {
                         child: LinearProgressIndicator(minHeight: 2),
                       ),
                     Text(
-                      '${widget.plan.title} — '
-                      '\$${widget.plan.usd.toStringAsFixed(2)}',
+                      '${widget.plan.title} — ${widget.plan.priceText}',
                       style: context.textTheme.headlineSmall?.toBold,
                     ),
                     const SizedBox(height: 16),

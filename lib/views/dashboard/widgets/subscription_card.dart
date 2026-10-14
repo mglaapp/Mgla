@@ -81,7 +81,7 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
                 children: [
                   Expanded(child: Text(plan.title)),
                   Text(
-                    '\$${plan.usd.toStringAsFixed(2)}',
+                    plan.priceText,
                     style: dialogContext.textTheme.titleSmall?.toBold,
                   ),
                 ],

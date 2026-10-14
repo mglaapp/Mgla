@@ -11,26 +11,51 @@ import 'package:flutter/foundation.dart';
 class Plan {
   final String code;
   final int days;
+
+  /// Сколько тариф значит в учёте сервера, в долларах. Старый сервер (до 14-10) знал только его.
   final double usd;
   final String title;
+
+  /// Цена, которую человек видит и платит, в валюте [cur]: на русском 249 ₽, иначе $3.49.
+  /// null — сервер старый и цены в валюте не прислал: показываем [usd] в долларах, как раньше.
+  final double? price;
+
+  /// 'rub' | 'usd' — валюта [price] (запрос несёт cur по языку приложения, 14-10).
+  final String cur;
 
   const Plan({
     required this.code,
     required this.days,
     required this.usd,
     required this.title,
+    this.price,
+    this.cur = 'usd',
   });
+
+  bool get isRub => cur == 'rub' && price != null;
+
+  /// Цена для показа: «249 ₽» или «$3.49».
+  String get priceText =>
+      isRub ? formatRub(price!) : '\$${(price ?? usd).toStringAsFixed(2)}';
+
+  /// Цена для оплаты скинами: OmniSkin считает предметы в долларах, поэтому у рублёвого тарифа
+  /// рядом стоит его долларовая сумма — «249 ₽ ($2.96)», как на сайте.
+  String get skinsPriceText =>
+      isRub ? '$priceText (\$${usd.toStringAsFixed(2)})' : priceText;
 
   static Plan? fromJson(Object? json) {
     if (json is! Map) return null;
     final code = json['code'];
     final days = json['days'];
     if (code is! String || days is! int) return null;
+    final cur = json['cur'];
     return Plan(
       code: code,
       days: days,
       usd: (json['usd'] as num?)?.toDouble() ?? 0,
       title: json['title'] is String ? json['title'] as String : code,
+      price: (json['price'] as num?)?.toDouble(),
+      cur: cur is String && cur == 'rub' ? 'rub' : 'usd',
     );
   }
 
@@ -38,6 +63,22 @@ class Plan {
     if (json is! List) return const [];
     return [for (final item in json) ?Plan.fromJson(item)];
   }
+}
+
+/// «249 ₽», «1 990 ₽», «24,90 ₽» — как money.fmt_rub на сервере: копейки только когда они есть,
+/// разделители — неразрывный пробел, чтобы строка не рвалась между числом и знаком.
+String formatRub(double value) {
+  final kop = (value.abs() * 100).round();
+  final digits = '${kop ~/ 100}';
+  final rest = kop % 100;
+  final buf = StringBuffer(value < 0 ? '−' : '');
+  for (var i = 0; i < digits.length; i++) {
+    if (i > 0 && (digits.length - i) % 3 == 0) buf.write(' ');
+    buf.write(digits[i]);
+  }
+  if (rest != 0) buf.write(',${'$rest'.padLeft(2, '0')}');
+  buf.write(' ₽');
+  return buf.toString();
 }
 
 /// Состояние доступа: ровно то, что человек и так видит в подписке.

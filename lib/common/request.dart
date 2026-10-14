@@ -8,6 +8,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/state.dart';
+import 'package:intl/intl.dart';
 
 class Request {
   late final Dio dio;
@@ -234,6 +235,14 @@ class Request {
     return value == null ? const {} : {'X-Mgla-App': value};
   }
 
+  /// Валюта цен по языку приложения (решение владельца 14-10): на русском — рубли, иначе
+  /// доллары. Язык ставит загрузка перевода (AppLocalizations.load -> Intl.defaultLocale), так что
+  /// смена языка в настройках меняет и валюту. Старый сервер параметр молча пропускает.
+  static String currency() {
+    final locale = Intl.defaultLocale ?? Intl.getCurrentLocale();
+    return locale.toLowerCase().startsWith('ru') ? 'rub' : 'usd';
+  }
+
   Future<Result<T>> _api<T>(
     String path, {
     Map<String, dynamic>? form,
@@ -281,16 +290,22 @@ class Request {
     }
   }
 
-  Future<Result<NewAccount>> createAccount() =>
-      _api('/account', form: const {}, parse: NewAccount.fromJson);
+  Future<Result<NewAccount>> createAccount() => _api(
+    '/account?cur=${currency()}',
+    form: const {},
+    parse: NewAccount.fromJson,
+  );
 
-  Future<Result<AccountStatus>> accountStatus(String key) =>
-      _api('/status', query: {'key': key}, parse: AccountStatus.fromJson);
+  Future<Result<AccountStatus>> accountStatus(String key) => _api(
+    '/status',
+    query: {'key': key, 'cur': currency()},
+    parse: AccountStatus.fromJson,
+  );
 
   Future<Result<UsdtInvoice>> createUsdtInvoice(String key, String plan) =>
       _api(
         '/pay/usdt',
-        form: {'key': key, 'plan': plan},
+        form: {'key': key, 'plan': plan, 'cur': currency()},
         parse: UsdtInvoice.fromJson,
       );
 
@@ -299,7 +314,7 @@ class Request {
   /// строки.
   Future<Result<String>> createCardPayment(String key, String plan) => _api(
     '/pay/card',
-    form: {'key': key, 'plan': plan},
+    form: {'key': key, 'plan': plan, 'cur': currency()},
     parse: (data) {
       final url = data['url'];
       return url is String && url.isNotEmpty ? url : null;
@@ -309,7 +324,7 @@ class Request {
   /// Ссылка на оплату скинами (OmniSkin): открывается в браузере, как карта.
   Future<Result<String>> createSkinsPayment(String key, String plan) => _api(
     '/pay/skins',
-    form: {'key': key, 'plan': plan},
+    form: {'key': key, 'plan': plan, 'cur': currency()},
     parse: (data) {
       final url = data['url'];
       return url is String && url.isNotEmpty ? url : null;
@@ -328,7 +343,7 @@ class Request {
   /// Промокод. В ответе свежий статус: пробный уже с неделей и кодом.
   Future<Result<AccountStatus>> redeemPromo(String key, String code) => _api(
     '/promo',
-    form: {'key': key, 'code': code},
+    form: {'key': key, 'code': code, 'cur': currency()},
     parse: AccountStatus.fromJson,
   );
 
@@ -349,14 +364,14 @@ class Request {
     String coin,
   ) => _api(
     '/pay/crypto',
-    form: {'key': key, 'plan': plan, 'coin': coin},
+    form: {'key': key, 'plan': plan, 'coin': coin, 'cur': currency()},
     parse: CryptoInvoice.fromJson,
   );
 
   /// «Я оплатил» по монете: сервер сверяет сеть сейчас и отвечает, зачтён ли счёт.
   Future<Result<CryptoCheck>> checkCryptoPayment(String key, int id) => _api(
     '/pay/crypto/check',
-    form: {'key': key, 'id': '$id'},
+    form: {'key': key, 'id': '$id', 'cur': currency()},
     parse: CryptoCheck.fromJson,
   );
 
@@ -364,7 +379,7 @@ class Request {
   Future<Result<CryptoCheck>> claimCryptoHash(String key, int id, String tx) =>
       _api(
         '/pay/crypto/hash',
-        form: {'key': key, 'id': '$id', 'tx': tx},
+        form: {'key': key, 'id': '$id', 'tx': tx, 'cur': currency()},
         parse: CryptoCheck.fromJson,
       );
 
@@ -389,7 +404,7 @@ class Request {
   /// зачёт идёт по хэшу перевода, повтор упирается в ограничение базы на стороне сервера.
   Future<Result<AccountStatus>> checkUsdtPayment(String key) => _api(
     '/pay/usdt/check',
-    form: {'key': key},
+    form: {'key': key, 'cur': currency()},
     parse: AccountStatus.fromJson,
   );
 
