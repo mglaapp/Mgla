@@ -254,4 +254,56 @@ void main() {
     expect(find.text('no host listening'), findsNothing);
     expect(tester.takeException(), null);
   });
+
+  // Отчёт о падении 13-10 (0.9.6, эмулятор проверки магазина): «Bad state: No element» в
+  // NavigatorState.pop из showDisclaimer. Робот жмёт Enter очередью; клавиша, в отличие от
+  // касания, не гаснет на уезжающем окне, и второе-третье нажатие уходили в корневой
+  // навигатор мимо окна: снимали экран под ним, а когда снимать было нечего — падали.
+  testWidgets(
+    'disclaimer survives repeated keyboard activation while closing',
+    (tester) async {
+      await _pumpHost(
+        tester,
+        homeBuilder: (child) => const Scaffold(body: Text('home page')),
+      );
+
+      final result = dialogs.showDisclaimer();
+      await tester.pumpAndSettle();
+
+      final agree = tester.element(find.text('Agree'));
+      for (var i = 0; i < 3; i++) {
+        Actions.invoke(agree, const ActivateIntent());
+        await tester.pump(const Duration(milliseconds: 30));
+      }
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), null);
+      expect(await result, isTrue);
+      expect(find.text('home page'), findsOneWidget);
+      expect(find.text('Disclaimer'), findsNothing);
+    },
+  );
+
+  testWidgets('showMessage closes only itself on repeated activation', (
+    tester,
+  ) async {
+    await _pumpHost(
+      tester,
+      homeBuilder: (child) => const Scaffold(body: Text('home page')),
+    );
+
+    final result = dialogs.showMessage(message: const TextSpan(text: 'body'));
+    await tester.pumpAndSettle();
+
+    final confirm = tester.element(find.text('Confirm'));
+    for (var i = 0; i < 3; i++) {
+      Actions.invoke(confirm, const ActivateIntent());
+      await tester.pump(const Duration(milliseconds: 30));
+    }
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), null);
+    expect(await result, isTrue);
+    expect(find.text('home page'), findsOneWidget);
+  });
 }

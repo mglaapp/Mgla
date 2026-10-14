@@ -9,6 +9,22 @@ import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// Whether the dialog that holds [context] is still the top route.
+///
+/// A dialog button fires from the keyboard too (Enter, space), and a key press, unlike a tap,
+/// is not swallowed while the dialog animates out. A store review robot presses Enter in a
+/// row (crash report from 13-10, 0.9.6 on an emulator): the second press popped the screen
+/// UNDER the dialog, and with nothing under it NavigatorState.pop threw «Bad state: No element».
+bool isDialogOpen(BuildContext context) =>
+    ModalRoute.of(context)?.isCurrent ?? true;
+
+/// Closes the dialog that holds [context] — once; a repeated press while it closes is a no-op.
+void popDialog<T extends Object?>(BuildContext context, [T? result]) {
+  if (isDialogOpen(context)) {
+    Navigator.of(context).pop<T>(result);
+  }
+}
+
 class Dialogs {
   Dialogs._();
 
@@ -56,13 +72,13 @@ class Dialogs {
               if (cancelable)
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(false);
+                    popDialog(context, false);
                   },
                   child: Text(cancelText ?? appLocalizations.cancel),
                 ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(true);
+                  popDialog(context, true);
                 },
                 child: Text(confirmText ?? appLocalizations.confirm),
               ),
@@ -102,8 +118,11 @@ class Dialogs {
             actions: [
               TextButton(
                 onPressed: () {
+                  if (!isDialogOpen(context)) {
+                    return;
+                  }
                   onCancel();
-                  Navigator.of(context).pop();
+                  popDialog(context);
                 },
                 child: Text(appLocalizations.cancel),
               ),
@@ -146,7 +165,7 @@ class Dialogs {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(true);
+                  popDialog(context, true);
                 },
                 child: Text(appLocalizations.confirm),
               ),
@@ -165,23 +184,21 @@ class Dialogs {
   Future<bool> showDisclaimer() async {
     return await showCommonDialog<bool>(
           dismissible: false,
-          child: CommonDialog(
-            title: currentAppLocalizations.disclaimer,
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(_context).pop<bool>(false);
-                },
-                child: Text(currentAppLocalizations.exit),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(_context).pop<bool>(true);
-                },
-                child: Text(currentAppLocalizations.agree),
-              ),
-            ],
-            child: Text(currentAppLocalizations.disclaimerDesc),
+          child: Builder(
+            builder: (context) => CommonDialog(
+              title: currentAppLocalizations.disclaimer,
+              actions: [
+                TextButton(
+                  onPressed: () => popDialog<bool>(context, false),
+                  child: Text(currentAppLocalizations.exit),
+                ),
+                TextButton(
+                  onPressed: () => popDialog<bool>(context, true),
+                  child: Text(currentAppLocalizations.agree),
+                ),
+              ],
+              child: Text(currentAppLocalizations.disclaimerDesc),
+            ),
           ),
         ) ??
         false;
