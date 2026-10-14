@@ -2,6 +2,24 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "0.9.8",
+      "tag": "v0.9.8",
+      "date": "2026-10-15",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "aedcae0",
+              "scope": "pay",
+              "text": "На русском цены в рублях"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.9.7",
       "tag": "v0.9.7",
       "date": "2026-10-14",
