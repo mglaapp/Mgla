@@ -2,6 +2,34 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "0.9.7",
+      "tag": "v0.9.7",
+      "date": "2026-10-14",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "e021ac7",
+              "scope": "crash",
+              "text": "отчёт о падении ядра теперь приходит со стеком"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "434da14",
+              "scope": "dialog",
+              "text": "Повторное нажатие закрывает только своё окно"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.9.6",
       "tag": "v0.9.6",
       "date": "2026-10-09",
