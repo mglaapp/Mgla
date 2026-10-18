@@ -2,7 +2,7 @@
 """Знак Mgla во все размеры, которые требует каждая платформа.
 
     python tool/mgla_icon.py            # перерисовать всё
-    python tool/mgla_icon.py --check    # только сказать, что не на месте
+    python tool/mgla_icon.py --check    # только сказать, что не на месте или чужое
 
 ЗАЧЕМ ИНСТРУМЕНТ, А НЕ ОДИН РАЗ РУКАМИ. Иконка лежит в девяти местах в трёх форматах, и после
 слияния с апстримом любое из них может вернуться к чужому знаку. Нарисованное скриптом
@@ -16,14 +16,23 @@
 ANDROID РИСУЕТСЯ ОТДЕЛЬНО. У адаптивной иконки система сама кладёт свою маску поверх, и всё,
 что выходит за центральные 66%, обрезается на части устройств. Поэтому там знак без подложки и
 вписан в безопасную зону, а фон задан цветом в ic_launcher_background.xml.
+
+СТАРЫЕ СИСТЕМЫ И ТЕЛЕВИЗОР (18-10). Адаптивную иконку читает Android 8+, а minSdk у Flutter — 21:
+Android 5-7 и дешёвые ТВ-приставки берут растр webp, квадратный и круглый. Телевизор, кроме того,
+показывает свой знак (mipmap-television, ic_launcher_foreground_tv) и баннер 320x180 в ряду
+приложений. Всё это до 18-10 было знаком FlClash — скрипт эти файлы не знал.
+
+СВЕРКА. Каждый растр, записанный скриптом, ложится в tool/mgla_icon.sha256 со своим хешем;
+mgla_check.py и --check сверяют файлы с ним. Слияние, вернувшее любую картинку апстрима, краснеет.
 """
 from __future__ import annotations
 
+import hashlib
 import pathlib
 import sys
 
 try:
-    from PIL import Image, ImageDraw
+    from PIL import Image, ImageDraw, ImageFont
 except ImportError:                              # noqa: BLE001
     print("нужен Pillow: pip install pillow")
     raise SystemExit(2)
@@ -62,15 +71,37 @@ TRAY_UNIX_SCALES = {"": 18, "2.0x": 36, "3.0x": 54, "4.0x": 72}
 TRAY_ICO_SIZES = [16, 20, 24, 32, 40, 48, 64]
 TRAY_FILL = 0.88                                 # доля квадрата под знак, остальное — поле
 
+FG = (0xE6, 0xEA, 0xF2)                          # --fg сайта: имя на баннере ТВ
+FONT = ROOT / "assets/fonts/IBMPlexSans.ttf"
+RES = "android/app/src/main/res"
+WEBP_PHONE = {"mdpi": 48, "hdpi": 72, "xhdpi": 96, "xxhdpi": 144, "xxxhdpi": 192}
+WEBP_TV = {"mdpi": 80, "hdpi": 120, "xhdpi": 160, "xxhdpi": 240, "xxxhdpi": 320}  # тест апстрима
+BANNER = (RES + "/mipmap-xhdpi/ic_banner.png", 320, 180)
+# Границы знака апстрима, которые стережёт test/android_tv_launcher_icon_test.dart: наш знак вписан
+# ВНУТРЬ них, поэтому тест, не зная нашего знака, остаётся правдой и про него.
+TV_LOGO_BOUNDS = (54.0, 33.0, 179.0, 206.5)
+TV_VIEW, TV_SCALE = 240.0, 0.9
+MANIFEST = "tool/mgla_icon.sha256"
+WRITTEN: list[str] = []
 
-def draw(size: int, *, plate: bool = True, inset: float = 1.0) -> Image.Image:
-    """Знак размером size. plate=False — только полосы (для адаптивной иконки Android)."""
+
+def bars_box() -> tuple[float, float, float, float]:
+    """Фактические границы полос в координатах viewBox: left, top, right, bottom."""
+    return (min(x for x, _, _, _, _ in BARS), min(y for _, y, _, _, _ in BARS),
+            max(x + w for x, _, w, _, _ in BARS), max(y + h for _, y, _, h, _ in BARS))
+
+
+def draw(size: int, *, plate: bool = True, inset: float = 1.0, shape: str = "rounded") -> Image.Image:
+    """Знак размером size. plate=False — только полосы (для адаптивной иконки Android);
+    shape="circle" — круглая подложка (ic_launcher_round у Android 5-7)."""
     big = size * SUPERSAMPLE
     img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     k = big / VIEWBOX * inset
     pad = (big - VIEWBOX * k) / 2
-    if plate:
+    if plate and shape == "circle":
+        d.ellipse([0, 0, big - 1, big - 1], fill=BG)
+    elif plate:
         d.rounded_rectangle([0, 0, big - 1, big - 1], radius=CORNER * big / VIEWBOX, fill=BG)
     for x, y, w, h, alpha in BARS:
         box = [pad + x * k, pad + y * k, pad + (x + w) * k, pad + (y + h) * k]
@@ -112,9 +143,11 @@ def write_tray() -> None:
             path = ROOT / rel
             path.parent.mkdir(parents=True, exist_ok=True)
             draw_tray(size, state).save(path, format="PNG")
+            WRITTEN.append(rel)
         rel = "assets/images/tray/windows/status_%d.ico" % state
         draw_tray(max(TRAY_ICO_SIZES), state).save(
             ROOT / rel, format="ICO", sizes=[(s, s) for s in TRAY_ICO_SIZES])
+        WRITTEN.append(rel)
         print("  трей, состояние %d: png x%d + ico" % (state, len(TRAY_UNIX_SCALES)))
 
 
@@ -159,6 +192,7 @@ def write_png(rel: str, size: int) -> None:
     path = ROOT / rel
     path.parent.mkdir(parents=True, exist_ok=True)
     draw(size).save(path, format="PNG")
+    WRITTEN.append(rel)
     print(f"  {rel}  {size}x{size}")
 
 
@@ -167,7 +201,76 @@ def write_ico(rel: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     base = draw(max(ICO_SIZES))
     base.save(path, format="ICO", sizes=[(s, s) for s in ICO_SIZES])
+    WRITTEN.append(rel)
     print(f"  {rel}  {', '.join(str(s) for s in ICO_SIZES)}")
+
+
+def write_webp(rel: str, size: int, shape: str = "rounded") -> None:
+    path = ROOT / rel
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # круг: знак чуть меньше, чтобы углы верхней полосы не подходили к краю окружности
+    draw(size, shape=shape, inset=0.9 if shape == "circle" else 1.0).save(path, format="WEBP", lossless=True)
+    WRITTEN.append(rel)
+    print(f"  {rel}  {size}x{size}")
+
+
+def draw_banner(width: int, height: int) -> Image.Image:
+    """Баннер Android TV: ночь, знак слева, имя справа. Непрозрачный — так требует Android TV."""
+    s = SUPERSAMPLE
+    img = Image.new("RGB", (width * s, height * s), BG[:3])
+    d = ImageDraw.Draw(img)
+    left, top, right, bottom = bars_box()
+    k = height * s * 0.4 / (bottom - top)
+    font = ImageFont.truetype(str(FONT), round(height * s * 0.34))
+    font.set_variation_by_axes([600, 100])
+    name = "Mgla"
+    text_w = d.textlength(name, font=font)
+    cap_top = font.getbbox("M", anchor="ls")[1]          # отрицательная высота заглавной от базовой
+    gap = height * s * 0.12
+    mark_w = (right - left) * k
+    x0 = (width * s - (mark_w + gap + text_w)) / 2
+    pad_x = x0 - left * k
+    pad_y = (height * s - (bottom - top) * k) / 2 - top * k
+    for x, y, w, h, alpha in BARS:
+        fill = tuple(round(c * alpha + b * (1 - alpha)) for c, b in zip(ICE, BG[:3]))
+        d.rounded_rectangle([pad_x + x * k, pad_y + y * k, pad_x + (x + w) * k, pad_y + (y + h) * k],
+                            radius=h * k / 2, fill=fill)
+    d.text((x0 + mark_w + gap, (height * s - cap_top) / 2), name, font=font, fill=FG, anchor="ls")
+    return img.resize((width, height), Image.LANCZOS)
+
+
+def write_banner() -> None:
+    rel, width, height = BANNER
+    path = ROOT / rel
+    path.parent.mkdir(parents=True, exist_ok=True)
+    draw_banner(width, height).save(path, format="PNG")
+    WRITTEN.append(rel)
+    print(f"  {rel}  {width}x{height}")
+
+
+def file_sha(rel: str) -> str:
+    return hashlib.sha256((ROOT / rel).read_bytes()).hexdigest()
+
+
+def write_manifest() -> None:
+    lines = ["%s  %s" % (file_sha(rel), rel) for rel in sorted(set(WRITTEN))]
+    (ROOT / MANIFEST).write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    print(f"  {MANIFEST}: {len(lines)} файлов")
+
+
+def manifest_problems() -> list[str]:
+    """Что не совпало с последней перерисовкой: файла нет, или он не тот, что рисовал скрипт."""
+    path = ROOT / MANIFEST
+    if not path.is_file():
+        return [f"нет {MANIFEST} — перерисуйте: python tool/mgla_icon.py"]
+    out = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        sha, rel = line.split("  ", 1)
+        if not (ROOT / rel).is_file():
+            out.append(f"нет файла {rel}")
+        elif file_sha(rel) != sha:
+            out.append(f"чужая картинка {rel}")
+    return out
 
 
 def android_vector() -> str:
@@ -192,18 +295,50 @@ def android_vector() -> str:
              '        android:height="108dp"',
              '        android:viewportWidth="108"',
              '        android:viewportHeight="108">']
+    lines += bar_paths(k, pad_x, pad_y, "    ")
+    lines.append('</vector>')
+    return "\n".join(lines) + "\n"
+
+
+def bar_paths(k: float, pad_x: float, pad_y: float, pre: str) -> list[str]:
+    """Полосы знака путями VectorDrawable: масштаб k, сдвиг pad, отступ строк pre."""
+    lines = []
     for x, y, w, h, alpha in BARS:
         left, top = pad_x + x * k, pad_y + y * k
         right, bottom = pad_x + (x + w) * k, pad_y + (y + h) * k
         radius = h * k / 2
-        lines.append('    <path')
-        lines.append('            android:pathData="M%.2f,%.2f h%.2f a%.2f,%.2f 0 0 1 0,%.2f '
+        lines.append(pre + '<path')
+        lines.append(pre + '        android:pathData="M%.2f,%.2f h%.2f a%.2f,%.2f 0 0 1 0,%.2f '
                      'h-%.2f a%.2f,%.2f 0 0 1 0,-%.2f z"'
                      % (left + radius, top, right - left - 2 * radius, radius, radius,
                         bottom - top, right - left - 2 * radius, radius, radius, bottom - top))
-        lines.append('            android:fillColor="#7DD3FC"')
-        lines.append('            android:fillAlpha="%.2f"/>' % alpha)
-    lines.append('</vector>')
+        lines.append(pre + '        android:fillColor="#7DD3FC"')
+        lines.append(pre + '        android:fillAlpha="%.2f"/>' % alpha)
+    return lines
+
+
+def tv_vector() -> str:
+    """Знак Android TV (mipmap-television-anydpi-v26): холст 240 и группа с масштабом и сдвигом —
+    в этой форме его читает тест апстрима. Полосы вписаны в TV_LOGO_BOUNDS, группа ставит центр
+    этих границ в центр холста."""
+    bl, bt, br, bb = TV_LOGO_BOUNDS
+    left, top, right, bottom = bars_box()
+    k = min((br - bl) / (right - left), (bb - bt) / (bottom - top))
+    cx, cy = (bl + br) / 2, (bt + bb) / 2
+    pad_x = cx - (left + right) / 2 * k
+    pad_y = cy - (top + bottom) / 2 * k
+    lines = ['<vector xmlns:android="http://schemas.android.com/apk/res/android"',
+             '        android:width="108dp"',
+             '        android:height="108dp"',
+             '        android:viewportWidth="%g"' % TV_VIEW,
+             '        android:viewportHeight="%g">' % TV_VIEW,
+             '    <group',
+             '        android:scaleX="%g"' % TV_SCALE,
+             '        android:scaleY="%g"' % TV_SCALE,
+             '        android:translateX="%.3f"' % (TV_VIEW / 2 - cx * TV_SCALE),
+             '        android:translateY="%.3f">' % (TV_VIEW / 2 - cy * TV_SCALE)]
+    lines += bar_paths(k, pad_x, pad_y, "        ")
+    lines += ['    </group>', '</vector>']
     return "\n".join(lines) + "\n"
 
 
@@ -212,8 +347,10 @@ def main() -> int:
     if check_only:
         missing = [rel for rel in list(PNG_TARGETS) + ICO_TARGETS
                    if not (ROOT / rel).is_file()]
+        problems = manifest_problems()
         print("нет файлов: %s" % (missing or "ни одного"))
-        return 1 if missing else 0
+        print("не совпало с перерисовкой: %s" % (problems or "ничего"))
+        return 1 if missing or problems else 0
 
     print("== PNG")
     for rel, size in PNG_TARGETS.items():
@@ -234,6 +371,18 @@ def main() -> int:
                   '    <color name="ic_launcher_background">#12161D</color>\n</resources>\n',
                   encoding="utf-8", newline="\n")
     print(f"  {bg.relative_to(ROOT)}")
+    tv = ROOT / RES / "drawable/ic_launcher_foreground_tv.xml"
+    tv.write_text(tv_vector(), encoding="utf-8", newline="\n")
+    print(f"  {tv.relative_to(ROOT)}")
+    print("== Android 5-7 и телевизор: растр и баннер")
+    for dpi, size in WEBP_PHONE.items():
+        write_webp(f"{RES}/mipmap-{dpi}/ic_launcher.webp", size)
+        write_webp(f"{RES}/mipmap-{dpi}/ic_launcher_round.webp", size, shape="circle")
+    for dpi, size in WEBP_TV.items():
+        write_webp(f"{RES}/mipmap-television-{dpi}/ic_launcher.webp", size)
+    write_banner()
+    print("== Сверка")
+    write_manifest()
     return 0
 
 

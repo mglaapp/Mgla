@@ -14,6 +14,7 @@
 КОНТРОЛЬ ВНУТРИ ПРОГОНА: заведомо ложное утверждение обязано провалиться. Без него «всё зелено»
 неотличимо от «проверка ничего не читает» (грабля 09-06).
 """
+import hashlib
 import io
 import pathlib
 import re
@@ -296,6 +297,28 @@ def main() -> int:
     coords = [float(v) for v in re.findall(r"M(\d+\.\d+),", fg)]
     check("android: знак вписан в безопасную зону (не обрежется маской)",
           bool(coords) and min(coords) >= 18.0, coords[:2])
+    # Телевизор и Android 5-7 (18-10): свой знак ТВ, растр webp и баннер ТВ до 18-10 были знаком
+    # FlClash — проверки выше смотрели только на знак телефона, который читает Android 8+.
+    tv = read("android/app/src/main/res/drawable/ic_launcher_foreground_tv.xml")
+    check("android tv: знак нарисован льдом", 'android:fillColor="#7DD3FC"' in tv)
+    for alien in ("#6666FB", "#336AB6", "#5CA8E9"):
+        check("android tv: чужого цвета %s в знаке нет" % alien, alien not in tv)
+    # Растр сверяется с хешами, которые tool/mgla_icon.py пишет при каждой перерисовке: картинку,
+    # возвращённую слиянием, по имени не отличить, а по содержимому — сразу.
+    sums = dict(reversed(line.split("  ", 1)) for line in read("tool/mgla_icon.sha256").splitlines()
+                if "  " in line)
+    res = "android/app/src/main/res/"
+    dpis = ("mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi")
+    need = ([res + "mipmap-xhdpi/ic_banner.png"]
+            + [res + "mipmap-television-%s/ic_launcher.webp" % d for d in dpis]
+            + [res + "mipmap-%s/ic_launcher%s.webp" % (d, r) for d in dpis for r in ("", "_round")])
+    check("сверка знает баннер ТВ, растр ТВ и растр Android 5-7 (%d файлов)" % len(need),
+          all(n in sums for n in need), [n for n in need if n not in sums][:3])
+    alien_files = [rel for rel, sha in sums.items()
+                   if not pathlib.Path(rel).is_file()
+                   or hashlib.sha256(pathlib.Path(rel).read_bytes()).hexdigest() != sha]
+    check("все %d картинок знака — те, что нарисовал tool/mgla_icon.py" % len(sums),
+          len(sums) >= 40 and not alien_files, alien_files[:3])
 
     def png_size(path: str) -> tuple[int, int] | None:
         try:
