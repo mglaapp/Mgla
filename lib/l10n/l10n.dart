@@ -6065,6 +6065,146 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Sign in with phone`
+  String get signInWithPhone {
+    return Intl.message(
+      'Sign in with phone',
+      name: 'signInWithPhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm on your phone — no typing with the remote`
+  String get signInWithPhoneDesc {
+    return Intl.message(
+      'Confirm on your phone — no typing with the remote',
+      name: 'signInWithPhoneDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Point your phone camera at the QR code`
+  String get tvScanQr {
+    return Intl.message(
+      'Point your phone camera at the QR code',
+      name: 'tvScanQr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `or open {site} on the phone and enter the code`
+  String tvOrEnterCode(Object site) {
+    return Intl.message(
+      'or open $site on the phone and enter the code',
+      name: 'tvOrEnterCode',
+      desc: '',
+      args: [site],
+    );
+  }
+
+  /// `Waiting for confirmation on the phone…`
+  String get tvWaiting {
+    return Intl.message(
+      'Waiting for confirmation on the phone…',
+      name: 'tvWaiting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The code has expired`
+  String get tvCodeExpired {
+    return Intl.message(
+      'The code has expired',
+      name: 'tvCodeExpired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New code`
+  String get tvNewCode {
+    return Intl.message('New code', name: 'tvNewCode', desc: '', args: []);
+  }
+
+  /// `Connect TV`
+  String get connectTv {
+    return Intl.message('Connect TV', name: 'connectTv', desc: '', args: []);
+  }
+
+  /// `Code on the TV screen: {code}. Confirm only if this TV is right in front of you — it will get this phone's subscription.`
+  String connectTvConfirm(Object code) {
+    return Intl.message(
+      'Code on the TV screen: $code. Confirm only if this TV is right in front of you — it will get this phone\'s subscription.',
+      name: 'connectTvConfirm',
+      desc: '',
+      args: [code],
+    );
+  }
+
+  /// `There is no Mgla access key on this phone yet. Add your key, or sign in at mgla.app/tv in the browser.`
+  String get tvNeedsKey {
+    return Intl.message(
+      'There is no Mgla access key on this phone yet. Add your key, or sign in at mgla.app/tv in the browser.',
+      name: 'tvNeedsKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TV connected — it will open Mgla in a few seconds`
+  String get tvConnected {
+    return Intl.message(
+      'TV connected — it will open Mgla in a few seconds',
+      name: 'tvConnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TV connected; it will work once the subscription is paid`
+  String get tvConnectedInactive {
+    return Intl.message(
+      'TV connected; it will work once the subscription is paid',
+      name: 'tvConnectedInactive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Code not found — check the code on the TV screen`
+  String get errTvUnknown {
+    return Intl.message(
+      'Code not found — check the code on the TV screen',
+      name: 'errTvUnknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The code has expired — choose “Sign in with phone” on the TV again`
+  String get errTvExpired {
+    return Intl.message(
+      'The code has expired — choose “Sign in with phone” on the TV again',
+      name: 'errTvExpired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This TV is already connected to another account`
+  String get errTvBusy {
+    return Intl.message(
+      'This TV is already connected to another account',
+      name: 'errTvBusy',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

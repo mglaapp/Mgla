@@ -21,102 +21,107 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
   static String m0(code) =>
+      "Code on the TV screen: ${code}. Confirm only if this TV is right in front of you — it will get this phone\'s subscription.";
+
+  static String m1(code) =>
       "Windows refused to run FlClashCore.exe (error ${code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Mgla in that policy or turn it off, then try again.";
 
-  static String m1(name) =>
+  static String m2(name) =>
       "The app failed to finish launching twice in a row. To break the loop, the profile ${name} has been deselected and automatic setup was skipped. You can select it again at any time.";
 
-  static String m2(url) => "Do you want to create a profile from ${url}?";
-
-  static String m3(count) =>
-      "${Intl.plural(count, one: '1 day ago', other: '${count} days ago')}";
+  static String m3(url) => "Do you want to create a profile from ${url}?";
 
   static String m4(count) =>
-      "${Intl.plural(count, one: '${count} day', other: '${count} days')}";
+      "${Intl.plural(count, one: '1 day ago', other: '${count} days ago')}";
 
   static String m5(count) =>
+      "${Intl.plural(count, one: '${count} day', other: '${count} days')}";
+
+  static String m6(count) =>
       "${Intl.plural(count, one: '1 day left', other: '${count} days left')}";
 
-  static String m6(label) =>
+  static String m7(label) =>
       "Are you sure you want to delete the selected ${label}?";
 
-  static String m7(label) => "Are you sure you want to delete this ${label}?";
+  static String m8(label) => "Are you sure you want to delete this ${label}?";
 
-  static String m8(label) => "${label} details";
+  static String m9(label) => "${label} details";
 
-  static String m9(label) => "${label} cannot be empty";
+  static String m10(label) => "${label} cannot be empty";
 
-  static String m10(count) =>
+  static String m11(count) =>
       "${Intl.plural(count, one: '1 entry', other: '${count} entries')}";
 
-  static String m11(label) => "${label} already exists";
+  static String m12(label) => "${label} already exists";
 
-  static String m12(name) => "${name} is already up to date";
+  static String m13(name) => "${name} is already up to date";
 
-  static String m13(name) => "${name} updated";
-
-  static String m14(count) =>
-      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
+  static String m14(name) => "${name} updated";
 
   static String m15(count) =>
+      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
+
+  static String m16(count) =>
       "${Intl.plural(count, one: '1 hour', other: '${count} hours')}";
 
-  static String m16(target) => "${target} is an invalid policy";
+  static String m17(target) => "${target} is an invalid policy";
 
-  static String m17(proxyName) => "${proxyName} is an invalid proxy";
+  static String m18(proxyName) => "${proxyName} is an invalid proxy";
 
-  static String m18(providerName) =>
+  static String m19(providerName) =>
       "${providerName} is an invalid proxy provider";
 
-  static String m19(subRule) => "${subRule} is an invalid SUB_RULE";
+  static String m20(subRule) => "${subRule} is an invalid SUB_RULE";
 
-  static String m20(appName) =>
+  static String m21(appName) =>
       "1. Open System Settings > Privacy & Security\n2. Choose Location Services\n3. Find and check ${appName} in the list\n\nWhen you are done, return to the app to continue. Thank you for your cooperation.";
 
-  static String m21(label, max) => "${label} must be at most ${max} characters";
-
-  static String m22(count) =>
-      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
+  static String m22(label, max) => "${label} must be at most ${max} characters";
 
   static String m23(count) =>
-      "${Intl.plural(count, one: '1 month ago', other: '${count} months ago')}";
+      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
 
   static String m24(count) =>
+      "${Intl.plural(count, one: '1 month ago', other: '${count} months ago')}";
+
+  static String m25(count) =>
       "${Intl.plural(count, one: '1 network', other: '${count} networks')}";
 
-  static String m25(label) => "No ${label} yet";
+  static String m26(label) => "No ${label} yet";
 
-  static String m26(label) => "${label} must be a number";
+  static String m27(label) => "${label} must be a number";
 
-  static String m27(price) =>
+  static String m28(price) =>
       "Through our OmniSkin service: sign in with Steam, pick items worth at least ${price}, and the bot sends a trade. Anything above the price goes to your balance.";
 
-  static String m28(label) => "${label} must be between 1024 and 49151";
+  static String m29(label) => "${label} must be between 1024 and 49151";
 
-  static String m29(code) => "Promo code ${code} applied";
-
-  static String m30(count) =>
-      "${Intl.plural(count, one: '1 proxy', other: '${count} proxies')}";
+  static String m30(code) => "Promo code ${code} applied";
 
   static String m31(count) =>
-      "${Intl.plural(count, one: '1 rule', other: '${count} rules')}";
+      "${Intl.plural(count, one: '1 proxy', other: '${count} proxies')}";
 
   static String m32(count) =>
+      "${Intl.plural(count, one: '1 rule', other: '${count} rules')}";
+
+  static String m33(count) =>
       "${Intl.plural(count, one: '1 second', other: '${count} seconds')}";
 
-  static String m33(count) => "${count} selected";
+  static String m34(count) => "${count} selected";
 
-  static String m34(date) => "until ${date}";
+  static String m35(date) => "until ${date}";
 
-  static String m35(days, date) => "${days} d · until ${date}";
+  static String m36(days, date) => "${days} d · until ${date}";
 
-  static String m36(days, price) => "${days} for ${price} ₽";
+  static String m37(days, price) => "${days} for ${price} ₽";
 
-  static String m37(code) => "with promo code ${code}";
+  static String m38(code) => "with promo code ${code}";
 
-  static String m38(label) => "${label} must be a URL";
+  static String m39(site) => "or open ${site} on the phone and enter the code";
 
-  static String m39(count) =>
+  static String m40(label) => "${label} must be a URL";
+
+  static String m41(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -344,6 +349,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "confirmOverwriteTip": MessageLookupByLibrary.simpleMessage(
       "Confirming will overwrite existing data",
     ),
+    "connectTv": MessageLookupByLibrary.simpleMessage("Connect TV"),
+    "connectTvConfirm": m0,
     "connected": MessageLookupByLibrary.simpleMessage("Connected"),
     "connecting": MessageLookupByLibrary.simpleMessage("Connecting..."),
     "connection": MessageLookupByLibrary.simpleMessage("Connection"),
@@ -367,14 +374,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "copyLink": MessageLookupByLibrary.simpleMessage("Copy link"),
     "copySuccess": MessageLookupByLibrary.simpleMessage("Copied successfully"),
     "core": MessageLookupByLibrary.simpleMessage("Core"),
-    "coreBlockedByPolicyTip": m0,
+    "coreBlockedByPolicyTip": m1,
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
       "Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Mgla again. Smart App Control cannot be turned back on without reinstalling Windows.",
     ),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Core status"),
     "country": MessageLookupByLibrary.simpleMessage("Region"),
     "crashDetected": MessageLookupByLibrary.simpleMessage("Crash detected"),
-    "crashDetectedTip": m1,
+    "crashDetectedTip": m2,
     "crashReportsUpload": MessageLookupByLibrary.simpleMessage(
       "Send crash reports",
     ),
@@ -389,7 +396,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "create": MessageLookupByLibrary.simpleMessage("Create"),
     "createAccount": MessageLookupByLibrary.simpleMessage("Create account"),
     "createProfile": MessageLookupByLibrary.simpleMessage("Create profile"),
-    "createProfileFromUrlTip": m2,
+    "createProfileFromUrlTip": m3,
     "creationTime": MessageLookupByLibrary.simpleMessage("Creation time"),
     "cryptoDesc": MessageLookupByLibrary.simpleMessage(
       "A direct transfer to our wallet, no middlemen. USDT and USDC need no exchange rate. Pick a coin, then a network.",
@@ -411,9 +418,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "databaseWriteFailedTip": MessageLookupByLibrary.simpleMessage(
       "Failed to save the change; it has been rolled back",
     ),
-    "daysAgo": m3,
-    "daysCount": m4,
-    "daysLeftCount": m5,
+    "daysAgo": m4,
+    "daysCount": m5,
+    "daysLeftCount": m6,
     "defaultNameserver": MessageLookupByLibrary.simpleMessage(
       "Default nameserver",
     ),
@@ -424,8 +431,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "delay": MessageLookupByLibrary.simpleMessage("Delay"),
     "delayTest": MessageLookupByLibrary.simpleMessage("Delay test"),
     "delete": MessageLookupByLibrary.simpleMessage("Delete"),
-    "deleteMultipTip": m6,
-    "deleteTip": m7,
+    "deleteMultipTip": m7,
+    "deleteTip": m8,
     "desc": MessageLookupByLibrary.simpleMessage(
       "Mgla is the app for the mgla.app service. Open source, no ads; nothing leaves the device on its own. ClashMeta core.",
     ),
@@ -436,7 +443,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "destinationIPASN": MessageLookupByLibrary.simpleMessage(
       "Destination IP ASN",
     ),
-    "details": m8,
+    "details": m9,
     "detectionTip": MessageLookupByLibrary.simpleMessage(
       "Relies on a third-party API; for reference only",
     ),
@@ -473,10 +480,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "editRule": MessageLookupByLibrary.simpleMessage("Edit rule"),
     "editSsid": MessageLookupByLibrary.simpleMessage("Edit SSID"),
     "emailAddress": MessageLookupByLibrary.simpleMessage("Email address"),
-    "emptyTip": m9,
+    "emptyTip": m10,
     "en": MessageLookupByLibrary.simpleMessage("English"),
     "entries": MessageLookupByLibrary.simpleMessage(" entries"),
-    "entriesCount": m10,
+    "entriesCount": m11,
     "errBadEmail": MessageLookupByLibrary.simpleMessage(
       "That does not look like an email address",
     ),
@@ -516,6 +523,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "errTrialUsed": MessageLookupByLibrary.simpleMessage(
       "The trial is no longer available for this account",
     ),
+    "errTvBusy": MessageLookupByLibrary.simpleMessage(
+      "This TV is already connected to another account",
+    ),
+    "errTvExpired": MessageLookupByLibrary.simpleMessage(
+      "The code has expired — choose “Sign in with phone” on the TV again",
+    ),
+    "errTvUnknown": MessageLookupByLibrary.simpleMessage(
+      "Code not found — check the code on the TV screen",
+    ),
     "errUnknownKey": MessageLookupByLibrary.simpleMessage("Key not found"),
     "errUsdtOff": MessageLookupByLibrary.simpleMessage(
       "USDT payment is unavailable right now",
@@ -532,7 +548,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "When connected to Wi-Fi with an excluded SSID, the app\'s running state switches automatically",
     ),
     "excludeType": MessageLookupByLibrary.simpleMessage("Exclude type"),
-    "existsTip": m11,
+    "existsTip": m12,
     "exit": MessageLookupByLibrary.simpleMessage("Exit"),
     "exitFullScreen": MessageLookupByLibrary.simpleMessage("Exit full screen"),
     "expand": MessageLookupByLibrary.simpleMessage("Standard"),
@@ -585,8 +601,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "geoOptions": MessageLookupByLibrary.simpleMessage("Geo options"),
     "geoResources": MessageLookupByLibrary.simpleMessage("Geo resources"),
-    "geoSkipped": m12,
-    "geoUpdated": m13,
+    "geoSkipped": m13,
+    "geoUpdated": m14,
     "geodataLoader": MessageLookupByLibrary.simpleMessage(
       "Geo low-memory mode",
     ),
@@ -624,8 +640,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Control the app with the keyboard",
     ),
     "hours": MessageLookupByLibrary.simpleMessage("hours"),
-    "hoursAgo": m14,
-    "hoursCount": m15,
+    "hoursAgo": m15,
+    "hoursCount": m16,
     "iPaid": MessageLookupByLibrary.simpleMessage("I have paid"),
     "icon": MessageLookupByLibrary.simpleMessage("Icon"),
     "iconRecords": MessageLookupByLibrary.simpleMessage("Icon records"),
@@ -698,10 +714,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidBackupFile": MessageLookupByLibrary.simpleMessage(
       "Invalid backup file",
     ),
-    "invalidPolicy": m16,
-    "invalidProxy": m17,
-    "invalidProxyProvider": m18,
-    "invalidSubRule": m19,
+    "invalidPolicy": m17,
+    "invalidProxy": m18,
+    "invalidProxyProvider": m19,
+    "invalidSubRule": m20,
     "ipcidr": MessageLookupByLibrary.simpleMessage("IP/CIDR"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage(
       "When enabled, IPv6 traffic can be received",
@@ -741,7 +757,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "locationPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "The system requires location permission to read the Wi-Fi name. On Android choose \"Allow all the time\", otherwise the Wi-Fi name cannot be read while the app is in the background.",
     ),
-    "locationPermissionGuide": m20,
+    "locationPermissionGuide": m21,
     "locationPermissionRequired": MessageLookupByLibrary.simpleMessage(
       "Location permission required",
     ),
@@ -770,7 +786,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "matchTargetTitle": MessageLookupByLibrary.simpleMessage("Match target"),
     "maxFailedTimes": MessageLookupByLibrary.simpleMessage("Max failures"),
-    "maxLengthTip": m21,
+    "maxLengthTip": m22,
     "maximize": MessageLookupByLibrary.simpleMessage("Maximize"),
     "memoryInfo": MessageLookupByLibrary.simpleMessage("Memory info"),
     "messageTest": MessageLookupByLibrary.simpleMessage("Message test"),
@@ -783,14 +799,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
       "Override the default system exit behavior",
     ),
-    "minutesAgo": m22,
+    "minutesAgo": m23,
     "minutesLeftLabel": MessageLookupByLibrary.simpleMessage(
       "Invoice valid, minutes",
     ),
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixed port"),
     "mode": MessageLookupByLibrary.simpleMessage("Mode"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monochrome"),
-    "monthsAgo": m23,
+    "monthsAgo": m24,
     "more": MessageLookupByLibrary.simpleMessage("More"),
     "moreCoins": MessageLookupByLibrary.simpleMessage("More coins"),
     "multipleValuesTip": MessageLookupByLibrary.simpleMessage(
@@ -822,7 +838,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
     "networkType": MessageLookupByLibrary.simpleMessage("Network type"),
-    "networksCount": m24,
+    "networksCount": m25,
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Neutral"),
     "nextMatch": MessageLookupByLibrary.simpleMessage("Next match"),
     "noAccessKeyYet": MessageLookupByLibrary.simpleMessage(
@@ -849,8 +865,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "No profiles yet, please add one first",
     ),
-    "nullTip": m25,
-    "numberTip": m26,
+    "nullTip": m26,
+    "numberTip": m27,
     "offlineShort": MessageLookupByLibrary.simpleMessage("Offline"),
     "onDemand": MessageLookupByLibrary.simpleMessage("On demand"),
     "onDemandDesc": MessageLookupByLibrary.simpleMessage(
@@ -905,7 +921,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "payOnSite": MessageLookupByLibrary.simpleMessage("Pay on the website"),
     "paySkins": MessageLookupByLibrary.simpleMessage("Steam skins"),
     "paySkinsButton": MessageLookupByLibrary.simpleMessage("Pick skins"),
-    "paySkinsDesc": m27,
+    "paySkinsDesc": m28,
     "payUsdt": MessageLookupByLibrary.simpleMessage("Pay with USDT"),
     "paymentNotSeen": MessageLookupByLibrary.simpleMessage(
       "The payment is not visible on the network yet. A transfer takes up to a few minutes, tap again shortly.",
@@ -926,7 +942,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Please enter a different port",
     ),
-    "portTip": m28,
+    "portTip": m29,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Prefer HTTP/3 for DoH",
     ),
@@ -957,7 +973,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "profiles": MessageLookupByLibrary.simpleMessage("Profiles"),
     "profilesSort": MessageLookupByLibrary.simpleMessage("Sort profiles"),
     "project": MessageLookupByLibrary.simpleMessage("Project"),
-    "promoApplied": m29,
+    "promoApplied": m30,
     "promoApply": MessageLookupByLibrary.simpleMessage("Apply"),
     "promoCode": MessageLookupByLibrary.simpleMessage("Promo code"),
     "promoErrOff": MessageLookupByLibrary.simpleMessage(
@@ -974,7 +990,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "providers": MessageLookupByLibrary.simpleMessage("External resources"),
     "proxies": MessageLookupByLibrary.simpleMessage("Proxies"),
-    "proxiesCount": m30,
+    "proxiesCount": m31,
     "proxiesEmpty": MessageLookupByLibrary.simpleMessage("Proxies are empty"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Proxy chain"),
     "proxyDetectedAbnormal": MessageLookupByLibrary.simpleMessage(
@@ -1208,7 +1224,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleSet": MessageLookupByLibrary.simpleMessage("Rule set"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Rule target"),
     "rules": MessageLookupByLibrary.simpleMessage("Rules"),
-    "rulesCount": m31,
+    "rulesCount": m32,
     "save": MessageLookupByLibrary.simpleMessage("Save"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Save the changes?"),
     "savedIt": MessageLookupByLibrary.simpleMessage("I have saved it"),
@@ -1221,7 +1237,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "seconds": MessageLookupByLibrary.simpleMessage("seconds"),
-    "secondsCount": m32,
+    "secondsCount": m33,
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selectMatchTarget": MessageLookupByLibrary.simpleMessage(
       "Select MATCH-TARGET",
@@ -1240,7 +1256,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please select a sub-rule",
     ),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m33,
+    "selectedCountTitle": m34,
     "sendLetter": MessageLookupByLibrary.simpleMessage("Send the letter"),
     "serverBusy": MessageLookupByLibrary.simpleMessage("Busy"),
     "serverBusyTip": MessageLookupByLibrary.simpleMessage(
@@ -1264,6 +1280,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "showPassword": MessageLookupByLibrary.simpleMessage("Show password"),
     "shrink": MessageLookupByLibrary.simpleMessage("Compact"),
+    "signInWithPhone": MessageLookupByLibrary.simpleMessage(
+      "Sign in with phone",
+    ),
+    "signInWithPhoneDesc": MessageLookupByLibrary.simpleMessage(
+      "Confirm on your phone — no typing with the remote",
+    ),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("Silent launch"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
       "Start in the background",
@@ -1306,8 +1328,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "subscriptionInfo": MessageLookupByLibrary.simpleMessage(
       "Subscription info",
     ),
-    "subscriptionUntil": m34,
-    "subscriptionUntilDays": m35,
+    "subscriptionUntil": m35,
+    "subscriptionUntilDays": m36,
     "suspended": MessageLookupByLibrary.simpleMessage("Suspended..."),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
     "system": MessageLookupByLibrary.simpleMessage("System"),
@@ -1355,15 +1377,35 @@ class MessageLookup extends MessageLookupByLibrary {
     "trialNeedTelegram": MessageLookupByLibrary.simpleMessage(
       "Link Telegram first: that is how the trial stays one per person.",
     ),
-    "trialOffer": m36,
+    "trialOffer": m37,
     "trialPeriod": MessageLookupByLibrary.simpleMessage("Trial"),
-    "trialPromo": m37,
+    "trialPromo": m38,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage(
       "Only effective in administrator mode",
     ),
     "turnOff": MessageLookupByLibrary.simpleMessage("Turn off"),
     "turnOn": MessageLookupByLibrary.simpleMessage("Turn on"),
+    "tvCodeExpired": MessageLookupByLibrary.simpleMessage(
+      "The code has expired",
+    ),
+    "tvConnected": MessageLookupByLibrary.simpleMessage(
+      "TV connected — it will open Mgla in a few seconds",
+    ),
+    "tvConnectedInactive": MessageLookupByLibrary.simpleMessage(
+      "TV connected; it will work once the subscription is paid",
+    ),
+    "tvNeedsKey": MessageLookupByLibrary.simpleMessage(
+      "There is no Mgla access key on this phone yet. Add your key, or sign in at mgla.app/tv in the browser.",
+    ),
+    "tvNewCode": MessageLookupByLibrary.simpleMessage("New code"),
+    "tvOrEnterCode": m39,
+    "tvScanQr": MessageLookupByLibrary.simpleMessage(
+      "Point your phone camera at the QR code",
+    ),
+    "tvWaiting": MessageLookupByLibrary.simpleMessage(
+      "Waiting for confirmation on the phone…",
+    ),
     "txHashLabel": MessageLookupByLibrary.simpleMessage(
       "Transaction hash (0x…)",
     ),
@@ -1395,7 +1437,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain a profile from a URL",
     ),
-    "urlTip": m38,
+    "urlTip": m40,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("Address"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("Amount"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("Network"),
@@ -1420,7 +1462,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "website": MessageLookupByLibrary.simpleMessage("Website"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
-    "yearsAgo": m39,
+    "yearsAgo": m41,
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/action.dart';
+import 'package:fl_clash/views/profiles/tv_login.dart';
 import 'package:fl_clash/views/subscription.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_ui/material_ui.dart';
@@ -48,7 +49,9 @@ class AccessKeyButton extends ConsumerWidget {
 
 /// The whole first screen when there is no profile yet: one field, one action.
 class AccessKeyCard extends ConsumerStatefulWidget {
-  const AccessKeyCard({super.key});
+  final bool? isTV;
+
+  const AccessKeyCard({super.key, this.isTV});
 
   @override
   ConsumerState<AccessKeyCard> createState() => _AccessKeyCardState();
@@ -86,7 +89,21 @@ class _AccessKeyCardState extends ConsumerState<AccessKeyCard> {
               ),
             ),
             const SizedBox(height: 16),
-            const AccessKeyButton(),
+            if (widget.isTV ?? system.isTV) ...[
+              FilledButton.icon(
+                autofocus: true,
+                onPressed: () => signInWithPhone(context, ref),
+                icon: const Icon(Icons.smartphone_sharp),
+                label: Text(appLocalizations.signInWithPhone),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () => showAccessKeyDialog(context, ref),
+                icon: const Icon(Icons.vpn_key_sharp),
+                label: Text(appLocalizations.accessKey),
+              ),
+            ] else
+              const AccessKeyButton(),
             const SizedBox(height: 4),
             // Приложение выложено публично, и его ставят, ещё не купив доступ. Пока отсюда
             // некуда было пойти, установка кончалась экраном, который просит то, чего у

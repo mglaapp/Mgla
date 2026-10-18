@@ -400,6 +400,21 @@ class Request {
     },
   );
 
+  Future<Result<TvLoginStart>> tvStart() =>
+      _api('/tv/start', form: const {}, parse: TvLoginStart.fromJson);
+
+  Future<Result<TvPoll>> tvPoll(String code, String secret) => _api(
+    '/tv/poll',
+    form: {'code': code, 'secret': secret},
+    parse: TvPoll.fromJson,
+  );
+
+  Future<Result<bool>> tvConfirm(String key, String code) => _api(
+    '/tv/confirm',
+    form: {'key': key, 'code': code},
+    parse: (data) => data['active'] == true,
+  );
+
   /// «Я оплатил»: просим сверить блокчейн немедленно. Безопасно при любом числе нажатий —
   /// зачёт идёт по хэшу перевода, повтор упирается в ограничение базы на стороне сервера.
   Future<Result<AccountStatus>> checkUsdtPayment(String key) => _api(

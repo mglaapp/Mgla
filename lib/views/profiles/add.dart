@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/pages/scan.dart';
 import 'package:fl_clash/views/profiles/access_key.dart';
+import 'package:fl_clash/views/profiles/tv_login.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_ui/material_ui.dart';
@@ -10,8 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AddProfileView extends ConsumerWidget {
   final BuildContext context;
+  final bool? isTV;
 
-  const AddProfileView({super.key, required this.context});
+  const AddProfileView({super.key, required this.context, this.isTV});
 
   Future<void> _handleAddProfileFormFile(WidgetRef ref) async {
     unawaited(ref.read(profilesActionProvider.notifier).addProfileFormFile());
@@ -68,12 +70,21 @@ class AddProfileView extends ConsumerWidget {
           subtitle: Text(appLocalizations.accessKeyDesc),
           onTap: () => showAccessKeyDialog(context, ref),
         ),
-        ListItem(
-          leading: const Icon(Icons.qr_code_sharp),
-          title: Text(appLocalizations.qrcode),
-          subtitle: Text(appLocalizations.qrcodeDesc),
-          onTap: () => _toScan(ref),
-        ),
+        // A TV has no camera to scan with; the phone does the scanning instead.
+        if (isTV ?? system.isTV)
+          ListItem(
+            leading: const Icon(Icons.smartphone_sharp),
+            title: Text(appLocalizations.signInWithPhone),
+            subtitle: Text(appLocalizations.signInWithPhoneDesc),
+            onTap: () => signInWithPhone(context, ref),
+          )
+        else
+          ListItem(
+            leading: const Icon(Icons.qr_code_sharp),
+            title: Text(appLocalizations.qrcode),
+            subtitle: Text(appLocalizations.qrcodeDesc),
+            onTap: () => _toScan(ref),
+          ),
         ListItem(
           leading: const Icon(Icons.upload_file_sharp),
           title: Text(appLocalizations.file),

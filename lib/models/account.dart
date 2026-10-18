@@ -489,3 +489,72 @@ class CryptoCheck {
     );
   }
 }
+
+/// A sign-in code the TV shows; [secret] never leaves the TV and is what collects the key.
+@immutable
+class TvLoginStart {
+  final String code;
+  final String codeText;
+  final String secret;
+  final String url;
+  final String qrSvg;
+  final int expiresIn;
+  final int pollEvery;
+
+  const TvLoginStart({
+    required this.code,
+    required this.codeText,
+    required this.secret,
+    required this.url,
+    required this.qrSvg,
+    required this.expiresIn,
+    required this.pollEvery,
+  });
+
+  static TvLoginStart? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final code = json['code'];
+    final secret = json['secret'];
+    final url = json['url'];
+    if (code is! String ||
+        code.isEmpty ||
+        secret is! String ||
+        url is! String) {
+      return null;
+    }
+    final codeText = json['code_text'];
+    final expiresIn = json['expires_in'];
+    final pollEvery = json['poll_every'];
+    return TvLoginStart(
+      code: code,
+      codeText: codeText is String && codeText.isNotEmpty ? codeText : code,
+      secret: secret,
+      url: url,
+      qrSvg: json['qr_svg'] is String ? json['qr_svg'] as String : '',
+      expiresIn: expiresIn is int && expiresIn > 0 ? expiresIn : 600,
+      pollEvery: pollEvery is int && pollEvery > 0 ? pollEvery : 3,
+    );
+  }
+}
+
+/// `wait`, `done` (with [key]), `expired` or `bad`.
+@immutable
+class TvPoll {
+  final String state;
+  final String? key;
+
+  const TvPoll({required this.state, this.key});
+
+  bool get done => state == 'done' && key != null;
+
+  static TvPoll? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final state = json['state'];
+    if (state is! String || state.isEmpty) return null;
+    final key = json['key'];
+    return TvPoll(
+      state: state,
+      key: key is String && key.isNotEmpty ? key : null,
+    );
+  }
+}

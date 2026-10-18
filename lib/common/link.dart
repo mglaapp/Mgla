@@ -7,6 +7,7 @@ import 'print.dart';
 import 'protocol.dart';
 
 typedef InstallConfigCallBack = void Function(String url);
+typedef TvCodeCallBack = void Function(String code);
 
 class LinkManager {
   static LinkManager? _instance;
@@ -30,21 +31,26 @@ class LinkManager {
   }
 
   Future<void> initAppLinksListen(
-    Function(String url) installConfigCallBack,
-  ) async {
+    Function(String url) installConfigCallBack, {
+    TvCodeCallBack? onTvCode,
+  }) async {
     commonPrint.log('initAppLinksListen');
     destroy();
     subscription = uriLinkStream().listen((uri) {
-      _handle(uri, installConfigCallBack);
+      _handle(uri, installConfigCallBack, onTvCode);
     });
     final pending = _pendingUri;
     _pendingUri = null;
     if (pending != null) {
-      _handle(pending, installConfigCallBack);
+      _handle(pending, installConfigCallBack, onTvCode);
     }
   }
 
-  void _handle(Uri uri, Function(String url) installConfigCallBack) {
+  void _handle(
+    Uri uri,
+    Function(String url) installConfigCallBack,
+    TvCodeCallBack? onTvCode,
+  ) {
     commonPrint.log('onAppLink: $uri');
     if (uri.host == 'install-config') {
       final parameters = uri.queryParameters;
@@ -52,6 +58,12 @@ class LinkManager {
       if (url != null) {
         installConfigCallBack(url);
       }
+      return;
+    }
+    // mgla.app/tv hands a TV sign-in code to the phone app, which confirms it with its own key.
+    final code = uri.queryParameters['c'];
+    if (uri.scheme == 'mgla' && uri.host == 'tv' && code != null) {
+      onTvCode?.call(code);
     }
   }
 

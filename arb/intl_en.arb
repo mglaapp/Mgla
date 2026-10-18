@@ -723,5 +723,20 @@
   "promoErrUnknown": "No such promo code — check the spelling",
   "promoErrUsed": "A promo code was already used on this account or Telegram",
   "promoErrPaid": "Promo codes are for new users: this account has already paid",
-  "promoErrOff": "This promo code is no longer valid"
+  "promoErrOff": "This promo code is no longer valid",
+  "signInWithPhone": "Sign in with phone",
+  "signInWithPhoneDesc": "Confirm on your phone — no typing with the remote",
+  "tvScanQr": "Point your phone camera at the QR code",
+  "tvOrEnterCode": "or open {site} on the phone and enter the code",
+  "tvWaiting": "Waiting for confirmation on the phone…",
+  "tvCodeExpired": "The code has expired",
+  "tvNewCode": "New code",
+  "connectTv": "Connect TV",
+  "connectTvConfirm": "Code on the TV screen: {code}. Confirm only if this TV is right in front of you — it will get this phone's subscription.",
+  "tvNeedsKey": "There is no Mgla access key on this phone yet. Add your key, or sign in at mgla.app/tv in the browser.",
+  "tvConnected": "TV connected — it will open Mgla in a few seconds",
+  "tvConnectedInactive": "TV connected; it will work once the subscription is paid",
+  "errTvUnknown": "Code not found — check the code on the TV screen",
+  "errTvExpired": "The code has expired — choose “Sign in with phone” on the TV again",
+  "errTvBusy": "This TV is already connected to another account"
 }

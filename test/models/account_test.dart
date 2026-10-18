@@ -429,4 +429,31 @@ void main() {
       expect(AccountStatus.fromJson(base)!.trial, isNull);
     });
   });
+
+  group('TV sign-in', () {
+    test('start keeps the secret and fills defaults', () {
+      final login = TvLoginStart.fromJson({
+        'code': 'ABC234',
+        'secret': 's',
+        'url': 'https://mgla.app/tv?c=ABC234',
+      });
+      expect(login!.codeText, 'ABC234');
+      expect(login.secret, 's');
+      expect(login.qrSvg, '');
+      expect(login.pollEvery, 3);
+      expect(login.expiresIn, 600);
+    });
+
+    test('start without a secret is not a login', () {
+      expect(TvLoginStart.fromJson({'code': 'ABC234', 'url': 'u'}), isNull);
+      expect(TvLoginStart.fromJson(null), isNull);
+    });
+
+    test('poll is done only with a key', () {
+      expect(TvPoll.fromJson({'state': 'done', 'key': 'k'})!.done, isTrue);
+      expect(TvPoll.fromJson({'state': 'done'})!.done, isFalse);
+      expect(TvPoll.fromJson({'state': 'wait', 'key': 'k'})!.done, isFalse);
+      expect(TvPoll.fromJson({'key': 'k'}), isNull);
+    });
+  });
 }

@@ -597,6 +597,9 @@ String serverErrorText(AppLocalizations l, String code) => switch (code) {
   'promo_used' || 'promo_used_tg' => l.promoErrUsed,
   'promo_paid' => l.promoErrPaid,
   'promo_off' || 'promo_refused' => l.promoErrOff,
+  'tv_unknown' => l.errTvUnknown,
+  'tv_expired' => l.errTvExpired,
+  'tv_busy' => l.errTvBusy,
   _ => l.errNetwork,
 };
 

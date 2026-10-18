@@ -723,5 +723,20 @@
   "promoErrUnknown": "没有这个优惠码，请检查拼写",
   "promoErrUsed": "此账户或 Telegram 已使用过优惠码",
   "promoErrPaid": "优惠码仅限新用户：此账户已付过款",
-  "promoErrOff": "此优惠码已失效"
+  "promoErrOff": "此优惠码已失效",
+  "signInWithPhone": "用手机登录",
+  "signInWithPhoneDesc": "在手机上确认，无需用遥控器输入",
+  "tvScanQr": "用手机相机扫描二维码",
+  "tvOrEnterCode": "或在手机上打开 {site} 并输入代码",
+  "tvWaiting": "正在等待手机确认…",
+  "tvCodeExpired": "代码已过期",
+  "tvNewCode": "新代码",
+  "connectTv": "连接电视",
+  "connectTvConfirm": "电视屏幕上的代码：{code}。仅当这台电视就在您面前时才确认——它将获得此手机的订阅。",
+  "tvNeedsKey": "此手机上还没有 Mgla 访问密钥。请添加密钥，或在浏览器中登录 mgla.app/tv。",
+  "tvConnected": "电视已连接——几秒钟后将打开 Mgla",
+  "tvConnectedInactive": "电视已连接；订阅付费后即可使用",
+  "errTvUnknown": "未找到代码——请核对电视屏幕上的代码",
+  "errTvExpired": "代码已过期——请在电视上再次选择“用手机登录”",
+  "errTvBusy": "这台电视已连接到另一个账户"
 }

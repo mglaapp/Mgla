@@ -6,10 +6,12 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   late StreamController<Uri> links;
   late List<String> received;
+  late List<String> tvCodes;
 
   setUp(() {
     links = StreamController<Uri>.broadcast();
     received = [];
+    tvCodes = [];
     linkManager.uriLinkStream = () => links.stream;
   });
 
@@ -19,7 +21,7 @@ void main() {
   });
 
   Future<void> listen() async {
-    await linkManager.initAppLinksListen(received.add);
+    await linkManager.initAppLinksListen(received.add, onTvCode: tvCodes.add);
   }
 
   Future<void> emit(String uri) async {
@@ -54,6 +56,27 @@ void main() {
 
     expect(received, isEmpty);
   });
+
+  test('a tv link hands its code over and installs nothing', () async {
+    await listen();
+
+    await emit('mgla://tv?c=ABC234');
+
+    expect(tvCodes, ['ABC234']);
+    expect(received, isEmpty);
+  });
+
+  test(
+    'a tv link of an upstream scheme or without a code is ignored',
+    () async {
+      await listen();
+
+      await emit('flclash://tv?c=ABC234');
+      await emit('mgla://tv');
+
+      expect(tvCodes, isEmpty);
+    },
+  );
 
   test('listening again replaces the previous subscription', () async {
     await listen();
