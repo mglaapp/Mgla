@@ -16,6 +16,7 @@
 """
 import hashlib
 import io
+import math
 import pathlib
 import re
 import sys
@@ -291,12 +292,17 @@ def main() -> int:
         check("android: чужого цвета %s в знаке нет" % alien, alien not in fg)
     check("android: фон адаптивной иконки — наша ночь, а не белый апстрима",
           "#12161D" in read("android/app/src/main/res/values/ic_launcher_background.xml"))
-    # Безопасная зона адаптивной иконки — центральные 72 из 108. Всё, что шире, обрезается
-    # маской на части устройств, и «знак с обрезанными краями» увидит только владелец такого
-    # телефона, то есть не мы.
-    coords = [float(v) for v in re.findall(r"M(\d+\.\d+),", fg)]
-    check("android: знак вписан в безопасную зону (не обрежется маской)",
-          bool(coords) and min(coords) >= 18.0, coords[:2])
+    # Не режет ни одна маска только круг диаметром 66 в центре слоя 108. До 19-10 здесь стояло
+    # «левый край >= 18» — проверка видимых 72 по одной координате, и знак во всю видимую область
+    # проходил её, хотя круглая маска срезала полосы (скрин владельца 13-10). Теперь — дальняя
+    # точка каждой полосы: путь M x,y h длина a r — концы полос полукруги радиуса r.
+    bars = [tuple(float(v) for v in m) for m in
+            re.findall(r"M(\d+\.\d+),(\d+\.\d+) h(\d+\.\d+) a(\d+\.\d+)", fg)]
+    reach = max((max(math.hypot(x + dx - 54, y + r - 54) for dx in (0, length)) + r
+                 for x, y, length, r in bars), default=None)
+    check("android: найдены все 4 полосы знака", len(bars) == 4, len(bars))
+    check("android: знак в круге безопасной зоны (66 из 108, не обрежется маской)",
+          reach is not None and reach <= 33.0, reach)
     # Телевизор и Android 5-7 (18-10): свой знак ТВ, растр webp и баннер ТВ до 18-10 были знаком
     # FlClash — проверки выше смотрели только на знак телефона, который читает Android 8+.
     tv = read("android/app/src/main/res/drawable/ic_launcher_foreground_tv.xml")

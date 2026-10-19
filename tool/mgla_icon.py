@@ -28,6 +28,7 @@ mgla_check.py и --check сверяют файлы с ним. Слияние, в
 from __future__ import annotations
 
 import hashlib
+import math
 import pathlib
 import sys
 
@@ -273,23 +274,38 @@ def manifest_problems() -> list[str]:
     return out
 
 
-def android_vector() -> str:
-    """Передний план адаптивной иконки: только полосы, вписанные в безопасную зону.
+def bars_reach(cx: float, cy: float) -> float:
+    """Дальняя точка полос от (cx, cy) в координатах знака: концы полос — полукруги радиуса h/2."""
+    reach = 0.0
+    for x, y, w, h, _ in BARS:
+        for end_x in (x + h / 2, x + w - h / 2):
+            reach = max(reach, math.hypot(end_x - cx, y + h / 2 - cy) + h / 2)
+    return reach
 
-    viewportWidth 108 — контракт Android; безопасная зона там 72 из 108 по центру, поэтому
-    знак рисуется в этих 72 и ни на пиксель шире.
+
+def android_vector() -> str:
+    """Передний план адаптивной иконки: только полосы, без подложки.
+
+    Контракт Android: слой 108 x 108, видны центральные 72, а не режет НИ ОДНА маска только круг
+    диаметром 66 по центру. До 19-10 полосы вписывались в квадрат 72 — во всю видимую область, и
+    круглая маска срезала крайние полосы (скрин владельца 13-10).
+
+    Масштаб — как у знака на подложке (viewBox 32 -> видимые 72): маска играет роль подложки, и
+    пропорции совпадают с иконкой на остальных платформах. Посадка — по ФАКТИЧЕСКИМ границам полос,
+    а не по viewBox: в исходном знаке они сидят ниже центра (сверху 8, снизу 3).
     """
-    safe, view = 72.0, 108.0
-    # Считаем по ФАКТИЧЕСКИМ границам полос, а не по viewBox: в исходном знаке они занимают
-    # не весь квадрат (сверху 8, снизу 3), и посадка по viewBox дала бы знак мелким и съехавшим
-    # вниз — на телефоне это единственное, что человек видит.
+    view, visible, safe_radius = 108.0, 72.0, 33.0
+    k = visible / VIEWBOX
     left_edge = min(x for x, _, _, _, _ in BARS)
     right_edge = max(x + w for x, _, w, _, _ in BARS)
     top_edge = min(y for _, y, _, _, _ in BARS)
     bottom_edge = max(y + h for _, y, _, h, _ in BARS)
-    k = safe / max(right_edge - left_edge, bottom_edge - top_edge)
-    pad_x = (view - (right_edge - left_edge) * k) / 2 - left_edge * k
-    pad_y = (view - (bottom_edge - top_edge) * k) / 2 - top_edge * k
+    cx, cy = (left_edge + right_edge) / 2, (top_edge + bottom_edge) / 2
+    reach = bars_reach(cx, cy) * k
+    if reach > safe_radius:
+        raise SystemExit("знак шире безопасной зоны: %.1f из %.0f" % (reach, safe_radius))
+    pad_x = view / 2 - cx * k
+    pad_y = view / 2 - cy * k
     lines = ['<vector xmlns:android="http://schemas.android.com/apk/res/android"',
              '        android:width="108dp"',
              '        android:height="108dp"',
