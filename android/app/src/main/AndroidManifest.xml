@@ -72,6 +72,15 @@
 
                 <data android:host="install-config" />
             </intent-filter>
+            <!-- Mgla: confirm a TV sign-in from the phone (mgla.app/tv "Open in the Mgla app"). -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="mgla" android:host="tv" />
+            </intent-filter>
         </activity>
 
         <activity

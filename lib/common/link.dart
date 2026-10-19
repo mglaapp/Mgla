@@ -51,7 +51,7 @@ class LinkManager {
     Function(String url) installConfigCallBack,
     TvCodeCallBack? onTvCode,
   ) {
-    commonPrint.log('onAppLink: $uri');
+    commonPrint.log('onAppLink: ${uri.scheme}://${uri.host}');
     if (uri.host == 'install-config') {
       final parameters = uri.queryParameters;
       final url = parameters['url'];

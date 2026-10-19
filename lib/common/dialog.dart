@@ -225,7 +225,7 @@ class Dialogs {
     if (res != true) {
       return;
     }
-    unawaited(launchUrl(Uri.parse(url)));
+    unawaited(launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication));
   }
 }
 
