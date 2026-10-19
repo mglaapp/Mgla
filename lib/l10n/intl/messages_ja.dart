@@ -396,6 +396,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "entries": MessageLookupByLibrary.simpleMessage(" 件"),
     "entriesCount": m11,
     "errBadEmail": MessageLookupByLibrary.simpleMessage("メールアドレスの形式ではありません"),
+    "errBindOnSite": MessageLookupByLibrary.simpleMessage(
+      "ログイン方法は既に設定済みか、新しいアカウントではありません — ウェブサイトのアカウントで変更してください",
+    ),
     "errCardOff": MessageLookupByLibrary.simpleMessage("現在カード決済はご利用いただけません"),
     "errCoinsOff": MessageLookupByLibrary.simpleMessage(
       "現在、暗号資産での支払いはご利用いただけません",

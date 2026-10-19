@@ -738,5 +738,6 @@
   "tvConnectedInactive": "电视已连接；订阅付费后即可使用",
   "errTvUnknown": "未找到代码——请核对电视屏幕上的代码",
   "errTvExpired": "代码已过期——请在电视上再次选择“用手机登录”",
-  "errTvBusy": "这台电视已连接到另一个账户"
+  "errTvBusy": "这台电视已连接到另一个账户",
+  "errBindOnSite": "登录方式已绑定或账户不是新的——请在网站的个人中心中更改"
 }

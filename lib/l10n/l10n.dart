@@ -6205,6 +6205,16 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Sign-in is already set up or the account is not new — change it in your account on the website`
+  String get errBindOnSite {
+    return Intl.message(
+      'Sign-in is already set up or the account is not new — change it in your account on the website',
+      name: 'errBindOnSite',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -600,6 +600,7 @@ String serverErrorText(AppLocalizations l, String code) => switch (code) {
   'tv_unknown' => l.errTvUnknown,
   'tv_expired' => l.errTvExpired,
   'tv_busy' => l.errTvBusy,
+  'bound' || 'bind_late' => l.errBindOnSite,
   _ => l.errNetwork,
 };
 

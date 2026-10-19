@@ -497,6 +497,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "errBadEmail": MessageLookupByLibrary.simpleMessage(
       "Адрес не похож на почтовый",
     ),
+    "errBindOnSite": MessageLookupByLibrary.simpleMessage(
+      "Вход уже привязан или аккаунт не новый — сменить его можно в кабинете на сайте",
+    ),
     "errCardOff": MessageLookupByLibrary.simpleMessage(
       "Оплата картой сейчас недоступна",
     ),

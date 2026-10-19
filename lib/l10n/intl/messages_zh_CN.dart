@@ -357,6 +357,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "entries": MessageLookupByLibrary.simpleMessage("个条目"),
     "entriesCount": m11,
     "errBadEmail": MessageLookupByLibrary.simpleMessage("这不像是一个邮箱地址"),
+    "errBindOnSite": MessageLookupByLibrary.simpleMessage(
+      "登录方式已绑定或账户不是新的——请在网站的个人中心中更改",
+    ),
     "errCardOff": MessageLookupByLibrary.simpleMessage("当前无法使用银行卡支付"),
     "errCoinsOff": MessageLookupByLibrary.simpleMessage("加密货币付款暂不可用"),
     "errHashNotAccepted": MessageLookupByLibrary.simpleMessage(

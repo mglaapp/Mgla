@@ -598,6 +598,7 @@ class _RecoveryViewState extends ConsumerState<RecoveryView> {
       'tg_off' => l.errTgOff,
       'too_soon' => l.errTooSoon,
       'too_many' => l.errTooMany,
+      'bound' || 'bind_late' => l.errBindOnSite,
       'unknown_key' => l.errUnknownKey,
       _ => l.errNetwork,
     }, level: MessageLevel.error);

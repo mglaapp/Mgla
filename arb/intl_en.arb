@@ -738,5 +738,6 @@
   "tvConnectedInactive": "TV connected; it will work once the subscription is paid",
   "errTvUnknown": "Code not found — check the code on the TV screen",
   "errTvExpired": "The code has expired — choose “Sign in with phone” on the TV again",
-  "errTvBusy": "This TV is already connected to another account"
+  "errTvBusy": "This TV is already connected to another account",
+  "errBindOnSite": "Sign-in is already set up or the account is not new — change it in your account on the website"
 }
