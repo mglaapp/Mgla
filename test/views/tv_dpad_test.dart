@@ -395,11 +395,14 @@ void main() {
   // 20-10, TV emulator: the first-run disclaimer opened, the home with the phone sign-in button
   // finished building UNDER it, and that button's autofocus pulled the remote into the page
   // behind the dialog — arrows scrolled the dashboard, OK pressed nothing, and the first screen
-  // of the app was a dead end on a TV.
+  // of the app was a dead end on a TV. The disclaimer is gone (owner, 20-10), but the boot still
+  // opens messages over the home (interrupted launch, crash recovery), so the same check stands.
   for (final homeFirst in [false, true]) {
     testWidgets(
-      'the disclaimer keeps the remote (home built ${homeFirst ? 'before' : 'under'} it)',
+      'a message over the home keeps the remote (home built ${homeFirst ? 'before' : 'under'} it)',
       (tester) async {
+        system.debugIsTV = true;
+        addTearDown(() => system.debugIsTV = false);
         final showHome = ValueNotifier(homeFirst);
         addTearDown(showHome.dispose);
         await _pump(
@@ -412,36 +415,42 @@ void main() {
             ),
           ),
         );
-        bool? accepted;
-        unawaited(dialogs.showDisclaimer().then((value) => accepted = value));
-        await _settle(tester);
-        showHome.value = true;
-        await _settle(tester);
-
         bool inDialog() =>
             FocusManager.instance.primaryFocus?.context
                 ?.findAncestorWidgetOfExactType<AlertDialog>() !=
             null;
+        Future<bool?> open() => dialogs.showMessage(
+          cancelable: false,
+          dismissible: false,
+          message: const TextSpan(text: 'launch interrupted'),
+        );
+
+        bool? accepted;
+        unawaited(open().then((r) => accepted = r));
+        await _settle(tester);
+        showHome.value = true;
+        await _settle(tester);
         expect(
           _label(FocusManager.instance.primaryFocus!),
-          currentAppLocalizations.agree,
-          reason: 'the remote starts on Agree',
+          currentAppLocalizations.confirm,
+          reason: 'the remote starts on the only button',
         );
-        for (final key in _arrows) {
-          await tester.sendKeyEvent(key);
-          await _settle(tester);
-          expect(inDialog(), isTrue, reason: '$key left the dialog');
-        }
-        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-        await _settle(tester);
         await tester.sendKeyEvent(LogicalKeyboardKey.select);
         await _settle(tester);
-        expect(accepted, isTrue, reason: 'right, then OK accepts');
+        expect(accepted, isTrue, reason: 'OK presses it');
         expect(
           _label(FocusManager.instance.primaryFocus!),
           contains(currentAppLocalizations.signInWithPhone),
-          reason: 'after the dialog the remote is on the home again',
+          reason: 'after the message the remote is on the home again',
         );
+
+        unawaited(open());
+        await _settle(tester);
+        for (final key in _arrows) {
+          await tester.sendKeyEvent(key);
+          await _settle(tester);
+          expect(inDialog(), isTrue, reason: '$key left the message');
+        }
       },
     );
   }

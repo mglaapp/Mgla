@@ -69,14 +69,18 @@ class Dialogs {
           return CommonDialog(
             title: title ?? appLocalizations.tip,
             actions: [
+              // A TV remote has no pointer: one button holds the focus from the start —
+              // Cancel when there is one (the safe side of "delete?"), otherwise the only button.
               if (cancelable)
                 TextButton(
+                  autofocus: system.isTV,
                   onPressed: () {
                     popDialog(context, false);
                   },
                   child: Text(cancelText ?? appLocalizations.cancel),
                 ),
               TextButton(
+                autofocus: system.isTV && !cancelable,
                 onPressed: () {
                   popDialog(context, true);
                 },
@@ -179,32 +183,6 @@ class Dialogs {
         },
       ),
     );
-  }
-
-  Future<bool> showDisclaimer() async {
-    return await showCommonDialog<bool>(
-          dismissible: false,
-          child: Builder(
-            builder: (context) => CommonDialog(
-              title: currentAppLocalizations.disclaimer,
-              actions: [
-                TextButton(
-                  onPressed: () => popDialog<bool>(context, false),
-                  child: Text(currentAppLocalizations.exit),
-                ),
-                TextButton(
-                  // A TV remote has no pointer: without a focused button the first screen of
-                  // the app shows nothing to press.
-                  autofocus: true,
-                  onPressed: () => popDialog<bool>(context, true),
-                  child: Text(currentAppLocalizations.agree),
-                ),
-              ],
-              child: Text(currentAppLocalizations.disclaimerDesc),
-            ),
-          ),
-        ) ??
-        false;
   }
 
   void showNotifier(

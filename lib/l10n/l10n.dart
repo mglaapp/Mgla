@@ -2455,6 +2455,16 @@ class AppLocalizations {
     return Intl.message('Agree', name: 'agree', desc: '', args: []);
   }
 
+  /// `One subscription — all your devices`
+  String get slogan {
+    return Intl.message(
+      'One subscription — all your devices',
+      name: 'slogan',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Hotkey management`
   String get hotkeyManagement {
     return Intl.message(

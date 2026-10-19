@@ -8,6 +8,7 @@ import 'package:fl_clash/bootstrap.dart';
 import 'package:fl_clash/common/system_dns.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/l10n/l10n.dart';
+import 'package:fl_clash/widgets/launch_intro.dart';
 import 'package:fl_clash/manager/hotkey_manager.dart';
 import 'package:fl_clash/manager/manager.dart';
 import 'package:fl_clash/plugins/app.dart';
@@ -186,7 +187,7 @@ class ApplicationState extends ConsumerState<Application> {
                 child: buildManagerStack(
                   isDesktop: system.isDesktop,
                   onConnectivityChanged: _handleConnectivityChanged,
-                  child: child!,
+                  child: LaunchIntro(child: child!),
                 ),
               ),
             );
