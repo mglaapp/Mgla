@@ -192,7 +192,20 @@ class CommonAction extends _$CommonAction {
               sumsAsset.url,
               cancelToken: cancelToken,
             );
-      final expected = sums == null ? null : sha256ForAsset(sums, asset.name);
+      // The sums are trusted only with a valid signature (audit M5-1): they come from the same
+      // place as the file, so without it a forged release brings its own matching sums.
+      final sigAsset = pickUpdateAsset(assets, updateSignatureAsset);
+      final signature = sums == null || sigAsset == null
+          ? null
+          : await request.getUpdateText(sigAsset.url, cancelToken: cancelToken);
+      final signed = sums != null && await verifySumsSignature(sums, signature);
+      if (sums != null && !signed) {
+        commonPrint.log(
+          'update signature ${signature == null ? 'missing' : 'invalid'} for ${asset.name}',
+          logLevel: LogLevel.error,
+        );
+      }
+      final expected = signed ? sha256ForAsset(sums, asset.name) : null;
       if (expected == null) {
         failure = currentAppLocalizations.updateVerifyFailed;
       } else {

@@ -409,6 +409,37 @@ jobs:
           cd ./dist
           sha256sum ./* > SHA256SUMS
 
+      # Audit M5-1 (20-10): the app installs an update only when SHA256SUMS carries a valid
+      # Ed25519 signature by the key baked into lib/common/update_signing.dart. Without the secret,
+      # or with a secret that does not match the baked key, the release must stop here: an unsigned
+      # stable release would be refused by every installed app.
+      - name: Sign SHA256SUMS
+        if: ${{ env.IS_STABLE == 'true' }}
+        env:
+          UPDATE_SIGN_KEY: ${{ secrets.UPDATE_SIGN_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${UPDATE_SIGN_KEY:-}" ]; then
+            echo "::error::no UPDATE_SIGN_KEY secret: the app refuses unsigned updates"
+            exit 1
+          fi
+          key="$RUNNER_TEMP/update-sign.pem"
+          umask 077
+          printf '%s\n' "$UPDATE_SIGN_KEY" > "$key"
+          baked=$(grep -oP "updateSigningPublicKey = '\K[^']+" lib/common/update_signing.dart)
+          ours=$(openssl pkey -in "$key" -pubout -outform DER | tail -c 32 | base64 -w0)
+          if [ "$baked" != "$ours" ]; then
+            rm -f "$key"
+            echo "::error::UPDATE_SIGN_KEY does not match updateSigningPublicKey in the app"
+            exit 1
+          fi
+          openssl pkeyutl -sign -inkey "$key" -rawin -in ./dist/SHA256SUMS -out "$RUNNER_TEMP/sums.sig"
+          openssl pkey -in "$key" -pubout -out "$RUNNER_TEMP/pub.pem"
+          rm -f "$key"
+          openssl pkeyutl -verify -pubin -inkey "$RUNNER_TEMP/pub.pem" -rawin \
+            -in ./dist/SHA256SUMS -sigfile "$RUNNER_TEMP/sums.sig"
+          base64 -w0 "$RUNNER_TEMP/sums.sig" > ./dist/SHA256SUMS.sig
+
       - name: Release
         if: ${{ env.IS_STABLE == 'true' }}
         uses: softprops/action-gh-release@v2

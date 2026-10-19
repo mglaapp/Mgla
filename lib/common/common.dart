@@ -1,6 +1,7 @@
 export 'app_localizations.dart';
 export 'app_ports.dart';
 export 'app_update.dart';
+export 'update_signing.dart';
 export 'changelog.dart';
 export 'color.dart';
 export 'compute.dart';

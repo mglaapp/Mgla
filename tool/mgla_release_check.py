@@ -10,7 +10,7 @@
 статически нечем, поэтому сверяем по факту — по выложенному выпуску.
 
 ЧТО ЛОВИТ. Переименование артефакта в упаковщике, недособранную платформу, пропавший
-SHA256SUMS и строку в нём, не совпавшую с именем файла. Любое из этого превращает кнопку
+SHA256SUMS и строку в нём, не совпавшую с именем файла, пропавшую или чужую подпись SHA256SUMS.sig. Любое из этого превращает кнопку
 «Обновить» в тишину или в отказ у человека на телефоне, и увидеть это по коду нельзя.
 
 ВЫХОД: 0 — всё сходится, 1 — не сходится, 2 — не смог проверить (сеть, нет выпуска).
@@ -30,6 +30,24 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 _ok = 0
 _fail = 0
+
+
+def sums_signed(sums: str, sig_b64: str) -> bool:
+    """Подпись Ed25519 открытым ключом, вшитым в приложение (тот, что сверяет установщик)."""
+    import base64
+    from cryptography.exceptions import InvalidSignature
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+
+    src = (ROOT / "lib/common/update_signing.dart").read_text(encoding="utf-8")
+    m = re.search(r"updateSigningPublicKey = '([^']+)'", src)
+    if not m:
+        raise SystemExit("в update_signing.dart нет updateSigningPublicKey — проверять нечем")
+    try:
+        Ed25519PublicKey.from_public_bytes(base64.b64decode(m.group(1))).verify(
+            base64.b64decode(sig_b64), sums.encode("utf-8"))
+        return True
+    except (InvalidSignature, ValueError):
+        return False
 
 
 def check(name: str, cond: bool, got=None) -> None:
@@ -104,6 +122,20 @@ def main() -> int:
             # Приложение отказывается ставить файл, суммы которого нет в списке. Расхождение
             # имён здесь означает не «нет проверки», а «обновление не пойдёт вовсе».
             check(f"сумма есть для {name}", name in listed)
+
+    print("\n— подпись SHA256SUMS (аудит M5-1) —")
+    # Приложение с 20-10 ставит обновление ТОЛЬКО при верной подписи сумм ключом, вшитым в
+    # lib/common/update_signing.dart. Нет подписи или она чужая — «Обновить» у всех откажет.
+    sig_asset = assets.get("SHA256SUMS.sig")
+    check("SHA256SUMS.sig выложен", sig_asset is not None)
+    if sig_asset is not None:
+        try:
+            sig = fetch(sig_asset["browser_download_url"]).decode("ascii").strip()
+        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as error:
+            print(f"SHA256SUMS.sig не скачан: {error}", file=sys.stderr)
+            return 2
+        check("подпись верна ключом из приложения", sums_signed(sums, sig), sig[:16])
+        check("КОНТРОЛЬ: изменённые суммы та же подпись НЕ проходит", not sums_signed(sums + "x", sig))
 
     print("\n— КОНТРОЛЬ —")
     # Без этого набор доказывает только то, что сравнение что-то печатает: заведомо
