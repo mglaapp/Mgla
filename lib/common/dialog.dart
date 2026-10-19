@@ -193,6 +193,9 @@ class Dialogs {
                   child: Text(currentAppLocalizations.exit),
                 ),
                 TextButton(
+                  // A TV remote has no pointer: without a focused button the first screen of
+                  // the app shows nothing to press.
+                  autofocus: true,
                   onPressed: () => popDialog<bool>(context, true),
                   child: Text(currentAppLocalizations.agree),
                 ),

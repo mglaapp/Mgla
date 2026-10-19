@@ -91,7 +91,10 @@ class _AccessKeyCardState extends ConsumerState<AccessKeyCard> {
             const SizedBox(height: 16),
             if (widget.isTV ?? system.isTV) ...[
               FilledButton.icon(
-                autofocus: true,
+                // Only while this page is on top: a dialog opened over the home (the first-run
+                // disclaimer) lost the remote to this button when the home finished building
+                // under it. When the dialog closes the route is current again and it autofocuses.
+                autofocus: ModalRoute.isCurrentOf(context) ?? true,
                 onPressed: () => signInWithPhone(context, ref),
                 icon: const Icon(Icons.smartphone_sharp),
                 label: Text(appLocalizations.signInWithPhone),

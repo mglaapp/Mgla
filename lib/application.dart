@@ -203,7 +203,7 @@ class ApplicationState extends ConsumerState<Application> {
             fontFamily: FontFamily.sans.value,
             pageTransitionsTheme: _pageTransitionsTheme,
             colorScheme: _getAppColorScheme(brightness: Brightness.light),
-          ).withAppShapes,
+          ).withAppShapes.withTvFocus(system.isTV),
           darkTheme: ThemeData(
             useMaterial3: true,
             fontFamily: FontFamily.sans.value,
@@ -211,7 +211,7 @@ class ApplicationState extends ConsumerState<Application> {
             colorScheme: _getAppColorScheme(
               brightness: Brightness.dark,
             ).toPureBlack(themeProps.pureBlack),
-          ).withAppShapes,
+          ).withAppShapes.withTvFocus(system.isTV),
           home: child!,
         );
       },

@@ -9,6 +9,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/animated_visibility.dart';
+import 'package:fl_clash/widgets/focus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -151,25 +152,27 @@ class _SidebarRail extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: NavigationRail(
-            scrollable: true,
-            minExtendedWidth: 200,
-            backgroundColor: Colors.transparent,
-            selectedLabelTextStyle: labelStyle,
-            unselectedLabelTextStyle: labelStyle,
-            destinations: [
-              for (final item in items)
-                NavigationRailDestination(
-                  icon: item.icon,
-                  label: Text(item.label.label),
-                ),
-            ],
-            onDestinationSelected: onSelected,
-            extended: false,
-            selectedIndex: currentIndex,
-            labelType: showLabel
-                ? NavigationRailLabelType.all
-                : NavigationRailLabelType.none,
+          child: SidebarFocus(
+            child: NavigationRail(
+              scrollable: true,
+              minExtendedWidth: 200,
+              backgroundColor: Colors.transparent,
+              selectedLabelTextStyle: labelStyle,
+              unselectedLabelTextStyle: labelStyle,
+              destinations: [
+                for (final item in items)
+                  NavigationRailDestination(
+                    icon: item.icon,
+                    label: Text(item.label.label),
+                  ),
+              ],
+              onDestinationSelected: onSelected,
+              extended: false,
+              selectedIndex: currentIndex,
+              labelType: showLabel
+                  ? NavigationRailLabelType.all
+                  : NavigationRailLabelType.none,
+            ),
           ),
         ),
       ],

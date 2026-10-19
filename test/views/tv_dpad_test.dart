@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -302,6 +304,147 @@ void main() {
     );
     await _expectRemoteReachesAll(tester);
   });
+
+  // 20-10, TV emulator: the page lives in a nested Navigator, so "leave the page to the parent
+  // scope" stopped there — left from the page jumped to an invisible control and the rail with
+  // profiles, tools and settings was out of the remote's reach. The real shell: rail outside,
+  // page inside its own Navigator under the page traversal policy.
+  testWidgets('left from the page reaches the rail, right comes back', (
+    tester,
+  ) async {
+    final selected = <int>[];
+    await _pump(
+      tester,
+      Scaffold(
+        body: Row(
+          children: [
+            SizedBox(
+              width: 96,
+              child: SidebarFocus(
+                child: NavigationRail(
+                  selectedIndex: 0,
+                  onDestinationSelected: selected.add,
+                  destinations: const [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.dashboard),
+                      label: Text('home'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.folder),
+                      label: Text('profiles'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.settings),
+                      label: Text('tools'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: FocusTraversalGroup(
+                policy: PageTraversalPolicy(),
+                child: Navigator(
+                  pages: const [
+                    MaterialPage(
+                      child: PageFocusScope(
+                        child: Scaffold(body: AccessKeyCard(isTV: true)),
+                      ),
+                    ),
+                  ],
+                  onDidRemovePage: (_) {},
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    bool inRail() =>
+        FocusManager.instance.primaryFocus?.ancestors.contains(
+          sidebarFocusScope,
+        ) ??
+        false;
+    final start = FocusManager.instance.primaryFocus!;
+    expect(_label(start), contains(currentAppLocalizations.signInWithPhone));
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await _settle(tester);
+    expect(
+      inRail(),
+      isTrue,
+      reason: 'left from the page edge goes to the rail',
+    );
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await _settle(tester);
+    expect(inRail(), isTrue, reason: 'down moves along the rail');
+    await tester.sendKeyEvent(LogicalKeyboardKey.select);
+    await _settle(tester);
+    expect(selected, [1], reason: 'OK on the second item opens it');
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await _settle(tester);
+    expect(
+      FocusManager.instance.primaryFocus,
+      start,
+      reason: 'right returns to where the page was left',
+    );
+  });
+
+  // 20-10, TV emulator: the first-run disclaimer opened, the home with the phone sign-in button
+  // finished building UNDER it, and that button's autofocus pulled the remote into the page
+  // behind the dialog — arrows scrolled the dashboard, OK pressed nothing, and the first screen
+  // of the app was a dead end on a TV.
+  for (final homeFirst in [false, true]) {
+    testWidgets(
+      'the disclaimer keeps the remote (home built ${homeFirst ? 'before' : 'under'} it)',
+      (tester) async {
+        final showHome = ValueNotifier(homeFirst);
+        addTearDown(showHome.dispose);
+        await _pump(
+          tester,
+          Scaffold(
+            body: ValueListenableBuilder<bool>(
+              valueListenable: showHome,
+              builder: (context, on, child) =>
+                  on ? const AccessKeyCard(isTV: true) : const SizedBox(),
+            ),
+          ),
+        );
+        bool? accepted;
+        unawaited(dialogs.showDisclaimer().then((value) => accepted = value));
+        await _settle(tester);
+        showHome.value = true;
+        await _settle(tester);
+
+        bool inDialog() =>
+            FocusManager.instance.primaryFocus?.context
+                ?.findAncestorWidgetOfExactType<AlertDialog>() !=
+            null;
+        expect(
+          _label(FocusManager.instance.primaryFocus!),
+          currentAppLocalizations.agree,
+          reason: 'the remote starts on Agree',
+        );
+        for (final key in _arrows) {
+          await tester.sendKeyEvent(key);
+          await _settle(tester);
+          expect(inDialog(), isTrue, reason: '$key left the dialog');
+        }
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+        await _settle(tester);
+        await tester.sendKeyEvent(LogicalKeyboardKey.select);
+        await _settle(tester);
+        expect(accepted, isTrue, reason: 'right, then OK accepts');
+        expect(
+          _label(FocusManager.instance.primaryFocus!),
+          contains(currentAppLocalizations.signInWithPhone),
+          reason: 'after the dialog the remote is on the home again',
+        );
+      },
+    );
+  }
 
   testWidgets('recovery: e-mail, telegram and the login link', (tester) async {
     await _pump(
