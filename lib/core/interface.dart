@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 
 import 'desktop/model.dart';
@@ -101,6 +102,24 @@ abstract class CoreHandlerInterface with CoreInterface {
           'Invoke method ${method.name} completed in ${elapsedMilliseconds}ms',
         );
       },
+    );
+  }
+
+  /// A call nobody awaits. Its failure used to escape as an unhandled error: the log switch
+  /// sends stopLog at startup, before Core is connected, and the crash reporter got
+  /// "transport_error, Unable to send stopLog to Core, Bad state: No element" from 0.9.8 on
+  /// Windows (20-10). Losing a log toggle is not a crash — it goes to the log as a warning.
+  void _fireAndForget(CoreMethod method) {
+    unawaited(
+      _invokeMethod<Object?>(method: method).then<void>(
+        (_) {},
+        onError: (Object error) {
+          commonPrint.log(
+            'Core method ${method.name} not sent: $error',
+            logLevel: LogLevel.warning,
+          );
+        },
+      ),
     );
   }
 
@@ -318,17 +337,17 @@ abstract class CoreHandlerInterface with CoreInterface {
 
   @override
   FutureOr<void> resetTraffic() {
-    _invokeMethod(method: CoreMethod.resetTraffic);
+    _fireAndForget(CoreMethod.resetTraffic);
   }
 
   @override
   FutureOr<void> startLog() {
-    _invokeMethod(method: CoreMethod.startLog);
+    _fireAndForget(CoreMethod.startLog);
   }
 
   @override
   FutureOr<void> stopLog() {
-    _invokeMethod<bool>(method: CoreMethod.stopLog);
+    _fireAndForget(CoreMethod.stopLog);
   }
 
   @override
