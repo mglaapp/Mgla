@@ -153,26 +153,35 @@ class _SidebarRail extends StatelessWidget {
       children: [
         Expanded(
           child: SidebarFocus(
-            child: NavigationRail(
-              scrollable: true,
-              minExtendedWidth: 200,
-              backgroundColor: Colors.transparent,
-              selectedLabelTextStyle: labelStyle,
-              unselectedLabelTextStyle: labelStyle,
-              destinations: [
-                for (final item in items)
-                  NavigationRailDestination(
-                    icon: item.icon,
-                    label: Text(item.label.label),
+            child: system.isTV
+                ? TvRail(
+                    items: [
+                      for (final item in items)
+                        (icon: item.icon, label: item.label.label),
+                    ],
+                    selectedIndex: currentIndex,
+                    onSelected: onSelected,
+                  )
+                : NavigationRail(
+                    scrollable: true,
+                    minExtendedWidth: 200,
+                    backgroundColor: Colors.transparent,
+                    selectedLabelTextStyle: labelStyle,
+                    unselectedLabelTextStyle: labelStyle,
+                    destinations: [
+                      for (final item in items)
+                        NavigationRailDestination(
+                          icon: item.icon,
+                          label: Text(item.label.label),
+                        ),
+                    ],
+                    onDestinationSelected: onSelected,
+                    extended: false,
+                    selectedIndex: currentIndex,
+                    labelType: showLabel
+                        ? NavigationRailLabelType.all
+                        : NavigationRailLabelType.none,
                   ),
-              ],
-              onDestinationSelected: onSelected,
-              extended: false,
-              selectedIndex: currentIndex,
-              labelType: showLabel
-                  ? NavigationRailLabelType.all
-                  : NavigationRailLabelType.none,
-            ),
           ),
         ),
       ],

@@ -21,6 +21,9 @@ extension TvFocusThemeExt on ThemeData {
     ButtonStyle withRing(ButtonStyle? style) =>
         (style ?? const ButtonStyle()).copyWith(side: ring);
     return copyWith(
+      // Rows and tiles (ListTile, InkWell) mark focus with this fill: the default 12% left
+      // the Tools list on the emulator looking untouched while the remote walked down it.
+      focusColor: colorScheme.primary.withValues(alpha: 0.4),
       filledButtonTheme: FilledButtonThemeData(
         style: withRing(filledButtonTheme.style),
       ),

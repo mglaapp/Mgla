@@ -10,6 +10,7 @@ import 'package:fl_clash/views/profiles/tv_login.dart';
 import 'package:fl_clash/views/subscription.dart';
 import 'package:fl_clash/views/subscription_pay.dart';
 import 'package:fl_clash/widgets/widgets.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -389,6 +390,168 @@ void main() {
       FocusManager.instance.primaryFocus,
       start,
       reason: 'right returns to where the page was left',
+    );
+  });
+
+  // 20-10, TV emulator, pre.2: walking down the Tools list changed nothing on screen — ListTile
+  // marks focus with theme.focusColor, 12% by default. Same "visible, not different" measure.
+  for (final tv in [true, false]) {
+    testWidgets(
+      'a focused list row is visible on a TV (ring ${tv ? 'on' : 'off'})',
+      (tester) async {
+        final shot = GlobalKey();
+        await _pump(
+          tester,
+          Builder(
+            builder: (context) => Theme(
+              // the app's own dark theme: ice on a dark surface
+              data: ThemeData(
+                useMaterial3: true,
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: const Color(defaultPrimaryColor),
+                  brightness: Brightness.dark,
+                ),
+              ).withTvFocus(tv),
+              child: Scaffold(
+                body: RepaintBoundary(
+                  key: shot,
+                  // ink paints on the nearest Material: it has to be inside the shot
+                  child: Material(
+                    child: Column(
+                      children: [
+                        ListTile(title: const Text('Language'), onTap: () {}),
+                        ListTile(title: const Text('Theme'), onTap: () {}),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        Future<List<int>> pixels() async {
+          final boundary =
+              shot.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+          final bytes = await tester.runAsync(() async {
+            final image = await boundary.toImage();
+            return (await image.toByteData())!.buffer.asUint8List();
+          });
+          return bytes!;
+        }
+
+        final idle = await pixels();
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await _settle(tester);
+        final focused = await pixels();
+        var strong = 0;
+        for (var i = 0; i < idle.length; i++) {
+          // on the dark surface the default 12% overlay moves a channel by ~28 levels, the TV fill
+          // by ~75-90
+          if ((idle[i] - focused[i]).abs() > 50) strong++;
+        }
+        // the control: without the TV theme the change stays too faint to count
+        expect(strong > 1000, tv, reason: 'strongly changed: $strong');
+      },
+    );
+  }
+
+  // 20-10, TV emulator, pre.2: the remote reached the rail, but NavigationRail's ink highlight
+  // left its pixels unchanged — nobody could see which item OK would open. On a TV the rail is
+  // icon buttons with the theme's focus ring; this checks the PIXELS change with the focus.
+  testWidgets('the TV rail shows where the remote is', (tester) async {
+    final selected = <int>[];
+    final shot = GlobalKey();
+    await _pump(
+      tester,
+      Builder(
+        builder: (context) => Theme(
+          data: Theme.of(context).withTvFocus(true),
+          child: Scaffold(
+            body: Row(
+              children: [
+                SizedBox(
+                  width: 96,
+                  child: RepaintBoundary(
+                    key: shot,
+                    child: SidebarFocus(
+                      child: TvRail(
+                        selectedIndex: 0,
+                        onSelected: selected.add,
+                        items: const [
+                          (icon: Icon(Icons.dashboard), label: 'home'),
+                          (icon: Icon(Icons.folder), label: 'profiles'),
+                          (icon: Icon(Icons.settings), label: 'tools'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: FocusTraversalGroup(
+                    policy: PageTraversalPolicy(),
+                    child: Navigator(
+                      pages: const [
+                        MaterialPage(
+                          child: PageFocusScope(
+                            child: Scaffold(body: AccessKeyCard(isTV: true)),
+                          ),
+                        ),
+                      ],
+                      onDidRemovePage: (_) {},
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    Future<List<int>> pixels() async {
+      final boundary =
+          shot.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final bytes = await tester.runAsync(() async {
+        final image = await boundary.toImage();
+        return (await image.toByteData())!.buffer.asUint8List();
+      });
+      return bytes!;
+    }
+
+    // "Visible", not "different": Material's own 10% focus overlay changes pixels too, by a few
+    // levels — the change that could not be seen on the TV. A ring moves channels by far more.
+    int strongly(List<int> a, List<int> b) {
+      var n = 0;
+      for (var i = 0; i < a.length; i++) {
+        if ((a[i] - b[i]).abs() > 60) n++;
+      }
+      return n;
+    }
+
+    final idle = await pixels();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await _settle(tester);
+    final onHome = await pixels();
+    expect(
+      strongly(onHome, idle),
+      greaterThan(100),
+      reason: 'focus on the rail is visible',
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await _settle(tester);
+    final onProfiles = await pixels();
+    expect(
+      strongly(onProfiles, onHome),
+      greaterThan(100),
+      reason: 'moving along the rail is visible',
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.select);
+    await _settle(tester);
+    expect(selected, [1]);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await _settle(tester);
+    expect(
+      _label(FocusManager.instance.primaryFocus!),
+      contains(currentAppLocalizations.signInWithPhone),
     );
   });
 

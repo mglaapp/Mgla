@@ -73,6 +73,51 @@ class SidebarFocus extends StatelessWidget {
   }
 }
 
+/// The navigation rail on a TV: icon buttons in a column.
+///
+/// NavigationRail marks the focused item with its ink highlight only, and on a TV that is no
+/// mark at all: on the emulator the rail pixels did not change while the remote moved along it
+/// (20-10). Icon buttons carry the theme's focus ring (ThemeData.withTvFocus), the same one the
+/// rest of the app shows, and the selected page keeps the tonal fill.
+class TvRail extends StatelessWidget {
+  final List<({Widget icon, String label})> items;
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
+
+  const TvRail({
+    super.key,
+    required this.items,
+    required this.selectedIndex,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        children: [
+          for (final (index, item) in items.indexed)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: index == selectedIndex
+                  ? IconButton.filledTonal(
+                      tooltip: item.label,
+                      onPressed: () => onSelected(index),
+                      icon: item.icon,
+                    )
+                  : IconButton(
+                      tooltip: item.label,
+                      onPressed: () => onSelected(index),
+                      icon: item.icon,
+                    ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 class PageFocusScope extends StatefulWidget {
   final Widget child;
 
