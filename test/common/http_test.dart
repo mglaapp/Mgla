@@ -161,4 +161,32 @@ void main() {
       isTrue,
     );
   });
+
+  // Audit M5-2: the switch must not open our sign-in and update channel.
+  for (final host in [
+    'mgla.app',
+    'partners.mgla.app',
+    'api.github.com',
+    'release-assets.githubusercontent.com',
+  ]) {
+    test('our own host $host never accepts an untrusted certificate', () {
+      final container = buildContainer(checkCertificate: false);
+
+      expect(
+        FlClashHttpOverrides.allowBadCertificate(
+          container,
+          _FakeCertificate(),
+          host,
+          443,
+        ),
+        isFalse,
+      );
+    });
+  }
+
+  test('a look-alike host is not ours', () {
+    expect(strictTlsHost('mgla.app.evil.example'), isFalse);
+    expect(strictTlsHost('evilmgla.app'), isFalse);
+    expect(strictTlsHost('MGLA.APP'), isTrue);
+  });
 }

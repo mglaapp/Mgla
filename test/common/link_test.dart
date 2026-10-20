@@ -49,6 +49,20 @@ void main() {
     expect(received, isEmpty);
   });
 
+  test(
+    'an install-config link over plain http or with a password is ignored',
+    () async {
+      await listen();
+
+      await emit('flclash://install-config?url=http://example.com/a.yaml');
+      await emit(
+        'mgla://install-config?url=https%3A%2F%2Fu%3Ap%40example.com%2Fa.yaml',
+      );
+
+      expect(received, isEmpty);
+    },
+  );
+
   test('a link for another host is ignored', () async {
     await listen();
 

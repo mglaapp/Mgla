@@ -177,6 +177,28 @@ void main() {
     test('cuts to the limit', () {
       expect(scrubCrashText('x' * 5000, limit: 1000).length, 1000);
     });
+
+    // A subscription key is 32 hex chars; with no letter or no digit it slipped past (audit M5-6).
+    for (final key in [
+      '12345678901234567890123456789012',
+      'abcdefabcdefabcdefabcdefabcdefab',
+      '9999999999999999999999',
+    ]) {
+      test(
+        'removes a key made of one kind of character: ${key.substring(0, 6)}',
+        () {
+          expect(
+            scrubCrashText('key $key end', limit: 200),
+            isNot(contains(key)),
+          );
+        },
+      );
+    }
+
+    test('keeps short numbers and addresses that make a trace readable', () {
+      const line = 'line 42 at 0x1f build 2026102003';
+      expect(scrubCrashText(line, limit: 200), line);
+    });
   });
 
   group('upload', () {

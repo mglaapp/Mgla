@@ -53,7 +53,9 @@ String? _httpUrl(String? value) {
   if (uri == null || !uri.hasScheme || !uri.hasAuthority) {
     return null;
   }
-  if (uri.scheme != 'http' && uri.scheme != 'https') {
+  // https only (audit M5-8): a subscription is the whole VPN config, and over plain http
+  // anyone on the path could swap it for one that routes the traffic through them.
+  if (uri.scheme != 'https' || uri.userInfo.isNotEmpty) {
     return null;
   }
   return uri.toString();

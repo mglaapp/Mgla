@@ -62,7 +62,8 @@ void main() {
       ])
         {
           'name': name,
-          'browser_download_url': 'https://example.test/$name',
+          'browser_download_url':
+              'https://github.com/mglaapp/Mgla/releases/download/v1/$name',
           'size': 1,
         },
     ];

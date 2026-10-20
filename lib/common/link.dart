@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 
+import 'access_key.dart';
 import 'print.dart';
 import 'protocol.dart';
 
@@ -54,9 +55,14 @@ class LinkManager {
     commonPrint.log('onAppLink: ${uri.scheme}://${uri.host}');
     if (uri.host == 'install-config') {
       final parameters = uri.queryParameters;
-      final url = parameters['url'];
+      // Same rule as the key field (subscriptionUrlOf): https only, no user:pass@ (audit M5-8).
+      final url = subscriptionUrlOf(parameters['url']);
       if (url != null) {
         installConfigCallBack(url);
+      } else {
+        commonPrint.log(
+          'onAppLink: install-config refused, not an https address',
+        );
       }
       return;
     }

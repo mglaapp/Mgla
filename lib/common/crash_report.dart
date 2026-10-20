@@ -373,6 +373,11 @@ final _ipv6 = RegExp(
 final _token = RegExp(
   r'(?<![A-Za-z0-9_\-+=])(?=[A-Za-z0-9_\-+=]*\d)(?=[A-Za-z0-9_\-+=]*[A-Za-z])[A-Za-z0-9_\-+=]{20,}(?![A-Za-z0-9_\-+=])',
 );
+// A subscription key is 32 hex chars: with no letter (or no digit) _token missed it (audit M5-6).
+// Long hex and long digit runs are secrets whatever they are made of.
+final _longHex = RegExp(
+  r'(?<![A-Za-z0-9_\-+=])(?:[0-9a-fA-F]{32,}|\d{20,})(?![A-Za-z0-9_\-+=])',
+);
 
 String _urlMark(Match match) {
   final scheme = match[1]!.toLowerCase();
@@ -402,7 +407,8 @@ String scrubCrashText(String text, {required int limit}) {
       .replaceAllMapped(_secretValue, (m) => '${m[1]}${m[2]}<secret>')
       .replaceAll(_ipv4, '<ip>')
       .replaceAll(_ipv6, '<ip>')
-      .replaceAll(_token, '<token>');
+      .replaceAll(_token, '<token>')
+      .replaceAll(_longHex, '<token>');
   return scrubbed.length > limit ? scrubbed.substring(0, limit) : scrubbed;
 }
 

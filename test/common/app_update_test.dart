@@ -18,7 +18,8 @@ List<Map<String, Object>> _assets() => [
   }.entries)
     {
       'name': entry.key,
-      'browser_download_url': 'https://example.test/${entry.key}',
+      'browser_download_url':
+          'https://github.com/mglaapp/Mgla/releases/download/v0.9.1/${entry.key}',
       'size': entry.value,
     },
 ];
@@ -68,7 +69,7 @@ void main() {
       expect(asset?.name, 'Mgla-0.9.1-android-arm64-v8a.apk');
       expect(
         asset?.url,
-        'https://example.test/Mgla-0.9.1-android-arm64-v8a.apk',
+        'https://github.com/mglaapp/Mgla/releases/download/v0.9.1/Mgla-0.9.1-android-arm64-v8a.apk',
       );
       expect(asset?.size, 55616532);
     });
@@ -85,6 +86,59 @@ void main() {
       expect(pickUpdateAsset(_assets(), '-linux-amd64.deb'), isNull);
       expect(pickUpdateAsset(_assets(), null), isNull);
       expect(pickUpdateAsset(null, '-android-arm64-v8a.apk'), isNull);
+    });
+
+    // Audit M5-7: a tampered release list must not pick where the file lands or where it
+    // comes from, before any checksum is known.
+    for (final bad in const [
+      {
+        'name': '../../Mgla-android-arm64-v8a.apk',
+        'url': 'https://mgla.app/x.apk',
+      },
+      {
+        'name': r'..\Mgla-android-arm64-v8a.apk',
+        'url': 'https://mgla.app/x.apk',
+      },
+      {'name': 'Mgla-android-arm64-v8a.apk', 'url': 'http://mgla.app/x.apk'},
+      {
+        'name': 'Mgla-android-arm64-v8a.apk',
+        'url': 'https://evil.example/x.apk',
+      },
+      {
+        'name': 'Mgla-android-arm64-v8a.apk',
+        'url': 'https://mgla.app.evil.example/x.apk',
+      },
+      {
+        'name': 'Mgla-android-arm64-v8a.apk',
+        'url': 'https://u:p@mgla.app/x.apk',
+      },
+    ]) {
+      test('refuses ${bad['name']} from ${bad['url']}', () {
+        final assets = [
+          {
+            'name': bad['name']!,
+            'browser_download_url': bad['url']!,
+            'size': 1,
+          },
+        ];
+        expect(pickUpdateAsset(assets, '-android-arm64-v8a.apk'), isNull);
+      });
+    }
+
+    test('our mirror and GitHub stay trusted', () {
+      for (final url in const [
+        'https://mgla.app/download/v1/Mgla-android-arm64-v8a.apk',
+        'https://github.com/mglaapp/Mgla/releases/download/v1/Mgla-android-arm64-v8a.apk',
+      ]) {
+        final assets = [
+          {
+            'name': 'Mgla-android-arm64-v8a.apk',
+            'browser_download_url': url,
+            'size': 1,
+          },
+        ];
+        expect(pickUpdateAsset(assets, '-android-arm64-v8a.apk')?.url, url);
+      }
     });
   });
 

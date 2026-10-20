@@ -7,6 +7,8 @@ import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+export 'our_hosts.dart' show strictTlsHost;
+
 class FlClashHttpOverrides extends HttpOverrides {
   final ProviderContainer _container;
 
@@ -55,6 +57,17 @@ class FlClashHttpOverrides extends HttpOverrides {
     String host,
     int port,
   ) {
+    // Our account API and app updates never accept a bad certificate, whatever the
+    // "check TLS" switch says: the switch is for people's own proxy subscriptions, and
+    // turning it off must not hand our sign-in and update channel to whoever sits on
+    // the network (audit M5-2).
+    if (strictTlsHost(host)) {
+      commonPrint.log(
+        'untrusted certificate for $host:$port refused: our own host',
+        logLevel: LogLevel.warning,
+      );
+      return false;
+    }
     final checkCertificate = read(
       appSettingProvider.select((state) => state.checkCertificate),
     );

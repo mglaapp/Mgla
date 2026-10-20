@@ -3,6 +3,7 @@ import 'dart:ffi' show Abi;
 import 'dart:io';
 
 import 'constant.dart';
+import 'our_hosts.dart';
 import 'package.dart';
 
 class UpdateAsset {
@@ -29,6 +30,22 @@ String? updateAssetSuffix([Abi? abi]) {
   };
 }
 
+bool _plainFileName(String name) =>
+    name.isNotEmpty &&
+    name.length <= 200 &&
+    !name.contains('/') &&
+    !name.contains(r'\') &&
+    !name.contains('..') &&
+    !name.startsWith('.');
+
+bool _trustedDownload(String url) {
+  final uri = Uri.tryParse(url);
+  if (uri == null || uri.scheme != 'https' || uri.userInfo.isNotEmpty) {
+    return false;
+  }
+  return strictTlsHost(uri.host);
+}
+
 UpdateAsset? pickUpdateAsset(List<dynamic>? assets, String? suffix) {
   if (assets == null || suffix == null) {
     return null;
@@ -38,6 +55,9 @@ UpdateAsset? pickUpdateAsset(List<dynamic>? assets, String? suffix) {
     final name = asset['name'];
     final url = asset['browser_download_url'];
     if (name is! String || url is! String || !name.endsWith(suffix)) continue;
+    // The name becomes a file in our cache and the url is fetched before any checksum is
+    // known: a plain file name only, https only, our hosts only (audit M5-7).
+    if (!_plainFileName(name) || !_trustedDownload(url)) continue;
     final size = asset['size'];
     return UpdateAsset(name: name, url: url, size: size is int ? size : 0);
   }

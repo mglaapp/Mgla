@@ -64,6 +64,16 @@ void main() {
     );
   });
 
+  test('plain http and a password in the address are refused (audit M5-8)', () {
+    for (final input in const [
+      'http://example.com/sub/abc',
+      'https://user:pass@example.com/sub/abc',
+      'mgla://install-config?url=http%3A%2F%2Fexample.com%2Fa',
+    ]) {
+      expect(subscriptionUrlOf(input), isNull, reason: input);
+    }
+  });
+
   // ── accessKeyOf: обратная сторона, ею живёт экран подписки ──────────────────
   // Ключ нигде не хранится вторым местом: он вынимается из адреса профиля. Две копии одного
   // секрета расходятся молча, и расходятся ровно тогда, когда человек платит.

@@ -32,8 +32,14 @@
          people who install from a link rarely find their way back to it. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <!-- allowBackup="false" (audit M5-9): the app keeps the subscription key; a backup of
+         its data would carry the key off the device (adb backup, cloud backup). -->
     <application
         android:name=".FlClashApplication"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        tools:replace="android:allowBackup"
         android:banner="@mipmap/ic_banner"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
