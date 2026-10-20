@@ -2,6 +2,24 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "0.9.11",
+      "tag": "v0.9.11",
+      "date": "2026-10-21",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "e67d3cc",
+              "scope": "security",
+              "text": "Строгий TLS и обновления только с наших адресов, без резервной копии данных"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.9.10",
       "tag": "v0.9.10",
       "date": "2026-10-20",
