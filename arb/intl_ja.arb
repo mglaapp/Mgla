@@ -716,6 +716,7 @@
   "serversTitle": "サーバーを選択",
   "serverBusy": "混雑中",
   "serverBusyTip": "このサーバーは混雑しています。別のサーバーを選んでください",
+  "serverAuto": "自動（最速）",
   "serversLoadError": "サーバー一覧を読み込めませんでした",
   "havePromoCode": "プロモコードを持っています",
   "promoCode": "プロモコード",

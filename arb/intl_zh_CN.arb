@@ -716,6 +716,7 @@
   "serversTitle": "选择服务器",
   "serverBusy": "繁忙",
   "serverBusyTip": "该服务器繁忙，请选择其他服务器",
+  "serverAuto": "自动（最快）",
   "serversLoadError": "无法加载服务器列表",
   "havePromoCode": "我有优惠码",
   "promoCode": "优惠码",

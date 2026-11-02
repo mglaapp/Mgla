@@ -198,11 +198,16 @@ class ServerInfo {
   final Map<String, String> names;
   final bool available;
 
+  /// Имя группы этого сервера в подписке («Mgla DE», с 03-11 при нескольких узлах): выбор сервера
+  /// = выбор этого имени в главной группе. null — сайт групп не отдаёт (узел один), выбирать нечего.
+  final String? group;
+
   const ServerInfo({
     required this.id,
     required this.cc,
     required this.names,
     required this.available,
+    this.group,
   });
 
   String nameFor(String languageCode) =>
@@ -218,6 +223,7 @@ class ServerInfo {
       if (id is! String || id.isEmpty || cc is! String || cc.length != 2) {
         continue;
       }
+      final group = item['group'];
       final names = <String, String>{};
       final raw = item['name'];
       if (raw is Map) {
@@ -234,6 +240,7 @@ class ServerInfo {
           cc: cc.toLowerCase(),
           names: names,
           available: item['status'] == 'ok',
+          group: group is String && group.isNotEmpty ? group : null,
         ),
       );
     }

@@ -716,6 +716,7 @@
   "serversTitle": "Выбор сервера",
   "serverBusy": "Загружен",
   "serverBusyTip": "Сервер загружен — выберите другой",
+  "serverAuto": "Авто — самый быстрый",
   "serversLoadError": "Список серверов не загрузился",
   "havePromoCode": "У меня есть промокод",
   "promoCode": "Промокод",

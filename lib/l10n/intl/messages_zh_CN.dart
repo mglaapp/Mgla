@@ -898,6 +898,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "selected": MessageLookupByLibrary.simpleMessage("已选择"),
     "selectedCountTitle": m34,
     "sendLetter": MessageLookupByLibrary.simpleMessage("发送邮件"),
+    "serverAuto": MessageLookupByLibrary.simpleMessage("自动（最快）"),
     "serverBusy": MessageLookupByLibrary.simpleMessage("繁忙"),
     "serverBusyTip": MessageLookupByLibrary.simpleMessage("该服务器繁忙，请选择其他服务器"),
     "serverTitle": MessageLookupByLibrary.simpleMessage("服务器"),

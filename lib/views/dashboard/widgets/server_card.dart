@@ -54,7 +54,7 @@ class _ServerCardState extends ConsumerState<ServerCard> {
   String _line(ServerInfo? current, String language) {
     final l = context.appLocalizations;
     if (!_ours) return l.noAccountShort;
-    if (current != null) return current.nameFor(language);
+    if (current != null) return serverName(context, current);
     return _servers == null && _failed ? l.serversLoadError : '…';
   }
 
@@ -66,7 +66,7 @@ class _ServerCardState extends ConsumerState<ServerCard> {
     });
     final l = context.appLocalizations;
     final servers = _ours ? _servers : null;
-    final current = servers == null ? null : currentServerOf(servers);
+    final current = servers == null ? null : liveServerOf(ref, servers);
     final language = Localizations.localeOf(context).languageCode;
     final busy = servers?.where((s) => !s.available).length ?? 0;
     return SizedBox(
@@ -80,7 +80,7 @@ class _ServerCardState extends ConsumerState<ServerCard> {
           child: Row(
             children: [
               if (current != null) ...[
-                CountryFlag(cc: current.cc, width: 22),
+                serverLeading(context, current, 22),
                 const SizedBox(width: 10),
               ],
               Expanded(

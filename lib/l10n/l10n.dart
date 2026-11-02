@@ -5996,6 +5996,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Auto — fastest`
+  String get serverAuto {
+    return Intl.message(
+      'Auto — fastest',
+      name: 'serverAuto',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Could not load the server list`
   String get serversLoadError {
     return Intl.message(

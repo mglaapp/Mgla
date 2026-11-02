@@ -3,7 +3,9 @@ import 'dart:math' as math;
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -76,6 +78,27 @@ final Map<String, String> _flagArt = {
       '<circle cx="7.4" cy="7" r="3.5" fill="#FFFFFF"/>'
       '<circle cx="8.3" cy="7" r="2.8" fill="#E30A17"/>'
       '${_star(11.75, 7, 1.4)}',
+  // 03-11: Latvia (a real server) and the likely next countries, so a new server shows a flag
+  // without waiting for an app release.
+  'lv':
+      '<rect width="20" height="14" fill="#9E3039"/>'
+      '<rect x="0" y="5.6" width="20" height="2.8" fill="#FFFFFF"/>',
+  'ee': _bands(['#0072CE', '#000000', '#FFFFFF']),
+  'lt': _bands(['#FDB913', '#006A44', '#C1272D']),
+  'pl': _bands(['#FFFFFF', '#DC143C']),
+  'at': _bands(['#ED2939', '#FFFFFF', '#ED2939']),
+  'fr':
+      '<rect x="0" y="0" width="6.72" height="14" fill="#0055A4"/>'
+      '<rect x="6.67" y="0" width="6.72" height="14" fill="#FFFFFF"/>'
+      '<rect x="13.33" y="0" width="6.67" height="14" fill="#EF4135"/>',
+  'se':
+      '<rect width="20" height="14" fill="#006AA7"/>'
+      '<rect x="5.6" y="0" width="2.8" height="14" fill="#FECC00"/>'
+      '<rect x="0" y="5.6" width="20" height="2.8" fill="#FECC00"/>',
+  'ch':
+      '<rect width="20" height="14" fill="#DA291C"/>'
+      '<rect x="8.6" y="3" width="2.8" height="8" fill="#FFFFFF"/>'
+      '<rect x="6" y="5.6" width="8" height="2.8" fill="#FFFFFF"/>',
 };
 
 bool hasFlagArt(String cc) => _flagArt.containsKey(cc.toLowerCase());
@@ -116,14 +139,86 @@ class CountryFlag extends StatelessWidget {
   }
 }
 
-/// Server the app connects through: the first one that can be chosen. While there is one real
-/// server, choosing is showing it; switching between several needs the subscription to carry
-/// them as a selector group (MGLA.md).
-ServerInfo? currentServerOf(List<ServerInfo> servers) {
+/// «Auto» — the fastest live server, chosen by the core itself (url-test group of the subscription,
+/// the site names it so: omnivpn/sub.py AUTO_NAME). Shown first when the site sends server groups.
+const autoServerId = 'auto';
+const autoGroupName = 'Auto';
+
+/// Server list for the picker: «Auto» first when the subscription carries server groups (03-11,
+/// several nodes); otherwise the list as the site sent it (one node — nothing to switch).
+List<ServerInfo> pickerServers(List<ServerInfo> servers) {
+  if (!servers.any((s) => s.available && s.group != null)) return servers;
+  return [
+    const ServerInfo(
+      id: autoServerId,
+      cc: '',
+      names: {},
+      available: true,
+      group: autoGroupName,
+    ),
+    ...servers,
+  ];
+}
+
+/// The subscription's main selector: the select group that lists the server groups (or «Auto»).
+/// null — the profile is not ours or carries no server groups yet (old subscription).
+String? mainGroupOf(List<Group> groups, List<ServerInfo> servers) {
+  final wanted = {
+    for (final s in servers)
+      if (s.group != null) s.group!,
+  };
+  if (wanted.isEmpty) return null;
+  for (final group in groups) {
+    if (group.type != GroupType.Selector) continue;
+    if (group.all.any((p) => wanted.contains(p.name))) return group.name;
+  }
+  return null;
+}
+
+/// Server the app connects through. With server groups — the one whose group is selected in the
+/// main selector (what the core really uses); without — the first one that can be chosen.
+ServerInfo? currentServerOf(List<ServerInfo> servers, {String? selected}) {
+  if (selected != null) {
+    for (final server in servers) {
+      if (server.group == selected) return server;
+    }
+  }
   for (final server in servers) {
     if (server.available) return server;
   }
   return null;
+}
+
+/// [currentServerOf] from the live core state: main selector of the subscription and its choice.
+ServerInfo? liveServerOf(WidgetRef ref, List<ServerInfo> servers) {
+  final list = pickerServers(servers);
+  final main = mainGroupOf(ref.watch(groupsProvider), list);
+  final selected = main == null
+      ? null
+      : ref.watch(selectedProxyNameProvider(main));
+  return currentServerOf(list, selected: selected);
+}
+
+/// Name of the server in the UI language; «Auto» has no name from the site.
+String serverName(BuildContext context, ServerInfo server) {
+  if (server.id == autoServerId) return context.appLocalizations.serverAuto;
+  return server.nameFor(Localizations.localeOf(context).languageCode);
+}
+
+/// Flag of the server; «Auto» — a bolt, it is not a country.
+Widget serverLeading(BuildContext context, ServerInfo server, double width) {
+  if (server.id == autoServerId) {
+    return SizedBox(
+      width: width,
+      height: width * 0.7,
+      child: Icon(
+        Icons.bolt,
+        size: width * 0.7,
+        color: context.colorScheme.primary,
+      ),
+    );
+  }
+  return CountryFlag(cc: server.cc, width: width);
 }
 
 class BusyBadge extends StatelessWidget {
@@ -156,17 +251,17 @@ class BusyBadge extends StatelessWidget {
   }
 }
 
-class ServersView extends StatefulWidget {
+class ServersView extends ConsumerStatefulWidget {
   final Future<Result<List<ServerInfo>>> Function()? fetchServers;
   final List<ServerInfo>? initial;
 
   const ServersView({super.key, this.fetchServers, this.initial});
 
   @override
-  State<ServersView> createState() => _ServersViewState();
+  ConsumerState<ServersView> createState() => _ServersViewState();
 }
 
-class _ServersViewState extends State<ServersView> {
+class _ServersViewState extends ConsumerState<ServersView> {
   List<ServerInfo>? _servers;
   bool _failed = false;
 
@@ -186,13 +281,26 @@ class _ServersViewState extends State<ServersView> {
     });
   }
 
-  Widget _row(ServerInfo server, ServerInfo? current) {
+  /// Choosing = switching the main selector of the subscription in the core (03-11). Until then
+  /// the tap only closed the list: with one real server there was nothing to switch, and with
+  /// three the choice silently stayed on the first one (owner's screenshot 03-11).
+  Future<void> _choose(ServerInfo server, String? main) async {
+    final group = server.group;
+    if (main != null && group != null) {
+      await ref
+          .read(proxiesActionProvider.notifier)
+          .changeProxy(groupName: main, proxyName: group);
+    }
+    if (mounted) Navigator.of(context).pop(server.id);
+  }
+
+  Widget _row(ServerInfo server, ServerInfo? current, String? main) {
     final l = context.appLocalizations;
-    final name = server.nameFor(Localizations.localeOf(context).languageCode);
+    final name = serverName(context, server);
     final chosen = server.id == current?.id;
     return ListTile(
       key: ValueKey('server-${server.id}'),
-      leading: CountryFlag(cc: server.cc, width: 28),
+      leading: serverLeading(context, server, 28),
       title: Text(
         name,
         style: TextStyle(
@@ -209,7 +317,7 @@ class _ServersViewState extends State<ServersView> {
           : const BusyBadge(),
       selected: chosen,
       onTap: server.available
-          ? () => Navigator.of(context).pop(server.id)
+          ? () => _choose(server, main)
           : () => dialogs.showNotifier(
               l.serverBusyTip,
               level: MessageLevel.warning,
@@ -220,8 +328,11 @@ class _ServersViewState extends State<ServersView> {
   @override
   Widget build(BuildContext context) {
     final l = context.appLocalizations;
-    final servers = _servers;
-    final current = servers == null ? null : currentServerOf(servers);
+    final servers = _servers == null ? null : pickerServers(_servers!);
+    final main = servers == null
+        ? null
+        : mainGroupOf(ref.watch(groupsProvider), servers);
+    final current = servers == null ? null : liveServerOf(ref, _servers!);
     return BaseScaffold(
       title: l.serversTitle,
       body: servers == null
@@ -242,7 +353,9 @@ class _ServersViewState extends State<ServersView> {
             )
           : ListView(
               padding: kMaterialListPadding.copyWith(top: 8, bottom: 16),
-              children: [for (final server in servers) _row(server, current)],
+              children: [
+                for (final server in servers) _row(server, current, main),
+              ],
             ),
     );
   }

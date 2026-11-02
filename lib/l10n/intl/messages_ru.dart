@@ -1303,6 +1303,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "selected": MessageLookupByLibrary.simpleMessage("Выбрано"),
     "selectedCountTitle": m34,
     "sendLetter": MessageLookupByLibrary.simpleMessage("Отправить письмо"),
+    "serverAuto": MessageLookupByLibrary.simpleMessage("Авто — самый быстрый"),
     "serverBusy": MessageLookupByLibrary.simpleMessage("Загружен"),
     "serverBusyTip": MessageLookupByLibrary.simpleMessage(
       "Сервер загружен — выберите другой",

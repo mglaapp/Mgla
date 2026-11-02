@@ -76,6 +76,102 @@ Future<void> _pump(WidgetTester tester, Widget child) async {
   await tester.pumpAndSettle();
 }
 
+/// Экран серверов читает ядро (группы подписки) — ему нужен ProviderScope, как в приложении.
+Widget _scoped(
+  Widget child, {
+  List<Group> groups = const [],
+  List<_Switch>? log,
+}) {
+  final container = ProviderContainer(
+    overrides: [
+      profilesProvider.overrideWith(() => TestProfiles(const [])),
+      groupsProvider.overrideWith(() => _FakeGroups(groups)),
+      if (log != null)
+        proxiesActionProvider.overrideWith(() => _FakeProxies(log)),
+    ],
+  );
+  addTearDown(container.dispose);
+  globalState.container = container;
+  return UncontrolledProviderScope(container: container, child: child);
+}
+
+typedef _Switch = (String group, String proxy);
+
+class _FakeGroups extends Groups {
+  final List<Group> value;
+  _FakeGroups(this.value);
+
+  @override
+  List<Group> build() => value;
+}
+
+class _FakeProxies extends ProxiesAction {
+  final List<_Switch> log;
+  _FakeProxies(this.log);
+
+  @override
+  void build() {}
+
+  @override
+  Future<void> changeProxy({
+    required String groupName,
+    required String proxyName,
+  }) async {
+    log.add((groupName, proxyName));
+  }
+}
+
+// Ответ сайта при трёх узлах (03-11): у рабочих — имя группы страны в подписке.
+const _multi = [
+  {
+    'id': 'nl',
+    'cc': 'nl',
+    'name': {'ru': 'Нидерланды', 'en': 'Netherlands'},
+    'status': 'ok',
+    'group': 'Mgla NL',
+  },
+  {
+    'id': 'de',
+    'cc': 'de',
+    'name': {'ru': 'Германия', 'en': 'Germany'},
+    'status': 'ok',
+    'group': 'Mgla DE',
+  },
+  {
+    'id': 'lv',
+    'cc': 'lv',
+    'name': {'ru': 'Латвия', 'en': 'Latvia'},
+    'status': 'ok',
+    'group': 'Mgla LV',
+  },
+  {
+    'id': 'fi',
+    'cc': 'fi',
+    'name': {'ru': 'Финляндия', 'en': 'Finland'},
+    'status': 'busy',
+  },
+];
+
+/// Группы подписки как их отдаёт ядро: главный переключатель + url-test стран.
+List<Group> _coreGroups(String now) => [
+  Group(
+    type: GroupType.Selector,
+    name: 'Mgla',
+    now: now,
+    all: const [
+      Proxy(name: 'Auto', type: 'URLTest'),
+      Proxy(name: 'Mgla NL', type: 'URLTest'),
+      Proxy(name: 'Mgla DE', type: 'URLTest'),
+      Proxy(name: 'Mgla LV', type: 'URLTest'),
+    ],
+  ),
+  const Group(
+    type: GroupType.URLTest,
+    name: 'Mgla DE',
+    all: [Proxy(name: 'Mgla DE Reality', type: 'Vless')],
+  ),
+];
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
@@ -107,7 +203,7 @@ void main() {
 
   group('экран выбора сервера', () {
     testWidgets('шесть стран, выбран рабочий, пять «Загружен»', (tester) async {
-      await _pump(tester, const ServersView(fetchServers: _ok));
+      await _pump(tester, _scoped(const ServersView(fetchServers: _ok)));
       final l = tester.element(find.byType(ServersView)).appLocalizations;
 
       expect(find.byType(ListTile), findsNWidgets(6));
@@ -137,7 +233,7 @@ void main() {
             onPressed: () async {
               picked = await Navigator.of(context).push<String>(
                 MaterialPageRoute(
-                  builder: (_) => const ServersView(fetchServers: _ok),
+                  builder: (_) => _scoped(const ServersView(fetchServers: _ok)),
                 ),
               );
             },
@@ -159,11 +255,119 @@ void main() {
     });
 
     testWidgets('без сети — понятный отказ и повтор', (tester) async {
-      await _pump(tester, const ServersView(fetchServers: _offline));
+      await _pump(tester, _scoped(const ServersView(fetchServers: _offline)));
       final l = tester.element(find.byType(ServersView)).appLocalizations;
       expect(find.text(l.serversLoadError), findsOneWidget);
       expect(find.text(l.sync), findsOneWidget);
     });
+  });
+
+  group('несколько узлов: выбор = переключение в ядре (03-11)', () {
+    final servers = ServerInfo.listFrom(_multi);
+    Future<Result<List<ServerInfo>>> multi() async => Result.success(servers);
+
+    test('группа сервера разобрана, у заглушки её нет', () {
+      expect(servers.map((s) => s.group), [
+        'Mgla NL',
+        'Mgla DE',
+        'Mgla LV',
+        null,
+      ]);
+      expect(_servers.every((s) => s.group == null), isTrue);
+    });
+
+    test('«Авто» первым только при группах', () {
+      expect(pickerServers(servers).first.id, autoServerId);
+      expect(pickerServers(servers).first.group, autoGroupName);
+      expect(
+        pickerServers(_servers).map((s) => s.id),
+        _servers.map((s) => s.id),
+      );
+    });
+
+    test('главный переключатель — select с группами стран, не url-test', () {
+      final list = pickerServers(servers);
+      expect(mainGroupOf(_coreGroups('Auto'), list), 'Mgla');
+      expect(mainGroupOf(_coreGroups('Auto').skip(1).toList(), list), isNull);
+      expect(mainGroupOf(_coreGroups('Auto'), _servers), isNull);
+    });
+
+    test('текущий сервер — выбранный в ядре, а не первый рабочий', () {
+      final list = pickerServers(servers);
+      expect(currentServerOf(list, selected: 'Mgla DE')?.id, 'de');
+      expect(currentServerOf(list, selected: 'Auto')?.id, autoServerId);
+      expect(currentServerOf(list, selected: 'чужое')?.id, autoServerId);
+    });
+
+    /// Экран открыт ПОВЕРХ стартовой страницы, как в приложении: выбор закрывает его.
+    Future<void> openPicker(
+      WidgetTester tester,
+      List<Group> groups,
+      List<_Switch> log,
+    ) async {
+      // контейнер один на весь тест: страница выбора открывается выше корня, ей нужен тот же
+      final page = _scoped(
+        ServersView(fetchServers: multi),
+        groups: groups,
+        log: log,
+      );
+      await _pump(
+        tester,
+        Builder(
+          builder: (context) => TextButton(
+            onPressed: () => Navigator.of(
+              context,
+            ).push<String>(MaterialPageRoute(builder: (_) => page)),
+            child: const Text('open'),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('нажатие на Германию переключает «Mgla» на «Mgla DE»', (
+      tester,
+    ) async {
+      final log = <_Switch>[];
+      await openPicker(tester, _coreGroups('Mgla LV'), log);
+      final l = tester.element(find.byType(ServersView)).appLocalizations;
+      expect(find.text(l.serverAuto), findsOneWidget);
+      expect(find.byType(CountryFlag), findsNWidgets(4));
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('server-lv')),
+          matching: find.byIcon(Icons.check),
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(find.byKey(const ValueKey('server-de')));
+      await tester.pumpAndSettle();
+      expect(log, [('Mgla', 'Mgla DE')]);
+      expect(find.byType(ServersView), findsNothing);
+
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('server-auto')));
+      await tester.pumpAndSettle();
+      expect(log.last, ('Mgla', 'Auto'));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('КОНТРОЛЬ: без групп в подписке ядро не трогается', (
+      tester,
+    ) async {
+      final log = <_Switch>[];
+      await _pump(
+        tester,
+        _scoped(const ServersView(fetchServers: _ok), log: log),
+      );
+      await tester.tap(find.byKey(const ValueKey('server-nl')));
+      await tester.pumpAndSettle();
+      expect(log, isEmpty);
+    });
+
+    test('флаг Латвии нарисован', () => expect(hasFlagArt('lv'), isTrue));
   });
 
   group('плитка «Сервер»', () {

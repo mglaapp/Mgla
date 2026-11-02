@@ -1261,6 +1261,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
     "selectedCountTitle": m34,
     "sendLetter": MessageLookupByLibrary.simpleMessage("Send the letter"),
+    "serverAuto": MessageLookupByLibrary.simpleMessage("Auto — fastest"),
     "serverBusy": MessageLookupByLibrary.simpleMessage("Busy"),
     "serverBusyTip": MessageLookupByLibrary.simpleMessage(
       "This server is busy — choose another",

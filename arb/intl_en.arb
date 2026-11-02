@@ -716,6 +716,7 @@
   "serversTitle": "Choose a server",
   "serverBusy": "Busy",
   "serverBusyTip": "This server is busy — choose another",
+  "serverAuto": "Auto — fastest",
   "serversLoadError": "Could not load the server list",
   "havePromoCode": "I have a promo code",
   "promoCode": "Promo code",

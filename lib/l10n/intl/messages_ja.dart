@@ -1053,6 +1053,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "selected": MessageLookupByLibrary.simpleMessage("選択済み"),
     "selectedCountTitle": m34,
     "sendLetter": MessageLookupByLibrary.simpleMessage("メールを送信"),
+    "serverAuto": MessageLookupByLibrary.simpleMessage("自動（最速）"),
     "serverBusy": MessageLookupByLibrary.simpleMessage("混雑中"),
     "serverBusyTip": MessageLookupByLibrary.simpleMessage(
       "このサーバーは混雑しています。別のサーバーを選んでください",
