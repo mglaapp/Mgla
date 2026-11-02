@@ -2,6 +2,24 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "0.9.12",
+      "tag": "v0.9.12",
+      "date": "2026-11-02",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "46d6ee1",
+              "scope": "servers",
+              "text": "Выбор сервера переключает узел"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.9.11",
       "tag": "v0.9.11",
       "date": "2026-10-21",
