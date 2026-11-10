@@ -5936,6 +5936,36 @@ class AppLocalizations {
     return Intl.message('Try it', name: 'trialButton', desc: '', args: []);
   }
 
+  /// `{days} free`
+  String trialFreeOffer(Object days) {
+    return Intl.message(
+      '$days free',
+      name: 'trialFreeOffer',
+      desc: '',
+      args: [days],
+    );
+  }
+
+  /// `No payment, no card. One trial per person.`
+  String get trialFreeDesc {
+    return Intl.message(
+      'No payment, no card. One trial per person.',
+      name: 'trialFreeDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Free trial is on — you can connect`
+  String get trialGranted {
+    return Intl.message(
+      'Free trial is on — you can connect',
+      name: 'trialGranted',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `The trial is unavailable right now`
   String get errTrialOff {
     return Intl.message(

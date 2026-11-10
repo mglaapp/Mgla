@@ -98,15 +98,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m36(days, date) => "剩 ${days} 天 · 至 ${date}";
 
-  static String m37(days, price) => "${days} · ${price} ₽";
+  static String m37(days) => "${days} 免费";
 
-  static String m38(code) => "优惠码 ${code}";
+  static String m38(days, price) => "${days} · ${price} ₽";
 
-  static String m39(site) => "或在手机上打开 ${site} 并输入代码";
+  static String m39(code) => "优惠码 ${code}";
 
-  static String m40(label) => "${label}必须为URL";
+  static String m40(site) => "或在手机上打开 ${site} 并输入代码";
 
-  static String m41(count) => "${count} 年前";
+  static String m41(label) => "${label}必须为URL";
+
+  static String m42(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -992,12 +994,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "trialDesc": MessageLookupByLibrary.simpleMessage(
       "使用俄罗斯银行卡或 SBP 支付。每个账户、Telegram 和银行卡仅限试用一次。",
     ),
+    "trialFreeDesc": MessageLookupByLibrary.simpleMessage(
+      "无需付款，无需银行卡。每人仅限试用一次。",
+    ),
+    "trialFreeOffer": m37,
+    "trialGranted": MessageLookupByLibrary.simpleMessage("试用已开启，可以连接了"),
     "trialNeedTelegram": MessageLookupByLibrary.simpleMessage(
       "请先绑定 Telegram：我们据此确保每人仅试用一次。",
     ),
-    "trialOffer": m37,
+    "trialOffer": m38,
     "trialPeriod": MessageLookupByLibrary.simpleMessage("试用期"),
-    "trialPromo": m38,
+    "trialPromo": m39,
     "tun": MessageLookupByLibrary.simpleMessage("虚拟网卡"),
     "tunDesc": MessageLookupByLibrary.simpleMessage("仅在管理员模式生效"),
     "turnOff": MessageLookupByLibrary.simpleMessage("关闭"),
@@ -1011,7 +1018,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "此手机上还没有 Mgla 访问密钥。请添加密钥，或在浏览器中登录 mgla.app/tv。",
     ),
     "tvNewCode": MessageLookupByLibrary.simpleMessage("新代码"),
-    "tvOrEnterCode": m39,
+    "tvOrEnterCode": m40,
     "tvScanQr": MessageLookupByLibrary.simpleMessage("用手机相机扫描二维码"),
     "tvWaiting": MessageLookupByLibrary.simpleMessage("正在等待手机确认…"),
     "txHashLabel": MessageLookupByLibrary.simpleMessage("交易哈希（0x…）"),
@@ -1037,7 +1044,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m40,
+    "urlTip": m41,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("地址"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("金额"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("网络"),
@@ -1058,7 +1065,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "website": MessageLookupByLibrary.simpleMessage("官网"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
-    "yearsAgo": m41,
+    "yearsAgo": m42,
     "zhCN": MessageLookupByLibrary.simpleMessage("中文简体"),
   };
 }

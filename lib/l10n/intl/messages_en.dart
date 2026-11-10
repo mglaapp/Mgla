@@ -113,15 +113,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m36(days, date) => "${days} d · until ${date}";
 
-  static String m37(days, price) => "${days} for ${price} ₽";
+  static String m37(days) => "${days} free";
 
-  static String m38(code) => "with promo code ${code}";
+  static String m38(days, price) => "${days} for ${price} ₽";
 
-  static String m39(site) => "or open ${site} on the phone and enter the code";
+  static String m39(code) => "with promo code ${code}";
 
-  static String m40(label) => "${label} must be a URL";
+  static String m40(site) => "or open ${site} on the phone and enter the code";
 
-  static String m41(count) =>
+  static String m41(label) => "${label} must be a URL";
+
+  static String m42(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1381,12 +1383,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "trialDesc": MessageLookupByLibrary.simpleMessage(
       "Pay with a Russian card or SBP. One trial per account, Telegram and card.",
     ),
+    "trialFreeDesc": MessageLookupByLibrary.simpleMessage(
+      "No payment, no card. One trial per person.",
+    ),
+    "trialFreeOffer": m37,
+    "trialGranted": MessageLookupByLibrary.simpleMessage(
+      "Free trial is on — you can connect",
+    ),
     "trialNeedTelegram": MessageLookupByLibrary.simpleMessage(
       "Link Telegram first: that is how the trial stays one per person.",
     ),
-    "trialOffer": m37,
+    "trialOffer": m38,
     "trialPeriod": MessageLookupByLibrary.simpleMessage("Trial"),
-    "trialPromo": m38,
+    "trialPromo": m39,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage(
       "Only effective in administrator mode",
@@ -1406,7 +1415,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "There is no Mgla access key on this phone yet. Add your key, or sign in at mgla.app/tv in the browser.",
     ),
     "tvNewCode": MessageLookupByLibrary.simpleMessage("New code"),
-    "tvOrEnterCode": m39,
+    "tvOrEnterCode": m40,
     "tvScanQr": MessageLookupByLibrary.simpleMessage(
       "Point your phone camera at the QR code",
     ),
@@ -1444,7 +1453,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain a profile from a URL",
     ),
-    "urlTip": m40,
+    "urlTip": m41,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("Address"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("Amount"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("Network"),
@@ -1469,7 +1478,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "website": MessageLookupByLibrary.simpleMessage("Website"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
-    "yearsAgo": m41,
+    "yearsAgo": m42,
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };
 }

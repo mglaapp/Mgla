@@ -413,6 +413,52 @@ void main() {
       expect(TrialOffer.fromJson(null), isNull);
     });
 
+    test(
+      'бесплатный пробный (10-11): free без цены разбирается, платный с нулём — нет',
+      () {
+        final free = TrialOffer.fromJson({
+          'free': true,
+          'rub': '0',
+          'days': 3,
+          'need_tg': false,
+        });
+        expect(free, isNotNull);
+        expect(free!.free, isTrue);
+        expect(free.days, 3);
+        expect(
+          TrialOffer.fromJson({'free': true, 'rub': 0, 'days': 3})!.free,
+          isTrue,
+        );
+        expect(TrialOffer.fromJson({'free': true, 'days': 7})!.days, 7);
+        // контроль: без free ноль по-прежнему не предложение
+        expect(TrialOffer.fromJson({'rub': 0, 'days': 3}), isNull);
+        expect(TrialOffer.fromJson({'rub': '19', 'days': 3})!.free, isFalse);
+        expect(TrialOffer.fromJson({'free': true, 'days': 0}), isNull);
+      },
+    );
+
+    test('ответ /pay/trial: granted — дни выданы, иначе адрес оплаты', () {
+      final granted = TrialStart.fromJson({
+        'ok': true,
+        'granted': true,
+        'url': 'https://mgla.app/ny/ok',
+      });
+      expect(granted!.granted, isTrue);
+      expect(
+        granted.url,
+        isNull,
+        reason: 'выданный пробный не открывает браузер',
+      );
+      final pay = TrialStart.fromJson({
+        'ok': true,
+        'url': 'https://pay.example/x',
+      });
+      expect(pay!.granted, isFalse);
+      expect(pay.url, 'https://pay.example/x');
+      expect(TrialStart.fromJson({'ok': true}), isNull);
+      expect(TrialStart.fromJson({'ok': true, 'url': ''}), isNull);
+    });
+
     test('статус несёт trial_offer; null и старый сервер — без пробного', () {
       final base = {'key': 'k', 'active': false};
       expect(

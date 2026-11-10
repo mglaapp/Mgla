@@ -69,23 +69,66 @@ Future<void> openPayment(
   );
 }
 
-/// Пробный: страница платёжки в браузере, а без телеграма — сперва бот привязки (сервер продаёт
-/// пробный один на телеграм). Вызывающий перечитывает статус после возврата.
+/// Пробный: без телеграма — сперва бот привязки (сервер даёт пробный один на телеграм); платный —
+/// страница платёжки в браузере; бесплатный (10-11) — дни сразу, браузер не нужен. Вызывающий
+/// перечитывает статус после возврата.
 Future<void> openTrial(
   BuildContext context,
+  WidgetRef ref,
   TrialOffer trial,
   String accessKey,
 ) async {
-  final result = trial.needTelegram
-      ? await request.bindTelegram(accessKey)
-      : await request.createTrialPayment(accessKey);
+  if (trial.needTelegram) {
+    final link = await request.bindTelegram(accessKey);
+    if (!context.mounted) return;
+    if (link.isError) return complainPayment(context, link.message);
+    await dialogs.openUrl(link.data!);
+    return;
+  }
+  final result = await request.createTrialPayment(accessKey);
   if (!context.mounted) return;
   if (result.isError) return complainPayment(context, result.message);
-  await dialogs.openUrl(result.data!);
+  final start = result.data!;
+  if (start.granted) {
+    dialogs.showNotifier(
+      context.appLocalizations.trialGranted,
+      level: MessageLevel.success,
+    );
+    await refreshAccountProfile(ref, accessKey);
+    return;
+  }
+  await dialogs.openUrl(start.url!);
 }
+
+/// Перечитать профиль аккаунта, когда доступ появился (пробный, оплата на сайте).
+///
+/// Неоплаченному наш сервер отдаёт профиль-заглушку с одной нерабочей точкой (10-11: иначе на 403
+/// профиль не вставал и ключ терялся). Серверы приходят только со следующим чтением подписки —
+/// без этого человек получил бы дни и подключался бы к заглушке до часового обновления.
+Future<void> refreshAccountProfile(WidgetRef ref, String accessKey) async {
+  final profile = ref
+      .read(profilesStateProvider)
+      .profiles
+      .where((p) => accessKeyOf(p.url) == accessKey)
+      .firstOrNull;
+  if (profile == null) return;
+  try {
+    await ref.read(profilesActionProvider.notifier).updateProfile(profile);
+  } catch (e) {
+    commonPrint.log(
+      'profile refresh after access ${compactError(e)}',
+      logLevel: LogLevel.warning,
+    );
+  }
+}
+
+/// Доступ только что появился: был ответ «не оплачен», теперь «оплачен».
+bool accessJustAppeared(AccountStatus? before, AccountStatus? now) =>
+    before != null && !before.active && now != null && now.active;
 
 String trialOfferText(BuildContext context, TrialOffer trial) {
   final l = context.appLocalizations;
+  if (trial.free) return l.trialFreeOffer(l.daysCount(trial.days));
   return l.trialOffer(l.daysCount(trial.days), trial.price);
 }
 
@@ -158,11 +201,15 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     setState(() => _busy = true);
     final result = await (widget.fetchStatus ?? request.accountStatus)(key);
     if (!mounted) return;
+    final before = _status;
     setState(() {
       _busy = false;
       _status = result.isSuccess ? result.data : null;
       _errorCode = result.isError ? result.message : null;
     });
+    if (accessJustAppeared(before, _status)) {
+      unawaited(refreshAccountProfile(ref, key));
+    }
   }
 
   Future<void> _createAccount() async {
@@ -189,7 +236,7 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
     final key = _key;
     if (key == null) return;
     setState(() => _busy = true);
-    await openTrial(context, trial, key);
+    await openTrial(context, ref, trial, key);
     if (!mounted) return;
     setState(() => _busy = false);
     await _load();
@@ -230,7 +277,13 @@ class _SubscriptionViewState extends ConsumerState<SubscriptionView> {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(trial.needTelegram ? l.trialNeedTelegram : l.trialDesc),
+              Text(
+                trial.needTelegram
+                    ? l.trialNeedTelegram
+                    : trial.free
+                    ? l.trialFreeDesc
+                    : l.trialDesc,
+              ),
               const SizedBox(height: 12),
               FilledButton(
                 onPressed: _busy ? null : () => _startTrial(trial),

@@ -156,18 +156,21 @@ class AccountStatus {
 }
 
 /// Пробный, который сервер продаёт ЭТОМУ аккаунту: без телеграма — только после привязки.
+/// [free] (10-11, VPN_TRIAL_FREE / Новый год): дни выдаются сразу, без кассы.
 @immutable
 class TrialOffer {
   final String price;
   final int days;
   final String? promo;
   final bool needTelegram;
+  final bool free;
 
   const TrialOffer({
     required this.price,
     required this.days,
     this.promo,
     this.needTelegram = false,
+    this.free = false,
   });
 
   static TrialOffer? fromJson(Object? json) {
@@ -179,14 +182,31 @@ class TrialOffer {
       _ => null,
     };
     final days = json['days'];
-    if (price == null || days is! int || days <= 0) return null;
+    final free = json['free'] == true;
+    if ((price == null && !free) || days is! int || days <= 0) return null;
     final promo = json['promo'];
     return TrialOffer(
-      price: price,
+      price: price ?? '0',
       days: days,
       promo: promo is String && promo.isNotEmpty ? promo : null,
       needTelegram: json['need_tg'] == true,
+      free: free,
     );
+  }
+}
+
+/// Ответ /api/v1/pay/trial: бесплатный пробный выдан сразу ([granted]) или страница оплаты ([url]).
+@immutable
+class TrialStart {
+  final bool granted;
+  final String? url;
+
+  const TrialStart({this.granted = false, this.url});
+
+  static TrialStart? fromJson(Map<String, dynamic> json) {
+    if (json['granted'] == true) return const TrialStart(granted: true);
+    final url = json['url'];
+    return url is String && url.isNotEmpty ? TrialStart(url: url) : null;
   }
 }
 

@@ -99,15 +99,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m36(days, date) => "残り${days}日 · ${date}まで";
 
-  static String m37(days, price) => "${days}・${price} ₽";
+  static String m37(days) => "${days} 無料";
 
-  static String m38(code) => "プロモコード ${code}";
+  static String m38(days, price) => "${days}・${price} ₽";
 
-  static String m39(site) => "またはスマートフォンで ${site} を開いてコードを入力してください";
+  static String m39(code) => "プロモコード ${code}";
 
-  static String m40(label) => "${label}はURLである必要があります";
+  static String m40(site) => "またはスマートフォンで ${site} を開いてコードを入力してください";
 
-  static String m41(count) => "${count} 年前";
+  static String m41(label) => "${label}はURLである必要があります";
+
+  static String m42(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -1155,12 +1157,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "trialDesc": MessageLookupByLibrary.simpleMessage(
       "ロシアのカードまたは SBP でお支払い。お試しはアカウント・Telegram・カードごとに1回です。",
     ),
+    "trialFreeDesc": MessageLookupByLibrary.simpleMessage(
+      "支払いもカードも不要です。お試しは1人1回です。",
+    ),
+    "trialFreeOffer": m37,
+    "trialGranted": MessageLookupByLibrary.simpleMessage("お試しが有効になりました。接続できます"),
     "trialNeedTelegram": MessageLookupByLibrary.simpleMessage(
       "先に Telegram を連携してください。お試しを1人1回にするために使います。",
     ),
-    "trialOffer": m37,
+    "trialOffer": m38,
     "trialPeriod": MessageLookupByLibrary.simpleMessage("お試し期間"),
-    "trialPromo": m38,
+    "trialPromo": m39,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage("管理者モードでのみ有効"),
     "turnOff": MessageLookupByLibrary.simpleMessage("オフにする"),
@@ -1176,7 +1183,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "このスマートフォンにはまだ Mgla のアクセスキーがありません。キーを追加するか、ブラウザで mgla.app/tv にログインしてください。",
     ),
     "tvNewCode": MessageLookupByLibrary.simpleMessage("新しいコード"),
-    "tvOrEnterCode": m39,
+    "tvOrEnterCode": m40,
     "tvScanQr": MessageLookupByLibrary.simpleMessage(
       "スマートフォンのカメラでQRコードを読み取ってください",
     ),
@@ -1206,7 +1213,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URLからプロファイルを取得します"),
-    "urlTip": m40,
+    "urlTip": m41,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("アドレス"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("金額"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("ネットワーク"),
@@ -1227,7 +1234,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "website": MessageLookupByLibrary.simpleMessage("ウェブサイト"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
-    "yearsAgo": m41,
+    "yearsAgo": m42,
     "zhCN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
   };
 }

@@ -113,15 +113,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m36(days, date) => "${days} дн. · до ${date}";
 
-  static String m37(days, price) => "${days} за ${price} ₽";
+  static String m37(days) => "${days} бесплатно";
 
-  static String m38(code) => "по промокоду ${code}";
+  static String m38(days, price) => "${days} за ${price} ₽";
 
-  static String m39(site) => "или откройте ${site} на телефоне и введите код";
+  static String m39(code) => "по промокоду ${code}";
 
-  static String m40(label) => "Значение «${label}» должно быть URL";
+  static String m40(site) => "или откройте ${site} на телефоне и введите код";
 
-  static String m41(count) =>
+  static String m41(label) => "Значение «${label}» должно быть URL";
+
+  static String m42(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1431,12 +1433,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "trialDesc": MessageLookupByLibrary.simpleMessage(
       "Оплата картой РФ или по СБП. Пробный даётся один раз — на аккаунт, телеграм и карту.",
     ),
+    "trialFreeDesc": MessageLookupByLibrary.simpleMessage(
+      "Оплата и карта не нужны. Пробный даётся один раз на человека.",
+    ),
+    "trialFreeOffer": m37,
+    "trialGranted": MessageLookupByLibrary.simpleMessage(
+      "Пробный период включён — можно подключаться",
+    ),
     "trialNeedTelegram": MessageLookupByLibrary.simpleMessage(
       "Сначала привяжите телеграм: по нему пробный даётся один раз на человека.",
     ),
-    "trialOffer": m37,
+    "trialOffer": m38,
     "trialPeriod": MessageLookupByLibrary.simpleMessage("Пробный период"),
-    "trialPromo": m38,
+    "trialPromo": m39,
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage(
       "Работает только в режиме администратора",
@@ -1454,7 +1463,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "На этом телефоне ещё нет ключа Mgla. Добавьте ключ или войдите на mgla.app/tv в браузере.",
     ),
     "tvNewCode": MessageLookupByLibrary.simpleMessage("Новый код"),
-    "tvOrEnterCode": m39,
+    "tvOrEnterCode": m40,
     "tvScanQr": MessageLookupByLibrary.simpleMessage(
       "Наведите камеру телефона на QR-код",
     ),
@@ -1488,7 +1497,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("Отдача"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("Получить профиль по URL"),
-    "urlTip": m40,
+    "urlTip": m41,
     "usdtAddress": MessageLookupByLibrary.simpleMessage("Адрес"),
     "usdtAmount": MessageLookupByLibrary.simpleMessage("Сумма"),
     "usdtNetwork": MessageLookupByLibrary.simpleMessage("Сеть"),
@@ -1519,7 +1528,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage(
       "Режим белого списка",
     ),
-    "yearsAgo": m41,
+    "yearsAgo": m42,
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
   };
 }

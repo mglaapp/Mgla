@@ -145,6 +145,83 @@ void main() {
     expect(find.text(l.showLink), findsNothing);
   });
 
+  test('доступ появился = был ответ «не оплачен», стал «оплачен» (10-11)', () {
+    AccountStatus st(bool active) => AccountStatus(
+      key: 'k',
+      active: active,
+      blocked: false,
+      expiresAt: null,
+      daysLeft: null,
+      usedGb: null,
+      quotaGb: null,
+      plans: const [],
+      usdtEnabled: false,
+      cardEnabled: false,
+    );
+    expect(accessJustAppeared(st(false), st(true)), isTrue);
+    expect(
+      accessJustAppeared(null, st(true)),
+      isFalse,
+      reason: 'первый ответ — не переход',
+    );
+    expect(accessJustAppeared(st(true), st(true)), isFalse);
+    expect(accessJustAppeared(st(false), st(false)), isFalse);
+    expect(accessJustAppeared(st(false), null), isFalse);
+  });
+
+  testWidgets(
+    'бесплатный пробный (10-11): «3 дня бесплатно», без цены и без «оплата картой»',
+    (tester) async {
+      const key = '9ac0394dfc2f68b5846e7ac4';
+      final container = _containerFor(
+        tester,
+        profiles: [
+          Profile.normal(
+            label: 'p',
+            url: '$subscriptionSite$subscriptionPath$key',
+          ),
+        ],
+      );
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: TestApp(
+            child: SubscriptionView(
+              fetchStatus: (_) async => Result.success(
+                AccountStatus(
+                  key: key,
+                  active: false,
+                  blocked: false,
+                  expiresAt: null,
+                  daysLeft: null,
+                  usedGb: null,
+                  quotaGb: null,
+                  plans: const [],
+                  usdtEnabled: false,
+                  cardEnabled: true,
+                  trial: const TrialOffer(price: '0', days: 3, free: true),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final l = tester.element(find.byType(SubscriptionView)).appLocalizations;
+      final line = l.trialFreeOffer(l.daysCount(3));
+      expect(find.text(line), findsOneWidget);
+      expect(
+        find.textContaining('₽'),
+        findsNothing,
+        reason: 'было «3 дня за 0 ₽»',
+      );
+      expect(find.text(l.trialFreeDesc), findsOneWidget);
+      expect(find.text(l.trialDesc), findsNothing);
+      expect(find.text(l.trialButton), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('промокод: отказ словами в окне, принятый — неделя по коду', (
     tester,
   ) async {

@@ -225,6 +225,24 @@ void main() {
     expect(find.byTooltip(l.renewSubscription), findsNothing);
   });
 
+  testWidgets('бесплатный пробный (10-11): «3 дня бесплатно», без «за 0 ₽»', (
+    tester,
+  ) async {
+    final server = _Server(
+      Result.success(
+        _status(
+          active: false,
+          trial: const TrialOffer(price: '0', days: 3, free: true),
+        ),
+      ),
+    );
+    await _pump(tester, url: _ourUrl, server: server);
+    final l = _l(tester);
+    expect(find.text(l.trialFreeOffer(l.daysCount(3))), findsOneWidget);
+    expect(find.textContaining('₽'), findsNothing);
+    expect(find.byTooltip(l.trialButton), findsOneWidget);
+  });
+
   testWidgets(
     'не оплачено, пробный доступен: «3 дня за 19 ₽» и «Попробовать»',
     (tester) async {

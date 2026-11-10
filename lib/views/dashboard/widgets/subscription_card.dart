@@ -57,6 +57,10 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
     final result = await fetch(key);
     // Ключ сменился, пока шёл запрос: этот ответ про чужой срок, его перезапишет новый.
     if (!mounted || _loadedKey != key) return;
+    final before = _status;
+    if (result.isSuccess && accessJustAppeared(before, result.data)) {
+      unawaited(refreshAccountProfile(ref, key));
+    }
     setState(() {
       _busy = false;
       _loaded = true;
@@ -115,7 +119,7 @@ class _SubscriptionCardState extends ConsumerState<SubscriptionCard> {
     if (key == null) return;
     if (trial.needTelegram) return _openDetails();
     setState(() => _busy = true);
-    await openTrial(context, trial, key);
+    await openTrial(context, ref, trial, key);
     if (!mounted) return;
     setState(() => _busy = false);
     await _load();

@@ -347,14 +347,8 @@ class Request {
     parse: AccountStatus.fromJson,
   );
 
-  Future<Result<String>> createTrialPayment(String key) => _api(
-    '/pay/trial',
-    form: {'key': key},
-    parse: (data) {
-      final url = data['url'];
-      return url is String && url.isNotEmpty ? url : null;
-    },
-  );
+  Future<Result<TrialStart>> createTrialPayment(String key) =>
+      _api('/pay/trial', form: {'key': key}, parse: TrialStart.fromJson);
 
   /// Счёт на оплату монетой. Живой счёт на тот же тариф и монету сервер отдаёт повторно:
   /// обновлённый экран не должен показать новую сумму, когда старая уже отправлена.
