@@ -2,6 +2,34 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "0.9.13",
+      "tag": "v0.9.13",
+      "date": "2026-11-10",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "435fe5f",
+              "scope": "account",
+              "text": "Бесплатный пробный — «N дней бесплатно» и выдача без браузера"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "d15361a",
+              "scope": "linux",
+              "text": "Программа и окно называются Mgla"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.9.12",
       "tag": "v0.9.12",
       "date": "2026-11-02",
