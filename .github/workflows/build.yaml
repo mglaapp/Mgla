@@ -63,6 +63,20 @@ jobs:
       - name: Check coverage
         run: dart run tool/check_coverage.dart coverage/lcov.info 75
 
+  update-scripts:
+    name: Update scripts (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run the in-app update scripts
+        run: bash tool/update_scripts_test.sh
+
   plugins:
     name: Plugins
     runs-on: ubuntu-latest
@@ -232,7 +246,7 @@ jobs:
 
   build:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    needs: [ dart, plugins, go, android, rust, windows-helper-test ]
+    needs: [ dart, update-scripts, plugins, go, android, rust, windows-helper-test ]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

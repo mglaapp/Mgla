@@ -116,6 +116,8 @@ flutter:
       platforms: [ macos, linux ]
     - path: assets/images/tray/windows/
       platforms: [ windows ]
+    - path: assets/update/
+      platforms: [ macos, linux ]
   fonts:
     # IBM Plex — шрифт дизайн-кода Mgla. СВОИМИ файлами, а не подгрузкой со стороны:
     # приложение обязано выглядеть одинаково там, где половина сети уже недоступна.

@@ -225,10 +225,13 @@ class CommonAction extends _$CommonAction {
             installing = false;
             failure = currentAppLocalizations.updateInstallFailed;
           }
-        } else {
+        } else if (Platform.isWindows) {
           await Process.start(file.path, [], mode: ProcessStartMode.detached);
           // The installer cannot replace files of a running app, so we leave first.
           unawaited(ref.read(systemActionProvider.notifier).handleExit());
+        } else if (!await _installDesktopUpdate(file)) {
+          installing = false;
+          failure = currentAppLocalizations.updateInstallFailed;
         }
       }
     } catch (error) {
@@ -258,6 +261,78 @@ class CommonAction extends _$CommonAction {
       if (download == true) {
         unawaited(launchUrl(Uri.parse(_releasesUrl)));
       }
+    }
+  }
+
+  /// macOS and Linux: a script from assets/update waits for this process to leave, swaps the
+  /// app and starts it again; .deb/.rpm go through pkexec first. False = nothing was changed.
+  Future<bool> _installDesktopUpdate(File file) async {
+    final scripts = Directory(
+      join((await appPath.cacheDir.future).path, 'update-scripts'),
+    );
+    await scripts.create(recursive: true);
+    Future<String> script(String name) async {
+      final path = join(scripts.path, name);
+      await File(
+        path,
+      ).writeAsString(await rootBundle.loadString('assets/update/$name'));
+      return path;
+    }
+
+    final exe = Platform.resolvedExecutable;
+    if (Platform.isMacOS) {
+      final bundle = macAppBundle(exe);
+      if (bundle == null || !await _writable(dirname(bundle))) return false;
+      await Process.start('/bin/sh', [
+        await script('macos.sh'),
+        '$pid',
+        file.path,
+        bundle,
+      ], mode: ProcessStartMode.detached);
+    } else {
+      final kind = linuxInstallKind();
+      if (kind == null) return false;
+      if (kind == LinuxInstall.appImage) {
+        final target = Platform.environment['APPIMAGE']!;
+        if (!await _writable(dirname(target))) return false;
+        await Process.start('/bin/sh', [
+          await script('appimage.sh'),
+          '$pid',
+          file.path,
+          target,
+        ], mode: ProcessStartMode.detached);
+      } else {
+        final args = kind == LinuxInstall.deb
+            ? ['dpkg', '-i', file.path]
+            : ['rpm', '-U', '--replacepkgs', file.path];
+        final result = await Process.run('pkexec', args);
+        await file.safeDelete();
+        if (result.exitCode != 0) {
+          commonPrint.log(
+            'package update exit ${result.exitCode}: ${result.stderr}',
+            logLevel: LogLevel.error,
+          );
+          return false;
+        }
+        await Process.start('/bin/sh', [
+          await script('relaunch.sh'),
+          '$pid',
+          exe,
+        ], mode: ProcessStartMode.detached);
+      }
+    }
+    unawaited(ref.read(systemActionProvider.notifier).handleExit());
+    return true;
+  }
+
+  Future<bool> _writable(String directory) async {
+    final probe = File(join(directory, '.mgla-update-$pid'));
+    try {
+      await probe.writeAsString('');
+      await probe.delete();
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 

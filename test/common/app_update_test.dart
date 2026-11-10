@@ -45,19 +45,93 @@ void main() {
       }
     });
 
-    test('platforms we deliberately do not install in place answer null', () {
-      // Not an omission: a .dmg is dragged by hand and .deb/.rpm need root, so those keep
-      // opening the release page. If this ever starts returning a suffix, the flow would hand
-      // a Linux package to a process that cannot install it.
-      for (final abi in const [
-        Abi.linuxX64,
-        Abi.linuxArm64,
-        Abi.macosX64,
-        Abi.macosArm64,
-        Abi.windowsIA32,
-      ]) {
+    test('Linux of unknown install kind and 32-bit Windows answer null', () {
+      for (final abi in const [Abi.linuxX64, Abi.linuxArm64, Abi.windowsIA32]) {
         expect(updateAssetSuffix(abi), isNull, reason: '$abi should be null');
       }
+    });
+
+    test(
+      'macOS and every Linux install kind map onto a file of a real release',
+      () {
+        const names = [
+          'Mgla-0.9.13-linux-amd64.AppImage',
+          'Mgla-0.9.13-linux-amd64.deb',
+          'Mgla-0.9.13-linux-amd64.rpm',
+          'Mgla-0.9.13-linux-arm64.AppImage',
+          'Mgla-0.9.13-linux-arm64.deb',
+          'Mgla-0.9.13-linux-arm64.rpm',
+          'Mgla-0.9.13-macos-amd64.dmg',
+          'Mgla-0.9.13-macos-arm64.dmg',
+        ];
+        final cases = <String?, String>{
+          updateAssetSuffix(Abi.macosArm64): 'Mgla-0.9.13-macos-arm64.dmg',
+          updateAssetSuffix(Abi.macosX64): 'Mgla-0.9.13-macos-amd64.dmg',
+          updateAssetSuffix(Abi.linuxX64, LinuxInstall.appImage):
+              'Mgla-0.9.13-linux-amd64.AppImage',
+          updateAssetSuffix(Abi.linuxX64, LinuxInstall.deb):
+              'Mgla-0.9.13-linux-amd64.deb',
+          updateAssetSuffix(Abi.linuxX64, LinuxInstall.rpm):
+              'Mgla-0.9.13-linux-amd64.rpm',
+          updateAssetSuffix(Abi.linuxArm64, LinuxInstall.appImage):
+              'Mgla-0.9.13-linux-arm64.AppImage',
+          updateAssetSuffix(Abi.linuxArm64, LinuxInstall.deb):
+              'Mgla-0.9.13-linux-arm64.deb',
+          updateAssetSuffix(Abi.linuxArm64, LinuxInstall.rpm):
+              'Mgla-0.9.13-linux-arm64.rpm',
+        };
+        expect(cases, hasLength(8), reason: 'every case gives its own suffix');
+        cases.forEach((suffix, want) {
+          expect(names.where((n) => n.endsWith(suffix!)), [want]);
+        });
+      },
+    );
+
+    test(
+      'the Linux install kind: AppImage by its variable, packages by /usr',
+      () {
+        bool none(String _) => false;
+        bool dpkg(String p) => p == '/usr/bin/dpkg';
+        bool rpm(String p) => p == '/usr/bin/rpm';
+        expect(
+          linuxInstallKind(
+            environment: {'APPIMAGE': '/home/u/Mgla.AppImage'},
+            executable: '/tmp/.mount_Mgla/Mgla',
+            exists: dpkg,
+          ),
+          LinuxInstall.appImage,
+        );
+        const exe = '/usr/share/Mgla/Mgla';
+        expect(
+          linuxInstallKind(environment: {}, executable: exe, exists: dpkg),
+          LinuxInstall.deb,
+        );
+        expect(
+          linuxInstallKind(environment: {}, executable: exe, exists: rpm),
+          LinuxInstall.rpm,
+        );
+        expect(
+          linuxInstallKind(environment: {}, executable: exe, exists: none),
+          isNull,
+        );
+        expect(
+          linuxInstallKind(
+            environment: {'APPIMAGE': ''},
+            executable: '/home/u/build/Mgla',
+            exists: dpkg,
+          ),
+          isNull,
+          reason: 'a self-built copy outside /usr is not ours to replace',
+        );
+      },
+    );
+
+    test('the .app bundle is found around the macOS executable', () {
+      expect(
+        macAppBundle('/Applications/Mgla.app/Contents/MacOS/Mgla'),
+        '/Applications/Mgla.app',
+      );
+      expect(macAppBundle('/usr/local/bin/mgla'), isNull);
     });
 
     test('picking matches by suffix, so a new version still matches', () {

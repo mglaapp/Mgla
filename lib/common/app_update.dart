@@ -18,14 +18,52 @@ class UpdateAsset {
   final int size;
 }
 
-/// Null on macOS and Linux, which keep opening the release page instead.
-String? updateAssetSuffix([Abi? abi]) {
-  return switch (abi ?? Abi.current()) {
+enum LinuxInstall { appImage, deb, rpm }
+
+/// How this Linux copy was installed; null when it cannot be told, and the release page opens.
+LinuxInstall? linuxInstallKind({
+  Map<String, String>? environment,
+  String? executable,
+  bool Function(String path)? exists,
+}) {
+  final env = environment ?? Platform.environment;
+  final exe = executable ?? Platform.resolvedExecutable;
+  final has = exists ?? (String path) => File(path).existsSync();
+  if ((env['APPIMAGE'] ?? '').isNotEmpty) return LinuxInstall.appImage;
+  if (!exe.startsWith('/usr/')) return null;
+  if (has('/usr/bin/dpkg')) return LinuxInstall.deb;
+  if (has('/usr/bin/rpm')) return LinuxInstall.rpm;
+  return null;
+}
+
+/// The .app bundle around a macOS executable (`…/Mgla.app/Contents/MacOS/Mgla`).
+String? macAppBundle(String executable) {
+  final marker = executable.lastIndexOf('.app/Contents/MacOS/');
+  return marker < 0 ? null : executable.substring(0, marker + 4);
+}
+
+String? updateAssetSuffix([Abi? abi, LinuxInstall? linux]) {
+  final current = abi ?? Abi.current();
+  final kind =
+      linux ??
+      (abi == null && (current == Abi.linuxX64 || current == Abi.linuxArm64)
+          ? linuxInstallKind()
+          : null);
+  final linuxArch = current == Abi.linuxArm64 ? 'arm64' : 'amd64';
+  return switch (current) {
     Abi.androidArm64 => '-android-arm64-v8a.apk',
     Abi.androidArm => '-android-armeabi-v7a.apk',
     Abi.androidX64 => '-android-x86_64.apk',
     Abi.windowsX64 => '-windows-amd64-setup.exe',
     Abi.windowsArm64 => '-windows-arm64-setup.exe',
+    Abi.macosArm64 => '-macos-arm64.dmg',
+    Abi.macosX64 => '-macos-amd64.dmg',
+    Abi.linuxX64 || Abi.linuxArm64 => switch (kind) {
+      LinuxInstall.appImage => '-linux-$linuxArch.AppImage',
+      LinuxInstall.deb => '-linux-$linuxArch.deb',
+      LinuxInstall.rpm => '-linux-$linuxArch.rpm',
+      null => null,
+    },
     _ => null,
   };
 }
@@ -77,7 +115,11 @@ String? sha256ForAsset(String sums, String assetName) {
   return null;
 }
 
-bool get canInstallUpdateInApp => Platform.isAndroid || Platform.isWindows;
+bool get canInstallUpdateInApp =>
+    Platform.isAndroid ||
+    Platform.isWindows ||
+    (Platform.isMacOS && macAppBundle(Platform.resolvedExecutable) != null) ||
+    (Platform.isLinux && linuxInstallKind() != null);
 
 /// Where to ask about a newer version, in order: our own mirror first, then GitHub.
 ///
