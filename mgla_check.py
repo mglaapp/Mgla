@@ -52,6 +52,18 @@ def main() -> int:
     check("акцент системы — лёд #7DD3FC, не пыльно-розовый апстрима",
           "const defaultPrimaryColor = 0xFF7DD3FC;" in c, )
 
+    # 10-11 (письмо пользователя 06-11: «внутри AppImage FlClash — кто-то упаковал FlClash и выдал
+    # за Mgla»). Имя программы и окно на Linux — наши; ядро и помощник (FlClashCore,
+    # FlClashHelperService) общие для всех платформ и остаются по решению владельца, на /download
+    # честно сказано, что Mgla основан на открытом FlClash (GPL-3.0).
+    print("\n— Linux: программа и окно —")
+    cml = read("linux/CMakeLists.txt")
+    check("linux: имя программы Mgla (AppImage/deb берут его из BINARY_NAME)",
+          'set(BINARY_NAME "Mgla")' in cml and 'set(BINARY_NAME "FlClash")' not in cml)
+    gtk = read("linux/runner/my_application.cc")
+    check("linux: заголовок окна Mgla в обеих ветках (GNOME и прочие)",
+          gtk.count('"Mgla"') == 2 and '"FlClash"' not in gtk, gtk.count('"Mgla"'))
+
     print("\n— Windows: файл и окно —")
     cm = read("windows/CMakeLists.txt")
     check("имя исполняемого файла Mgla.exe", 'set(BINARY_NAME "Mgla")' in cm)
@@ -265,8 +277,10 @@ def main() -> int:
           "_keyPattern" in ck and "{16,64}" in ck)
     # Ссылка из буфера может оказаться какой угодно: file://, javascript: и прочее уехало бы
     # прямо в загрузчик профиля.
-    check("чужие схемы ссылок отбиваются (в профиль идёт только http/https)",
-          "uri.scheme != 'http'" in ck and "uri.scheme != 'https'" in ck)
+    # С 21-10 (e67d3cc, строгий TLS) — только https: проверка ждала «http или https» и краснела
+    # на более строгом коде (поймано 10-11).
+    check("чужие схемы ссылок отбиваются (в профиль идёт только https)",
+          "uri.scheme != 'https'" in ck and "uri.scheme != 'http'" not in ck)
     add = read("lib/views/profiles/add.dart")
     check("в меню добавления ключ стоит ПЕРВЫМ пунктом",
           add.index("appLocalizations.accessKey") < add.index("appLocalizations.qrcode"))
