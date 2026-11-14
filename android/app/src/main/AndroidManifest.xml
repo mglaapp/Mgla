@@ -55,6 +55,12 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
+            <!-- Mgla 11-11 (crash #5): links are handled by app_links (lib/common/link.dart). Flutter's
+                 built-in deep linking (on by default since 3.27) also pushed the URI as a named route,
+                 and with no routes table _onUnknownRoute threw "Null check operator used on a null value". -->
+            <meta-data
+                android:name="flutter_deeplinking_enabled"
+                android:value="false" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -151,5 +157,14 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- Mgla 14-11 (crash #6): Google datatransport (ML Kit telemetry of the QR scanner)
+             declares this receiver for its AlarmManager scheduler, which it uses only below
+             Android 5; from 5 on it schedules through JobScheduler. On 13-11 a test device
+             (dev-keys build) delivered it an intent without data and the app died in onReceive
+             with a NullPointerException. Nothing of ours needs it. -->
+        <receiver
+            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+            tools:node="remove" />
     </application>
 </manifest>
