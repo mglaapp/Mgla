@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.9.16 (2026-11-14)
+
+**Features**
+
+- **crash** отчёт о нативном падении на Android 12+ приходит со стеком (f1a27b1)
+
+**Bug Fixes**
+
+- **android** исправлены два редких падения приложения на Android (a404a39)
+
 ## v0.9.15 (2026-11-10)
 
 Internal improvements only.

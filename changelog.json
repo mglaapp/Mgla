@@ -2,6 +2,34 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "0.9.16",
+      "tag": "v0.9.16",
+      "date": "2026-11-14",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "feat",
+          "entries": [
+            {
+              "id": "f1a27b1",
+              "scope": "crash",
+              "text": "отчёт о нативном падении на Android 12+ приходит со стеком"
+            }
+          ]
+        },
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "a404a39",
+              "scope": "android",
+              "text": "исправлены два редких падения приложения на Android"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.9.15",
       "tag": "v0.9.15",
       "date": "2026-11-10",
