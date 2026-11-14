@@ -2,6 +2,7 @@ package com.follow.clash.common
 
 import android.app.ActivityManager
 import android.app.Application
+import android.app.ApplicationExitInfo
 import android.os.Build
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -48,6 +49,39 @@ object GlobalState : CoroutineScope by CoroutineScope(SupervisorJob() + Dispatch
             "reason" to info.reason,
             "timestamp" to info.timestamp,
             "description" to info.description,
+            "trace" to exitTrace(info),
         )
     }
+
+    /**
+     * What the system kept about the death: since Android 12 a native crash leaves a tombstone
+     * (protobuf, TombstoneText), an ANR leaves the thread dump as text. Read only for these two
+     * reasons and never more than [TRACE_READ_LIMIT]: this runs on every launch.
+     */
+    private fun exitTrace(info: ApplicationExitInfo): String? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return null
+        val native = info.reason == ApplicationExitInfo.REASON_CRASH_NATIVE
+        if (!native && info.reason != ApplicationExitInfo.REASON_ANR) return null
+        return runCatching {
+            val bytes = info.traceInputStream?.use { input ->
+                val out = java.io.ByteArrayOutputStream()
+                val buf = ByteArray(64 * 1024)
+                while (out.size() < TRACE_READ_LIMIT) {
+                    val n = input.read(buf)
+                    if (n < 0) break
+                    out.write(buf, 0, n)
+                }
+                out.toByteArray()
+            } ?: return null
+            if (native) {
+                TombstoneText.format(bytes)?.let { "== tombstone ==\n$it" }
+            } else {
+                val text = bytes.toString(Charsets.UTF_8).trim()
+                if (text.isEmpty()) null
+                else "== anr ==\n" + text.take(TombstoneText.LIMIT)
+            }
+        }.getOrNull()
+    }
+
+    private const val TRACE_READ_LIMIT = 4 * 1024 * 1024
 }

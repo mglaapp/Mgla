@@ -58,6 +58,26 @@ void main() {
       expect(info?.reason, AppExitReason.anr);
       expect(info?.timestamp, 42);
       expect(info?.description, 'anr');
+      expect(info?.trace, isNull);
+    });
+
+    test('carries the system trace, but not a blank one', () {
+      final info = AppExitInfo.fromJson({
+        'reason': 5,
+        'timestamp': 42,
+        'description': 'crash',
+        'trace': '== tombstone ==\nsignal 11 (SIGSEGV)',
+      });
+      expect(info?.reason, AppExitReason.crashNative);
+      expect(info?.trace, startsWith('== tombstone =='));
+      expect(
+        AppExitInfo.fromJson({
+          'reason': 5,
+          'timestamp': 1,
+          'trace': '  ',
+        })?.trace,
+        isNull,
+      );
     });
 
     test('rejects payloads without a usable timestamp', () {

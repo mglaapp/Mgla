@@ -388,6 +388,72 @@ void main() {
       expect(report['stack'], contains('MainActivity.onStart'));
     });
 
+    const tombstone =
+        '== tombstone ==\n'
+        'cmdline: com.mgla.app\n'
+        'signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x0\n'
+        'thread 4242 (mgla-core):\n'
+        '#00 pc 00000000000a1b2c  /data/app/~~Xy==/com.mgla.app-1/lib/arm64/libclash.so (tun_read+40)\n'
+        '#01 pc 0000000000012345  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+64)\n';
+
+    test(
+      'a native exit with only the system tombstone is headed by its signal and library',
+      () {
+        final instance = reports()..appVersion = '0.9.16';
+
+        instance.recordExit(
+          'crashNative',
+          'crash',
+          trace: joinTraces(instance.takeSideTrace(), tombstone),
+        );
+
+        final report = parseCrashReport(instance.latest()!)!;
+        expect(
+          report['error'],
+          'crashNative: crash — signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), '
+          'fault addr 0x0 in libclash.so',
+        );
+        expect(report['stack'], contains('== tombstone =='));
+        expect(report['stack'], contains('tun_read+40'));
+      },
+    );
+
+    test('an abort message joins the tombstone headline', () {
+      final headline = sideTraceHeadline(
+        tombstone.replaceFirst(
+          'thread 4242',
+          "Abort message: 'Check failed: idx < size'\nthread 4242",
+        ),
+      );
+      expect(headline, endsWith("in libclash.so — 'Check failed: idx < size'"));
+    });
+
+    test('a Go panic outranks the tombstone; both stay in the stack', () {
+      final instance = reports()..appVersion = '0.9.16';
+      side('core-crash.log').writeAsStringSync(goPanic);
+
+      instance.recordExit(
+        'crashNative',
+        'crash',
+        trace: joinTraces(instance.takeSideTrace(), tombstone),
+      );
+
+      final report = parseCrashReport(instance.latest()!)!;
+      expect(
+        report['error'],
+        'crashNative: crash — fatal error: concurrent map writes',
+      );
+      expect(report['stack'], contains('== core =='));
+      expect(report['stack'], contains('== tombstone =='));
+    });
+
+    test('joinTraces: nothing from either side gives null', () {
+      expect(joinTraces(null, null), isNull);
+      expect(joinTraces('  ', '\n'), isNull);
+      expect(joinTraces('a', null), 'a');
+      expect(joinTraces(null, 'b'), 'b');
+    });
+
     test('nothing left behind gives no trace and an unchanged report', () {
       final instance = reports()..appVersion = '0.9.7';
       side('core-crash.log').writeAsStringSync('   \n');

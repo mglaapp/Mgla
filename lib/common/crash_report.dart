@@ -274,8 +274,20 @@ class CrashReports {
   }
 }
 
+/// The side files' text and the system's own trace of the death, as one stack; null if neither.
+String? joinTraces(String? side, String? system) {
+  final parts = [
+    if (side != null && side.trim().isNotEmpty) side.trim(),
+    if (system != null && system.trim().isNotEmpty) system.trim(),
+  ];
+  return parts.isEmpty ? null : parts.join('\n');
+}
+
+final _tombstoneTopFrame = RegExp(r'^#00 pc [0-9a-f]+\s+(\S+)');
+
 /// The line that names a native failure: Go's «panic: …» or «fatal error: …», otherwise the
-/// JVM exception line that follows CrashTrace's «thread: …» header.
+/// JVM exception line that follows CrashTrace's «thread: …» header, otherwise the tombstone's
+/// signal line with the library of the top frame (and the abort message, if any).
 String? sideTraceHeadline(String trace) {
   final lines = const LineSplitter().convert(trace);
   for (final line in lines) {
@@ -287,7 +299,30 @@ String? sideTraceHeadline(String trace) {
   final thread = lines.indexWhere((line) => line.startsWith('thread: '));
   if (thread >= 0 && thread + 1 < lines.length) {
     final text = lines[thread + 1].trim();
-    return text.isEmpty ? null : text;
+    if (text.isNotEmpty) {
+      return text;
+    }
+  }
+  final signal = lines.indexWhere((line) => line.startsWith('signal '));
+  if (signal >= 0) {
+    var text = lines[signal].trim();
+    for (final line in lines.skip(signal)) {
+      final file = _tombstoneTopFrame.firstMatch(line.trim())?.group(1);
+      if (file != null) {
+        text += ' in ${file.split('/').last}';
+        break;
+      }
+    }
+    final abort = lines.firstWhere(
+      (line) => line.startsWith('Abort message: '),
+      orElse: () => '',
+    );
+    if (abort.isNotEmpty) {
+      final message = abort.substring('Abort message: '.length).trim();
+      text +=
+          ' — ${message.length > 160 ? message.substring(0, 160) : message}';
+    }
+    return text;
   }
   return null;
 }

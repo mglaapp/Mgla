@@ -42,7 +42,7 @@ class BootGuard {
   static void _recordExit(AppExitInfo exit) => crashReports.recordExit(
     exit.reason.name,
     exit.description,
-    trace: crashReports.takeSideTrace(),
+    trace: joinTraces(crashReports.takeSideTrace(), exit.trace),
   );
 
   BootDecision get decision => _decision;

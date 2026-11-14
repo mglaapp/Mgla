@@ -65,10 +65,15 @@ class AppExitInfo {
   final int timestamp;
   final String? description;
 
+  /// What the system kept about the death (Android 12+): a native crash's tombstone turned
+  /// into text, or an ANR thread dump. Already headed «== tombstone ==» / «== anr ==».
+  final String? trace;
+
   const AppExitInfo({
     required this.reason,
     required this.timestamp,
     this.description,
+    this.trace,
   });
 
   static AppExitInfo? fromJson(Object? json) {
@@ -80,10 +85,12 @@ class AppExitInfo {
       return null;
     }
     final description = json['description'];
+    final trace = json['trace'];
     return AppExitInfo(
       reason: AppExitReason.fromCode(json['reason']),
       timestamp: timestamp,
       description: description is String ? description : null,
+      trace: trace is String && trace.trim().isNotEmpty ? trace : null,
     );
   }
 
