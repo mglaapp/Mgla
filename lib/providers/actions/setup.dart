@@ -458,8 +458,10 @@ class SetupAction extends _$SetupAction {
       ),
     );
     if (nextProfile != null) {
-      profile = nextProfile;
-      ref.read(profilesProvider.notifier).put(nextProfile);
+      profile = ref
+          .read(profilesActionProvider.notifier)
+          .withLiveChoices(nextProfile);
+      ref.read(profilesProvider.notifier).put(profile);
     }
     commonPrint.log('setup ===> ${profile?.realLabel}');
     final patchConfig = ref.read(patchClashConfigProvider);

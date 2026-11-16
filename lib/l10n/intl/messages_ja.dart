@@ -1060,6 +1060,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "serverBusyTip": MessageLookupByLibrary.simpleMessage(
       "このサーバーは混雑しています。別のサーバーを選んでください",
     ),
+    "serverMs": MessageLookupByLibrary.simpleMessage("ms"),
+    "serverNotInProfile": MessageLookupByLibrary.simpleMessage(
+      "This server isn\'t in your profile yet — update the profile and try again",
+    ),
     "serverTitle": MessageLookupByLibrary.simpleMessage("サーバー"),
     "serversLoadError": MessageLookupByLibrary.simpleMessage(
       "サーバー一覧を読み込めませんでした",

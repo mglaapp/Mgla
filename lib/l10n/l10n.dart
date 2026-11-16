@@ -6026,6 +6026,21 @@ class AppLocalizations {
     );
   }
 
+  /// `This server isn't in your profile yet — update the profile and try again`
+  String get serverNotInProfile {
+    return Intl.message(
+      'This server isn\'t in your profile yet — update the profile and try again',
+      name: 'serverNotInProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ms`
+  String get serverMs {
+    return Intl.message('ms', name: 'serverMs', desc: '', args: []);
+  }
+
   /// `Auto — fastest`
   String get serverAuto {
     return Intl.message(

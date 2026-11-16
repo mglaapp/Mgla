@@ -689,9 +689,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "installPermissionRequired": MessageLookupByLibrary.simpleMessage(
       "Installation permission needed",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1267,6 +1268,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "serverBusy": MessageLookupByLibrary.simpleMessage("Busy"),
     "serverBusyTip": MessageLookupByLibrary.simpleMessage(
       "This server is busy — choose another",
+    ),
+    "serverMs": MessageLookupByLibrary.simpleMessage("ms"),
+    "serverNotInProfile": MessageLookupByLibrary.simpleMessage(
+      "This server isn\'t in your profile yet — update the profile and try again",
     ),
     "serverTitle": MessageLookupByLibrary.simpleMessage("Server"),
     "serversLoadError": MessageLookupByLibrary.simpleMessage(

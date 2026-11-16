@@ -719,6 +719,8 @@
   "serversTitle": "サーバーを選択",
   "serverBusy": "混雑中",
   "serverBusyTip": "このサーバーは混雑しています。別のサーバーを選んでください",
+  "serverNotInProfile": "This server isn't in your profile yet — update the profile and try again",
+  "serverMs": "ms",
   "serverAuto": "自動（最速）",
   "serversLoadError": "サーバー一覧を読み込めませんでした",
   "havePromoCode": "プロモコードを持っています",

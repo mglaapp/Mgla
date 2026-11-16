@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:fl_clash/common/common.dart';
@@ -251,6 +252,36 @@ class BusyBadge extends StatelessWidget {
   }
 }
 
+/// Ping of a server group in the picker: «42 мс», a dash on timeout, a small spinner while the
+/// core measures, nothing before the first measurement.
+class ServerPing extends ConsumerWidget {
+  final String group;
+
+  const ServerPing({super.key, required this.group});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pending = ref.watch(delayTestPendingProvider(proxyName: group));
+    final delay = ref.watch(delayProvider(proxyName: group));
+    if (pending && delay == null) {
+      return const SizedBox(
+        width: 12,
+        height: 12,
+        child: CircularProgressIndicator(strokeWidth: 1.5),
+      );
+    }
+    if (delay == null) return const SizedBox.shrink();
+    return Text(
+      delay > 0 ? '$delay ${context.appLocalizations.serverMs}' : '—',
+      key: ValueKey('ping-$group'),
+      style: context.textTheme.labelMedium?.copyWith(
+        color: getDelayColor(delay),
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+}
+
 class ServersView extends ConsumerStatefulWidget {
   final Future<Result<List<ServerInfo>>> Function()? fetchServers;
   final List<ServerInfo>? initial;
@@ -264,6 +295,7 @@ class ServersView extends ConsumerStatefulWidget {
 class _ServersViewState extends ConsumerState<ServersView> {
   List<ServerInfo>? _servers;
   bool _failed = false;
+  String? _switching;
 
   @override
   void initState() {
@@ -279,17 +311,82 @@ class _ServersViewState extends ConsumerState<ServersView> {
       if (result.isSuccess) _servers = result.data;
       _failed = result.isError && _servers == null;
     });
+    _testDelays();
+  }
+
+  /// Ping of every server (owner 16-11): the core's own delay test of the server group — the
+  /// url-test inside resolves to the live protocol, same numbers as the proxies page.
+  void _testDelays() {
+    final servers = _servers;
+    if (servers == null) return;
+    final list = pickerServers(servers);
+    final groups = ref.read(groupsProvider);
+    final main = mainGroupOf(groups, list);
+    if (main == null) return;
+    final wanted = {
+      for (final s in list)
+        if (s.available && s.group != null) s.group!,
+    };
+    final proxies = [
+      for (final g in groups)
+        if (g.name == main) ...g.all.where((p) => wanted.contains(p.name)),
+    ];
+    if (proxies.isEmpty) return;
+    unawaited(ref.read(proxiesActionProvider.notifier).delayTest(proxies));
+  }
+
+  /// The main selector of the loaded profile lists this server group.
+  bool _offers(String main, String group) {
+    for (final g in ref.read(groupsProvider)) {
+      if (g.name == main) return g.all.any((p) => p.name == group);
+    }
+    return false;
+  }
+
+  /// Fresh subscription now, not at the daily auto-update: the site adds countries faster.
+  Future<void> _refreshProfile() async {
+    final profile = ref.read(currentProfileProvider);
+    if (profile == null || profile.type == ProfileType.file) return;
+    try {
+      await ref.read(profilesActionProvider.notifier).updateProfile(profile);
+      await ref.read(setupActionProvider.notifier).applyProfile(silence: true);
+    } catch (e) {
+      commonPrint.log('servers: profile refresh failed: $e',
+          logLevel: LogLevel.warning);
+    }
   }
 
   /// Choosing = switching the main selector of the subscription in the core (03-11). Until then
   /// the tap only closed the list: with one real server there was nothing to switch, and with
   /// three the choice silently stayed on the first one (owner's screenshot 03-11).
+  /// 16-11: Sweden/Poland/Latvia «did not take» — the profile on the device predated them, the core
+  /// refused, and the refusal went unread. Now: a group missing from the profile -> refresh the
+  /// subscription first; still missing or the core refused -> say so and keep the list open.
   Future<void> _choose(ServerInfo server, String? main) async {
     final group = server.group;
     if (main != null && group != null) {
-      await ref
-          .read(proxiesActionProvider.notifier)
-          .changeProxy(groupName: main, proxyName: group);
+      if (_switching != null) return;
+      setState(() => _switching = server.id);
+      try {
+        if (!_offers(main, group)) {
+          await _refreshProfile();
+          if (!mounted) return;
+          main = mainGroupOf(ref.read(groupsProvider), pickerServers(_servers!)) ?? main;
+          if (!_offers(main, group)) {
+            dialogs.showNotifier(
+              context.appLocalizations.serverNotInProfile,
+              level: MessageLevel.warning,
+            );
+            return;
+          }
+        }
+        final ok = await ref
+            .read(proxiesActionProvider.notifier)
+            .changeProxy(groupName: main, proxyName: group);
+        if (!ok) return;
+      } finally {
+        if (mounted) setState(() => _switching = null);
+      }
     }
     if (mounted) Navigator.of(context).pop(server.id);
   }
@@ -311,9 +408,23 @@ class _ServersViewState extends ConsumerState<ServersView> {
         ),
       ),
       trailing: server.available
-          ? (chosen
-                ? Icon(Icons.check, color: context.colorScheme.primary)
-                : null)
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_switching == server.id)
+                  const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                else if (server.group != null)
+                  ServerPing(group: server.group!),
+                if (chosen) ...[
+                  const SizedBox(width: 12),
+                  Icon(Icons.check, color: context.colorScheme.primary),
+                ],
+              ],
+            )
           : const BusyBadge(),
       selected: chosen,
       onTap: server.available

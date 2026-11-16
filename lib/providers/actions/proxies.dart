@@ -134,7 +134,11 @@ class ProxiesAction extends _$ProxiesAction {
     ref.read(delayDataSourceProvider.notifier).setDelay(delay);
   }
 
-  Future<void> changeProxy({
+  /// true — the core switched. The core answers a refusal with TEXT, not an exception (hub.go
+  /// handleChangeProxy: "" = done, otherwise the error): until 16-11 that text was dropped, the
+  /// choice was saved anyway, and the app showed Sweden while the traffic stayed on the old server
+  /// (a profile older than the server list has no such group).
+  Future<bool> changeProxy({
     required String groupName,
     required String proxyName,
   }) async {
@@ -143,21 +147,26 @@ class ProxiesAction extends _$ProxiesAction {
         _pendingSelectedRollback.remove(groupName) ??
         _currentSelectedName(groupName);
     profilesAction.updateCurrentSelectedMap(groupName, proxyName);
+    Object? failure;
     try {
-      await _core.changeProxy(
+      final message = await _core.changeProxy(
         ChangeProxyParams(groupName: groupName, proxyName: proxyName),
       );
+      if (message.isNotEmpty) failure = message;
     } catch (error) {
+      failure = error;
+    }
+    if (failure != null) {
       commonPrint.log(
-        'changeProxy($groupName -> $proxyName) failed: $error',
-        logLevel: coreFailureLogLevel(error),
+        'changeProxy($groupName -> $proxyName) failed: $failure',
+        logLevel: coreFailureLogLevel(failure),
       );
       profilesAction.updateCurrentSelectedMap(groupName, rollbackName);
       dialogs.showNotifier(
         currentAppLocalizations.changeProxyFailedTip,
         level: MessageLevel.error,
       );
-      return;
+      return false;
     }
     try {
       if (ref.read(appSettingProvider).closeConnections) {
@@ -172,6 +181,7 @@ class ProxiesAction extends _$ProxiesAction {
       );
     }
     ref.read(checkIpNumProvider.notifier).add();
+    return true;
   }
 
   Future<String> updateProvider(

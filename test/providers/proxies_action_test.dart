@@ -260,6 +260,56 @@ void main() {
       expect(container.read(checkIpNumProvider), before);
     });
 
+    test(
+      'a refusal TEXT from the Core is a failure: rollback, no reset, false',
+      () async {
+        // hub.go handleChangeProxy answers "" or the error as text (16-11: an old profile without
+        // «Mgla SE» — the app showed Sweden while the traffic stayed put)
+        when(
+          () => core.changeProxy(any()),
+        ).thenAnswer((_) async => 'proxy not exist');
+        final container = buildContainer(profile: _selectedProfile('HK-00'));
+        final before = container.read(checkIpNumProvider);
+
+        final ok = await actionOf(
+          container,
+        ).changeProxy(groupName: 'Proxy', proxyName: 'HK-01');
+
+        expect(ok, isFalse);
+        expect(container.read(currentProfileProvider)?.selectedMap, {
+          'Proxy': 'HK-00',
+        });
+        verifyNever(core.closeConnections);
+        verifyNever(core.resetConnections);
+        expect(container.read(checkIpNumProvider), before);
+      },
+    );
+
+    test(
+      'a profile downloaded during a pick keeps the pick, not the stale copy',
+      () async {
+        // 16-11: «Mgla Reality» from the one-node days survived every choice of a country
+        final container = buildContainer(profile: _selectedProfile('HK-00'));
+        final stale = container.read(currentProfileProvider)!;
+        await actionOf(
+          container,
+        ).changeProxy(groupName: 'Proxy', proxyName: 'HK-01');
+        final profiles = container.read(profilesActionProvider.notifier);
+        final merged = profiles.withLiveChoices(
+          stale.copyWith(label: 'downloaded'),
+        );
+        expect(merged.selectedMap, {'Proxy': 'HK-01'});
+        expect(merged.label, 'downloaded');
+        // КОНТРОЛЬ: профиль не из списка остаётся как есть
+        const other = Profile(
+          id: 99,
+          autoUpdateDuration: Duration.zero,
+          selectedMap: {'Proxy': 'X'},
+        );
+        expect(profiles.withLiveChoices(other).selectedMap, {'Proxy': 'X'});
+      },
+    );
+
     test('commits the selection the Core accepted', () async {
       final container = buildContainer(profile: _selectedProfile('HK-00'));
 

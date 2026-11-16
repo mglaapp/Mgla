@@ -7,6 +7,22 @@ class ProfilesAction extends _$ProfilesAction {
   @override
   void build() {}
 
+  /// A downloaded profile carries the user's choices of the moment the download STARTED. A server
+  /// picked while it was downloading was overwritten by that copy (16-11: the saved choice stayed
+  /// «Mgla Reality» from the one-node days). The choices are taken from the live list instead.
+  Profile withLiveChoices(Profile downloaded) {
+    final live = ref
+        .read(profilesProvider)
+        .where((p) => p.id == downloaded.id)
+        .firstOrNull;
+    if (live == null) return downloaded;
+    return downloaded.copyWith(
+      selectedMap: live.selectedMap,
+      unfoldSet: live.unfoldSet,
+      currentGroupName: live.currentGroupName,
+    );
+  }
+
   void updateCurrentSelectedMap(String groupName, String proxyName) {
     final currentProfile = ref.read(currentProfileProvider);
     if (currentProfile != null &&
@@ -77,11 +93,11 @@ class ProfilesAction extends _$ProfilesAction {
         ? ref.read(updatingKeysProvider.notifier).start(profile.updatingKey)
         : null;
     try {
-      ref.read(profilesProvider.notifier).put(profile);
+      ref.read(profilesProvider.notifier).put(withLiveChoices(profile));
       final newProfile = await profile.update(
         validate: (path) => _core.validateConfig(path),
       );
-      ref.read(profilesProvider.notifier).put(newProfile);
+      ref.read(profilesProvider.notifier).put(withLiveChoices(newProfile));
       if (profile.id == ref.read(currentProfileIdProvider)) {
         ref
             .read(setupActionProvider.notifier)

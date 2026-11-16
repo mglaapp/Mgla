@@ -701,9 +701,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "installPermissionRequired": MessageLookupByLibrary.simpleMessage(
       "Нужно разрешение на установку",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1309,6 +1310,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "serverBusy": MessageLookupByLibrary.simpleMessage("Загружен"),
     "serverBusyTip": MessageLookupByLibrary.simpleMessage(
       "Сервер загружен — выберите другой",
+    ),
+    "serverMs": MessageLookupByLibrary.simpleMessage("мс"),
+    "serverNotInProfile": MessageLookupByLibrary.simpleMessage(
+      "Этого сервера ещё нет в вашем профиле — обновите профиль и попробуйте снова",
     ),
     "serverTitle": MessageLookupByLibrary.simpleMessage("Сервер"),
     "serversLoadError": MessageLookupByLibrary.simpleMessage(

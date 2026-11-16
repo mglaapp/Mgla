@@ -903,6 +903,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "serverAuto": MessageLookupByLibrary.simpleMessage("自动（最快）"),
     "serverBusy": MessageLookupByLibrary.simpleMessage("繁忙"),
     "serverBusyTip": MessageLookupByLibrary.simpleMessage("该服务器繁忙，请选择其他服务器"),
+    "serverMs": MessageLookupByLibrary.simpleMessage("ms"),
+    "serverNotInProfile": MessageLookupByLibrary.simpleMessage(
+      "This server isn\'t in your profile yet — update the profile and try again",
+    ),
     "serverTitle": MessageLookupByLibrary.simpleMessage("服务器"),
     "serversLoadError": MessageLookupByLibrary.simpleMessage("无法加载服务器列表"),
     "serversTitle": MessageLookupByLibrary.simpleMessage("选择服务器"),

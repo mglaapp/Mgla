@@ -113,11 +113,26 @@ class _FakeProxies extends ProxiesAction {
   void build() {}
 
   @override
-  Future<void> changeProxy({
+  Future<bool> changeProxy({
     required String groupName,
     required String proxyName,
   }) async {
     log.add((groupName, proxyName));
+    return true;
+  }
+
+  /// Пинг без ядра: NL — таймаут, прочие 42 мс (ключ — имя группы, url-test без «now»).
+  @override
+  Future<void> delayTest(List<Proxy> proxies, [String? testUrl]) async {
+    for (final p in proxies) {
+      setDelay(
+        Delay(
+          name: p.name,
+          url: defaultTestUrl,
+          value: p.name == 'Mgla NL' ? -1 : 42,
+        ),
+      );
+    }
   }
 }
 
@@ -353,6 +368,69 @@ void main() {
       expect(log.last, ('Mgla', 'Auto'));
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('пинг: мс у рабочих стран, прочерк при таймауте, у заглушки нет', (
+      tester,
+    ) async {
+      final log = <_Switch>[];
+      await openPicker(tester, _coreGroups('Mgla LV'), log);
+      final l = tester.element(find.byType(ServersView)).appLocalizations;
+      for (final id in ['auto', 'de', 'lv']) {
+        expect(
+          find.descendant(
+            of: find.byKey(ValueKey('server-$id')),
+            matching: find.text('42 ${l.serverMs}'),
+          ),
+          findsOneWidget,
+          reason: id,
+        );
+      }
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('server-nl')),
+          matching: find.text('—'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('server-fi')),
+          matching: find.byType(ServerPing),
+        ),
+        findsNothing,
+      );
+    });
+
+    testWidgets(
+      'страны нет в профиле (старая подписка): ядро не трогается, экран открыт',
+      (tester) async {
+        final log = <_Switch>[];
+        final withSe = ServerInfo.listFrom([
+          ..._multi,
+          {
+            'id': 'se',
+            'cc': 'se',
+            'name': {'ru': 'Швеция', 'en': 'Sweden'},
+            'status': 'ok',
+            'group': 'Mgla SE',
+          },
+        ]);
+        final page = _scoped(
+          ServersView(fetchServers: () async => Result.success(withSe)),
+          groups: _coreGroups('Mgla LV'),
+          log: log,
+        );
+        await _pump(tester, page);
+        await tester.tap(find.byKey(const ValueKey('server-se')));
+        await tester.pumpAndSettle();
+        expect(log, isEmpty);
+        expect(find.byType(ServersView), findsOneWidget);
+        // КОНТРОЛЬ: страна из профиля на том же экране переключается
+        await tester.tap(find.byKey(const ValueKey('server-de')));
+        await tester.pumpAndSettle();
+        expect(log, [('Mgla', 'Mgla DE')]);
+      },
+    );
 
     testWidgets('КОНТРОЛЬ: без групп в подписке ядро не трогается', (
       tester,
