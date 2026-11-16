@@ -369,37 +369,38 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('пинг: мс у рабочих стран, прочерк при таймауте, у заглушки нет', (
-      tester,
-    ) async {
-      final log = <_Switch>[];
-      await openPicker(tester, _coreGroups('Mgla LV'), log);
-      final l = tester.element(find.byType(ServersView)).appLocalizations;
-      for (final id in ['auto', 'de', 'lv']) {
+    testWidgets(
+      'пинг: мс у рабочих стран, прочерк при таймауте, у заглушки нет',
+      (tester) async {
+        final log = <_Switch>[];
+        await openPicker(tester, _coreGroups('Mgla LV'), log);
+        final l = tester.element(find.byType(ServersView)).appLocalizations;
+        for (final id in ['auto', 'de', 'lv']) {
+          expect(
+            find.descendant(
+              of: find.byKey(ValueKey('server-$id')),
+              matching: find.text('42 ${l.serverMs}'),
+            ),
+            findsOneWidget,
+            reason: id,
+          );
+        }
         expect(
           find.descendant(
-            of: find.byKey(ValueKey('server-$id')),
-            matching: find.text('42 ${l.serverMs}'),
+            of: find.byKey(const ValueKey('server-nl')),
+            matching: find.text('—'),
           ),
           findsOneWidget,
-          reason: id,
         );
-      }
-      expect(
-        find.descendant(
-          of: find.byKey(const ValueKey('server-nl')),
-          matching: find.text('—'),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(
-          of: find.byKey(const ValueKey('server-fi')),
-          matching: find.byType(ServerPing),
-        ),
-        findsNothing,
-      );
-    });
+        expect(
+          find.descendant(
+            of: find.byKey(const ValueKey('server-fi')),
+            matching: find.byType(ServerPing),
+          ),
+          findsNothing,
+        );
+      },
+    );
 
     testWidgets(
       'страны нет в профиле (старая подписка): ядро не трогается, экран открыт',

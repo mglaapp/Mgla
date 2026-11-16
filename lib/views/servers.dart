@@ -351,8 +351,10 @@ class _ServersViewState extends ConsumerState<ServersView> {
       await ref.read(profilesActionProvider.notifier).updateProfile(profile);
       await ref.read(setupActionProvider.notifier).applyProfile(silence: true);
     } catch (e) {
-      commonPrint.log('servers: profile refresh failed: $e',
-          logLevel: LogLevel.warning);
+      commonPrint.log(
+        'servers: profile refresh failed: $e',
+        logLevel: LogLevel.warning,
+      );
     }
   }
 
@@ -371,7 +373,9 @@ class _ServersViewState extends ConsumerState<ServersView> {
         if (!_offers(main, group)) {
           await _refreshProfile();
           if (!mounted) return;
-          main = mainGroupOf(ref.read(groupsProvider), pickerServers(_servers!)) ?? main;
+          main =
+              mainGroupOf(ref.read(groupsProvider), pickerServers(_servers!)) ??
+              main;
           if (!_offers(main, group)) {
             dialogs.showNotifier(
               context.appLocalizations.serverNotInProfile,
