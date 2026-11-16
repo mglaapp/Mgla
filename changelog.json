@@ -2,6 +2,29 @@
   "schemaVersion": 2,
   "versions": [
     {
+      "version": "0.9.17",
+      "tag": "v0.9.17",
+      "date": "2026-11-16",
+      "prerelease": false,
+      "groups": [
+        {
+          "type": "fix",
+          "entries": [
+            {
+              "id": "468847c",
+              "scope": "servers",
+              "text": "Страна выбирается по-настоящему + пинг в списке"
+            },
+            {
+              "id": "e94c412",
+              "scope": "update",
+              "text": "Занятый файл установщика больше не роняет приложение"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.9.16",
       "tag": "v0.9.16",
       "date": "2026-11-14",
