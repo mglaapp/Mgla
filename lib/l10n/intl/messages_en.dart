@@ -746,6 +746,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "layout": MessageLookupByLibrary.simpleMessage("Layout"),
     "letterSent": MessageLookupByLibrary.simpleMessage("Letter sent"),
     "light": MessageLookupByLibrary.simpleMessage("Light"),
+    "linkChecking": MessageLookupByLibrary.simpleMessage(
+      "Checking the connection…",
+    ),
+    "linkFailed": MessageLookupByLibrary.simpleMessage(
+      "No connection to the server",
+    ),
+    "linkFailedTip": MessageLookupByLibrary.simpleMessage(
+      "The servers don\'t open sites on your network. Tap the status to check again, or contact support",
+    ),
+    "linkSwitchedAuto": MessageLookupByLibrary.simpleMessage(
+      "The server didn\'t open sites on your network — switched to Auto",
+    ),
     "list": MessageLookupByLibrary.simpleMessage("List"),
     "listen": MessageLookupByLibrary.simpleMessage("Listen"),
     "loading": MessageLookupByLibrary.simpleMessage("Loading..."),

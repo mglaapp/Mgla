@@ -1,3 +1,5 @@
+import 'package:fl_clash/common/link_check.dart';
+import 'package:fl_clash/manager/link_manager.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/dashboard/widgets/connection_state_pill.dart';
@@ -73,5 +75,36 @@ void main() {
 
     final semantics = tester.getSemantics(connected);
     expect(semantics.label, contains('Connected'));
+  });
+
+  testWidgets('«Connected» waits for the server check (16-11, #204)', (
+    tester,
+  ) async {
+    final container = await _pump(tester, runTime: 1000);
+    final link = container.read(linkCheckProvider.notifier);
+
+    link.show(const LinkVerdict(LinkStatus.checking));
+    await tester.pump();
+    expect(find.text('Checking the connection…'), findsOneWidget);
+    expect(find.text('Connected'), findsNothing);
+
+    link.show(const LinkVerdict(LinkStatus.failed));
+    await tester.pump();
+    expect(find.text('No connection to the server'), findsOneWidget);
+    expect(find.text('Connected'), findsNothing);
+
+    link.show(const LinkVerdict(LinkStatus.switched, from: 'Mgla SE'));
+    await tester.pump();
+    expect(find.text('Connected'), findsOneWidget);
+  });
+
+  testWidgets('a stopped tunnel never shows a link verdict', (tester) async {
+    final container = await _pump(tester);
+    container
+        .read(linkCheckProvider.notifier)
+        .show(const LinkVerdict(LinkStatus.failed));
+    await tester.pump();
+    expect(find.text('Disconnected'), findsOneWidget);
+    expect(find.text('No connection to the server'), findsNothing);
   });
 }

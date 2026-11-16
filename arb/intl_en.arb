@@ -746,5 +746,9 @@
   "errTvUnknown": "Code not found — check the code on the TV screen",
   "errTvExpired": "The code has expired — choose “Sign in with phone” on the TV again",
   "errTvBusy": "This TV is already connected to another account",
-  "errBindOnSite": "Sign-in is already set up or the account is not new — change it in your account on the website"
+  "errBindOnSite": "Sign-in is already set up or the account is not new — change it in your account on the website",
+  "linkChecking": "Checking the connection…",
+  "linkFailed": "No connection to the server",
+  "linkSwitchedAuto": "The server didn't open sites on your network — switched to Auto",
+  "linkFailedTip": "The servers don't open sites on your network. Tap the status to check again, or contact support"
 }

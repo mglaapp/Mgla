@@ -20,6 +20,7 @@ Widget? _childOf(Widget widget) {
     TileManager(:final child) => child,
     AppStateManager(:final child) => child,
     CoreManager(:final child) => child,
+    ServerLinkManager(:final child) => child,
     ConnectivityManager(:final child) => child,
     WindowHeaderContainer(:final child) => child,
     VpnManager(:final child) => child,
@@ -68,6 +69,7 @@ void main() {
       ProxyManager,
       AppStateManager,
       CoreManager,
+      ServerLinkManager,
       ConnectivityManager,
       WindowHeaderContainer,
     ]);
@@ -83,6 +85,7 @@ void main() {
       TileManager,
       AppStateManager,
       CoreManager,
+      ServerLinkManager,
       ConnectivityManager,
       VpnManager,
     ]);
@@ -128,6 +131,17 @@ void main() {
         chain.indexOf(CoreManager),
         lessThan(chain.indexOf(ConnectivityManager)),
         reason: 'connectivity changes read Core-backed state',
+      );
+    }
+  });
+
+  test('the server check sits inside the core it asks', () {
+    for (final isDesktop in [true, false]) {
+      final chain = _chainFrom(_stack(isDesktop: isDesktop));
+      expect(chain, contains(ServerLinkManager));
+      expect(
+        chain.indexOf(CoreManager),
+        lessThan(chain.indexOf(ServerLinkManager)),
       );
     }
   });

@@ -756,6 +756,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "layout": MessageLookupByLibrary.simpleMessage("Макет"),
     "letterSent": MessageLookupByLibrary.simpleMessage("Письмо отправлено"),
     "light": MessageLookupByLibrary.simpleMessage("Светлая"),
+    "linkChecking": MessageLookupByLibrary.simpleMessage("Проверяем связь…"),
+    "linkFailed": MessageLookupByLibrary.simpleMessage("Нет связи с сервером"),
+    "linkFailedTip": MessageLookupByLibrary.simpleMessage(
+      "Серверы не открывают сайты в вашей сети. Нажмите на статус, чтобы проверить снова, или напишите в поддержку",
+    ),
+    "linkSwitchedAuto": MessageLookupByLibrary.simpleMessage(
+      "Сервер не открывал сайты в вашей сети — включили «Авто»",
+    ),
     "list": MessageLookupByLibrary.simpleMessage("Список"),
     "listen": MessageLookupByLibrary.simpleMessage("Прослушивание"),
     "loading": MessageLookupByLibrary.simpleMessage("Загрузка..."),

@@ -32,9 +32,11 @@ Widget buildManagerStack({
       : VpnManager(child: child);
   final state = AppStateManager(
     child: CoreManager(
-      child: ConnectivityManager(
-        onConnectivityChanged: onConnectivityChanged,
-        child: platformApp,
+      child: ServerLinkManager(
+        child: ConnectivityManager(
+          onConnectivityChanged: onConnectivityChanged,
+          child: platformApp,
+        ),
       ),
     ),
   );

@@ -6280,6 +6280,46 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Checking the connection…`
+  String get linkChecking {
+    return Intl.message(
+      'Checking the connection…',
+      name: 'linkChecking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No connection to the server`
+  String get linkFailed {
+    return Intl.message(
+      'No connection to the server',
+      name: 'linkFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The server didn't open sites on your network — switched to Auto`
+  String get linkSwitchedAuto {
+    return Intl.message(
+      'The server didn\'t open sites on your network — switched to Auto',
+      name: 'linkSwitchedAuto',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The servers don't open sites on your network. Tap the status to check again, or contact support`
+  String get linkFailedTip {
+    return Intl.message(
+      'The servers don\'t open sites on your network. Tap the status to check again, or contact support',
+      name: 'linkFailedTip',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -525,6 +525,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "layout": MessageLookupByLibrary.simpleMessage("布局"),
     "letterSent": MessageLookupByLibrary.simpleMessage("邮件已发送"),
     "light": MessageLookupByLibrary.simpleMessage("浅色"),
+    "linkChecking": MessageLookupByLibrary.simpleMessage("正在检查连接…"),
+    "linkFailed": MessageLookupByLibrary.simpleMessage("无法连接到服务器"),
+    "linkFailedTip": MessageLookupByLibrary.simpleMessage(
+      "服务器在您的网络中无法打开网站。点击状态重新检查，或联系客服",
+    ),
+    "linkSwitchedAuto": MessageLookupByLibrary.simpleMessage(
+      "该服务器在您的网络中无法打开网站——已切换到自动",
+    ),
     "list": MessageLookupByLibrary.simpleMessage("列表"),
     "listen": MessageLookupByLibrary.simpleMessage("监听"),
     "loading": MessageLookupByLibrary.simpleMessage("加载中..."),

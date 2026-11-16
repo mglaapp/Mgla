@@ -612,6 +612,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "layout": MessageLookupByLibrary.simpleMessage("レイアウト"),
     "letterSent": MessageLookupByLibrary.simpleMessage("メールを送信しました"),
     "light": MessageLookupByLibrary.simpleMessage("ライト"),
+    "linkChecking": MessageLookupByLibrary.simpleMessage("接続を確認しています…"),
+    "linkFailed": MessageLookupByLibrary.simpleMessage("サーバーに接続できません"),
+    "linkFailedTip": MessageLookupByLibrary.simpleMessage(
+      "お使いのネットワークではサーバーがサイトを開けません。ステータスをタップして再確認するか、サポートにご連絡ください",
+    ),
+    "linkSwitchedAuto": MessageLookupByLibrary.simpleMessage(
+      "このサーバーはお使いのネットワークでサイトを開けませんでした — 自動に切り替えました",
+    ),
     "list": MessageLookupByLibrary.simpleMessage("リスト"),
     "listen": MessageLookupByLibrary.simpleMessage("リッスン"),
     "loading": MessageLookupByLibrary.simpleMessage("読み込み中..."),
