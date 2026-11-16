@@ -244,7 +244,16 @@ class CommonAction extends _$CommonAction {
       }
     } finally {
       if (!installing) {
-        await file?.safeDelete();
+        // Windows may still hold the file (antivirus scan, an unfinished write): errno 5 here was
+        // a crash of the whole app (admin crash #8, 0.9.15). A leftover is overwritten next time.
+        try {
+          await file?.safeDelete();
+        } catch (error) {
+          commonPrint.log(
+            'update file left in cache: ${compactError(error)}',
+            logLevel: LogLevel.warning,
+          );
+        }
       }
       if (!cancelled) {
         rootNavigatorKey.currentState?.pop();
