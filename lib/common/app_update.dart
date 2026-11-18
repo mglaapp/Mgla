@@ -5,6 +5,7 @@ import 'dart:io';
 import 'constant.dart';
 import 'our_hosts.dart';
 import 'package.dart';
+import 'site_route.dart';
 
 class UpdateAsset {
   const UpdateAsset({
@@ -131,6 +132,37 @@ List<String> updateSources() => [
   '$subscriptionSite/api/v1/app/release',
   'https://api.github.com/repos/$repository/releases/latest',
 ];
+
+/// [release] as fetched from [from]: when that is a backup address of our site (17-11), the
+/// file links the server wrote on mgla.app point there too — mgla.app did not answer, so its
+/// files would not either. Integrity does not depend on the host: SHA256SUMS is signed.
+Map<String, dynamic> releaseServedFrom(
+  Map<String, dynamic> release,
+  String from, {
+  SiteRoute? route,
+}) {
+  final r = route ?? siteRoute;
+  final base = r.baseOf(from);
+  if (base == null || base == r.bases.first) return release;
+  final assets = release['assets'];
+  if (assets is! List) return release;
+  return {
+    ...release,
+    'assets': [
+      for (final asset in assets)
+        if (asset is Map && asset['browser_download_url'] is String)
+          {
+            ...asset,
+            'browser_download_url': r.moveTo(
+              asset['browser_download_url'] as String,
+              from,
+            ),
+          }
+        else
+          asset,
+    ],
+  };
+}
 
 /// The download page on our site: every build, picked for the device that opens it.
 const updatePageUrl = '$subscriptionSite/download';

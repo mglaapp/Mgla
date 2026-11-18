@@ -22,10 +22,33 @@ Group? linkMainGroup(List<Group> groups) {
   return null;
 }
 
-Map<String, List<String>> linkMembers(List<Group> groups) => {
+/// Every group that picks a server by itself, hidden ones included (the core lists «Auto direct»
+/// too; only the screens leave it out).
+Map<String, LinkGroup> linkGroups(List<Group> groups) => {
   for (final g in groups)
-    if (g.type == GroupType.URLTest) g.name: [for (final p in g.all) p.name],
+    if (_linkPick(g.type) case final pick?)
+      g.name: LinkGroup(pick, [for (final p in g.all) p.name]),
 };
+
+LinkPick? _linkPick(GroupType type) => switch (type) {
+  GroupType.URLTest => LinkPick.urlTest,
+  GroupType.Fallback => LinkPick.fallback,
+  _ => null,
+};
+
+/// True when the main selector ends on a server reached through the bridge in Russia.
+bool linkGoesViaBridge(
+  List<Group> groups,
+  String mainGroup,
+  Map<String, String> selectedMap,
+) {
+  final leaf = computeRealSelectedProxyState(
+    mainGroup,
+    groups: groups,
+    selectedMap: selectedMap,
+  ).proxyName;
+  return isBridgeProxy(leaf);
+}
 
 class LinkCheck extends Notifier<LinkVerdict> {
   bool _running = false;
@@ -102,17 +125,30 @@ class LinkCheck extends Notifier<LinkVerdict> {
         selected: selected,
         auto: autoGroupName,
         hasAuto: main.all.any((p) => p.name == autoGroupName),
-        members: linkMembers(groups),
+        groups: linkGroups(groups),
       );
       if (!ref.mounted || !_wanted) return;
-      if (verdict.status == LinkStatus.switched) {
-        proxies.updateGroupsDebounce();
-      }
+      // Set before the groups are read anew below: that read wakes the listener in
+      // ServerLinkManager, and an old choice there would order a second check at once.
       checkedChoice = verdict.status == LinkStatus.switched
           ? autoGroupName
           : selected;
-      state = verdict;
-      _announce(before, verdict);
+      var shown = verdict;
+      if (verdict.passed) {
+        // The groups' picks moved inside the core (a fallback went to the bridge): read them
+        // anew, or the screens and the «via Russia» mark go on showing the old server.
+        await proxies.updateGroups();
+        if (!ref.mounted || !_wanted) return;
+        shown = verdict.withVia(
+          linkGoesViaBridge(
+            ref.read(groupsProvider),
+            main.name,
+            ref.read(currentProfileProvider)?.selectedMap ?? const {},
+          ),
+        );
+      }
+      state = shown;
+      _announce(before, shown);
     } catch (e) {
       commonPrint.log('link: check failed: $e', logLevel: LogLevel.warning);
       if (ref.mounted && state.status == LinkStatus.checking) {
@@ -129,7 +165,9 @@ class LinkCheck extends Notifier<LinkVerdict> {
 
   void _announce(LinkVerdict before, LinkVerdict now) {
     final l = currentAppLocalizations;
-    if (now.status == LinkStatus.switched) {
+    if (now.via && !before.via) {
+      dialogs.showNotifier(l.linkViaBridgeTip, level: MessageLevel.warning);
+    } else if (now.status == LinkStatus.switched) {
       dialogs.showNotifier(l.linkSwitchedAuto, level: MessageLevel.warning);
     } else if (now.status == LinkStatus.failed &&
         before.status != LinkStatus.failed) {

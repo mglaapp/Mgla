@@ -98,6 +98,21 @@ void main() {
     expect(find.text('Connected'), findsOneWidget);
   });
 
+  testWidgets('through the bridge it says so (17-11)', (tester) async {
+    final container = await _pump(tester, runTime: 1000);
+    final link = container.read(linkCheckProvider.notifier);
+
+    link.show(const LinkVerdict(LinkStatus.ok, via: true));
+    await tester.pump();
+    expect(find.text('Connected · via Russia'), findsOneWidget);
+    expect(_dot(tester).filled, isTrue);
+
+    link.show(const LinkVerdict(LinkStatus.ok));
+    await tester.pump();
+    expect(find.text('Connected'), findsOneWidget);
+    expect(find.text('Connected · via Russia'), findsNothing);
+  });
+
   testWidgets('a stopped tunnel never shows a link verdict', (tester) async {
     final container = await _pump(tester);
     container

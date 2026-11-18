@@ -18,7 +18,8 @@ class ConnectionStatePill extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isStart = ref.watch(isStartProvider);
     final suspend = ref.watch(suspendProvider);
-    final link = ref.watch(linkCheckProvider).status;
+    final verdict = ref.watch(linkCheckProvider);
+    final link = verdict.status;
     final state = switch ((isStart, suspend)) {
       (true, true) => _TunnelState.suspended,
       (true, false) => switch (link) {
@@ -38,7 +39,11 @@ class ConnectionStatePill extends ConsumerWidget {
       _TunnelState.disconnected => scheme.onSurfaceVariant,
     };
     final label = switch (state) {
-      _TunnelState.connected => appLocalizations.connected,
+      // 17-11: the direct servers are cut and the core went on through the bridge in Russia.
+      _TunnelState.connected =>
+        verdict.via
+            ? appLocalizations.connectedViaBridge
+            : appLocalizations.connected,
       _TunnelState.checking => appLocalizations.linkChecking,
       _TunnelState.noLink => appLocalizations.linkFailed,
       _TunnelState.suspended => appLocalizations.suspended,

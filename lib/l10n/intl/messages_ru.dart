@@ -360,6 +360,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "connectTv": MessageLookupByLibrary.simpleMessage("Подключить телевизор"),
     "connectTvConfirm": m0,
     "connected": MessageLookupByLibrary.simpleMessage("Подключено"),
+    "connectedViaBridge": MessageLookupByLibrary.simpleMessage(
+      "Подключено · через Россию",
+    ),
     "connecting": MessageLookupByLibrary.simpleMessage("Подключение..."),
     "connection": MessageLookupByLibrary.simpleMessage("Соединение"),
     "connections": MessageLookupByLibrary.simpleMessage("Соединения"),
@@ -763,6 +766,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "linkSwitchedAuto": MessageLookupByLibrary.simpleMessage(
       "Сервер не открывал сайты в вашей сети — включили «Авто»",
+    ),
+    "linkViaBridgeTip": MessageLookupByLibrary.simpleMessage(
+      "Прямые серверы не открывают сайты в вашей сети — подключили через Россию",
     ),
     "list": MessageLookupByLibrary.simpleMessage("Список"),
     "listen": MessageLookupByLibrary.simpleMessage("Прослушивание"),

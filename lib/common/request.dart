@@ -8,6 +8,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/state.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:intl/intl.dart';
 
 class Request {
@@ -18,6 +19,13 @@ class Request {
   /// never answers must hand over to GitHub in seconds, not after the system's TCP timeout.
   late final Dio _updateDio;
   String? userAgent;
+
+  /// The subscription client and the update client, for tests that script the network.
+  @visibleForTesting
+  Dio get subscriptionDio => _clashDio;
+
+  @visibleForTesting
+  Dio get updateDio => _updateDio;
 
   ProviderReader? _read;
 
@@ -51,11 +59,28 @@ class Request {
     );
   }
 
+  /// A subscription. Ours (mgla.app/sub/…) is also asked on the backup addresses of the site
+  /// when mgla.app does not answer (17-11): without it a person whose network cuts mgla.app
+  /// never gets the servers, the bridge among them. Anyone else's goes as it always did.
   Future<Response<Uint8List>> getFileResponseForUrl(String url) async {
     try {
-      return await _clashDio.get<Uint8List>(
+      if (siteRoute.baseOf(url) == null) {
+        return await _clashDio.get<Uint8List>(
+          url,
+          options: Options(responseType: ResponseType.bytes),
+        );
+      }
+      return await siteRoute.run(
         url,
-        options: Options(responseType: ResponseType.bytes),
+        (u) => _clashDio.get<Uint8List>(
+          u,
+          options: Options(
+            responseType: ResponseType.bytes,
+            connectTimeout: _siteConnectTimeout,
+            receiveTimeout: _siteReceiveTimeout,
+          ),
+        ),
+        retry: (e) => siteUnreached(e, repeatable: true),
       );
     } catch (e) {
       commonPrint.log(
@@ -136,15 +161,22 @@ class Request {
 
   Future<Map<String, dynamic>?> _latestRelease(String url) async {
     try {
-      final response = await _updateDio.get(
-        url,
-        options: Options(responseType: ResponseType.json),
-      );
+      // Our mirror is asked on the backup address too when mgla.app does not answer (17-11);
+      // its files are then fetched from there as well — see releaseServedFrom.
+      var from = url;
+      final response = await siteRoute.run(url, (u) async {
+        final r = await _updateDio.get(
+          u,
+          options: Options(responseType: ResponseType.json),
+        );
+        from = u;
+        return r;
+      }, retry: (e) => siteUnreached(e, repeatable: true));
       final data = response.data;
       if (response.statusCode != 200 || data is! Map<String, dynamic>) {
         return null;
       }
-      return data;
+      return releaseServedFrom(data, from);
     } catch (e) {
       commonPrint.log(
         'checkForUpdate failed at ${Uri.tryParse(url)?.host} ${compactError(e)}',
@@ -219,6 +251,8 @@ class Request {
   // приложении четыре, и показывать русскую строку японцу — это не локализация.
 
   static const _apiBase = '$subscriptionSite/api/v1';
+  static const _siteConnectTimeout = Duration(seconds: 10);
+  static const _siteReceiveTimeout = Duration(seconds: 20);
 
   /// Version and platform only: the account key already travels in the request.
   static String? appHeader() {
@@ -251,20 +285,28 @@ class Request {
   }) async {
     // Отказы 4xx — это ОТВЕТ, а не сбой: в них лежит код, ради которого всё и затевалось.
     // Без этого Dio бросил бы исключение и «ключ не найден» стал бы неотличим от «нет сети».
+    //
+    // Адресов у сайта несколько (17-11, мост в Москве): не ответил mgla.app — тот же запрос
+    // уходит на запасной. Для этого у соединения свой срок; ответа POST ждёт, как прежде,
+    // сколько нужно (сервер сам ходит в платёжку до 30 с), а GET — 20 с: замороженное
+    // соединение иначе висело бы до системного таймаута.
+    final repeatable = form == null;
     final options = Options(
       responseType: ResponseType.json,
       validateStatus: (code) => code != null && code < 500,
       contentType: form == null ? null : Headers.formUrlEncodedContentType,
       headers: _appHeaders(),
+      connectTimeout: _siteConnectTimeout,
+      receiveTimeout: repeatable ? _siteReceiveTimeout : null,
     );
     try {
-      final response = form == null
-          ? await dio.get(
-              '$_apiBase$path',
-              queryParameters: query,
-              options: options,
-            )
-          : await dio.post('$_apiBase$path', data: form, options: options);
+      final response = await siteRoute.run(
+        '$_apiBase$path',
+        (url) => repeatable
+            ? dio.get(url, queryParameters: query, options: options)
+            : dio.post(url, data: form, options: options),
+        retry: (e) => siteUnreached(e, repeatable: repeatable),
+      );
       final data = response.data;
       if (data is! Map<String, dynamic>) {
         return Result.error('bad_response');

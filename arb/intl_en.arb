@@ -750,5 +750,7 @@
   "linkChecking": "Checking the connection…",
   "linkFailed": "No connection to the server",
   "linkSwitchedAuto": "The server didn't open sites on your network — switched to Auto",
-  "linkFailedTip": "The servers don't open sites on your network. Tap the status to check again, or contact support"
+  "linkFailedTip": "The servers don't open sites on your network. Tap the status to check again, or contact support",
+  "connectedViaBridge": "Connected · via Russia",
+  "linkViaBridgeTip": "The direct servers don't open sites on your network — connected through Russia"
 }

@@ -750,5 +750,7 @@
   "linkChecking": "正在检查连接…",
   "linkFailed": "无法连接到服务器",
   "linkSwitchedAuto": "该服务器在您的网络中无法打开网站——已切换到自动",
-  "linkFailedTip": "服务器在您的网络中无法打开网站。点击状态重新检查，或联系客服"
+  "linkFailedTip": "服务器在您的网络中无法打开网站。点击状态重新检查，或联系客服",
+  "connectedViaBridge": "已连接 · 经由俄罗斯",
+  "linkViaBridgeTip": "直连服务器在您的网络中无法打开网站——已改为经由俄罗斯连接"
 }

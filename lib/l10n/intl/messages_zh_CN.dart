@@ -260,6 +260,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "connectTv": MessageLookupByLibrary.simpleMessage("连接电视"),
     "connectTvConfirm": m0,
     "connected": MessageLookupByLibrary.simpleMessage("已连接"),
+    "connectedViaBridge": MessageLookupByLibrary.simpleMessage("已连接 · 经由俄罗斯"),
     "connecting": MessageLookupByLibrary.simpleMessage("连接中..."),
     "connection": MessageLookupByLibrary.simpleMessage("连接"),
     "connections": MessageLookupByLibrary.simpleMessage("连接"),
@@ -532,6 +533,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "linkSwitchedAuto": MessageLookupByLibrary.simpleMessage(
       "该服务器在您的网络中无法打开网站——已切换到自动",
+    ),
+    "linkViaBridgeTip": MessageLookupByLibrary.simpleMessage(
+      "直连服务器在您的网络中无法打开网站——已改为经由俄罗斯连接",
     ),
     "list": MessageLookupByLibrary.simpleMessage("列表"),
     "listen": MessageLookupByLibrary.simpleMessage("监听"),

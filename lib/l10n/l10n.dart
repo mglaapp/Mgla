@@ -6320,6 +6320,26 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Connected · via Russia`
+  String get connectedViaBridge {
+    return Intl.message(
+      'Connected · via Russia',
+      name: 'connectedViaBridge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The direct servers don't open sites on your network — connected through Russia`
+  String get linkViaBridgeTip {
+    return Intl.message(
+      'The direct servers don\'t open sites on your network — connected through Russia',
+      name: 'linkViaBridgeTip',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

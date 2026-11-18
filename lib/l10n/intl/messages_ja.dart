@@ -287,6 +287,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "connectTv": MessageLookupByLibrary.simpleMessage("テレビを接続"),
     "connectTvConfirm": m0,
     "connected": MessageLookupByLibrary.simpleMessage("接続済み"),
+    "connectedViaBridge": MessageLookupByLibrary.simpleMessage("接続済み · ロシア経由"),
     "connecting": MessageLookupByLibrary.simpleMessage("接続中..."),
     "connection": MessageLookupByLibrary.simpleMessage("接続"),
     "connections": MessageLookupByLibrary.simpleMessage("接続"),
@@ -619,6 +620,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "linkSwitchedAuto": MessageLookupByLibrary.simpleMessage(
       "このサーバーはお使いのネットワークでサイトを開けませんでした — 自動に切り替えました",
+    ),
+    "linkViaBridgeTip": MessageLookupByLibrary.simpleMessage(
+      "お使いのネットワークでは直接接続のサーバーがサイトを開けないため、ロシア経由で接続しました",
     ),
     "list": MessageLookupByLibrary.simpleMessage("リスト"),
     "listen": MessageLookupByLibrary.simpleMessage("リッスン"),
